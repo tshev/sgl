@@ -22,6 +22,8 @@
 
 #include "sgl.v1.function.lower_bound.h"
 #include "sgl.v1.function.binary_search.h"
+#include "sgl.v1.class.binary_counter.h"
+#include "sgl.v1.function.binary_counter_reduce.h"
 #include "sgl.v1.function.upper_bound.h"
 #include "sgl.v1.function.accumulate.h"
 #include "sgl.v1.function.accumulate_squared_diffs.h"

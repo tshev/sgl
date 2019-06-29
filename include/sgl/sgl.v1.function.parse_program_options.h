@@ -7,7 +7,6 @@ inline
 std::pair<OutputIterator0, OutputIterator1> parse_program_options(ForwardIterator first, ForwardIterator last, OutputIterator0 out0, OutputIterator1 out1) {
     while (first != last) {
         if (*first == '-') {
-            auto parsed = sgl::v1::parse_program_option(first, last);
             auto [new_pos, key, value] = sgl::v1::parse_program_option(first, last);
             if (value.first == value.second || *(value.first) == '-') {
                 first = key.second;

@@ -93,27 +93,25 @@ class argparser {
     }
 
     template <typename T>
-    typename std::enable_if<std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
+    typename std::enable_if<std::numeric_limits<T>::value && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
     get(const char* str) const {
         T result;
-        bool parsing_ambiguity = false;
+        bool error = false;
         size_t count = parse_key_value(str, [&](auto first, auto last) {
             auto position = sgl::v1::parse_int(first, last, &result);
-            parsing_ambiguity = position != last;
-            std::string_view tmp(first, last - first);
+            error = position != last;
         });
-        return {result, count != 1ul || parsing_ambiguity};
+        return {result, count != 1ul || error};
     }
 
     template <typename T>
     typename std::enable_if<std::is_same<T, std::string_view>::value, std::pair<T, bool>>::type get(const char* str) const {
         T result;
-        bool parsing_ambiguity = false;
         size_t count = parse_key_value(str, [&](auto first, auto last) {
             static_assert(sizeof(decltype(first)) == sizeof(void*));
             result = std::string_view(first, last - first);
         });
-        return {result, count != 1ul || parsing_ambiguity};
+        return {result, count != 1ul};
     }
 
     template <typename T>

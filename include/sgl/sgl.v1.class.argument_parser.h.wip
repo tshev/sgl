@@ -1,7 +1,0 @@
-
-int main() {
-    sgl::v1::argument_parser ap(argc, argv);
-    std::optional<int> model;
-    ap.get("model", &model);
-    ap.validate_or_exit();
-}

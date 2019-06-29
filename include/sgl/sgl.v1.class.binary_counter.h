@@ -3,11 +3,9 @@
 
 namespace sgl {
 namespace v1 {
-template<typename ForwardIterator, typename AssociativeOperation>
-ValueType(ForwardIterator) binary_counter_reduce(ForwardIterator first, ForwardIterator last, ValueType(ForwardIterator) zero, AssociativeOperation op);
 
-template<typename Operation, typename T = typename Operation::argument_type>
-// requires(BinaryOperation)
+template<typename Operation, typename T = typename Operation::argument_type, typename Allocator = std::allocator<T>>
+// requires(BinaryOperation(Operation))
 class binary_counter {
 public:
   typedef T value_type;
@@ -16,10 +14,12 @@ public:
 private:
   Operation op;
   T zero;
-  std::vector<T> data;
+  std::vector<T, Allocator> data;
+
 public:
   binary_counter() {}
   binary_counter(Operation op) : op(op) {}
+  binary_counter(Operation op, Allocator& allocator) : op(op, allocator) {}
   binary_counter(const binary_counter &x) : op(x.op), zero(x.zero), data(x.data) {}
 
   binary_counter& operator=(const binary_counter &x) {
@@ -58,21 +58,5 @@ public:
   }
 };
 
-template<typename ForwardIterator, typename AssociativeOperation>
-ValueType(ForwardIterator) binary_counter_reduce(ForwardIterator first, ForwardIterator last, ValueType(ForwardIterator) zero, AssociativeOperation op) {
-  // while (first != last && *(first++) == zero);
-  while (first != last && *first == zero) { ++first; }
- 
-  ValueType(ForwardIterator) result = *first;
-
-  ++first; 
-  while (first != last) {
-    if (*first != zero) {
-      result = op(result, *first);
-    }
-    ++first;
-  }
-  return result;
-}
 } // namespace v1
 } // namespace sgl
