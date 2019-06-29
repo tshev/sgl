@@ -7,18 +7,19 @@ inline
 std::pair<OutputIterator0, OutputIterator1> parse_program_options(ForwardIterator first, ForwardIterator last, OutputIterator0 out0, OutputIterator1 out1) {
     while (first != last) {
         if (*first == '-') {
-            auto [new_pos, key, value] = sgl::v1::parse_program_option(first, last);
-            if (value.first == value.second || *(value.first) == '-') {
-                first = key.second;
-                *out1 = {key, std::make_pair(value.second, value.second)};
+            auto [first_new, key_range, value_range] = sgl::v1::parse_program_option(first, last);
+            if (value_range.first == value_range.second || *(value_range.first) == '-') {
+                first = key_range.second;
+                *out1 = {key_range, std::make_pair(value_range.second, value_range.second)};
             } else {
-                first = new_pos;
-                *out1 = {key, value};
+                first = first_new;
+                *out1 = {key_range, value_range};
                 ++out1;
             }
         } else {
+            sgl::v1::expression_separator expression_separator;
             char separator = ' ';
-            if (sgl::v1::expression_separator{}(*first)) {
+            if (expression_separator(*first)) {
                 separator = *first;
                 ++first;
             }
