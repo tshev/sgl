@@ -1,0 +1,46 @@
+#pragma once
+
+namespace sgl {
+namespace v1 {
+
+template<typename ForwardIterator0, typename ForwardIterator1, typename T>
+T union_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 f1, ForwardIterator1 l1, T count) {
+    while (f0 != l0 && f1 != l1) {
+        if (*f0 < *f1) {
+            ++f0;
+            ++count;
+        } else if (*f1 < *f0) {
+            ++f1;
+            ++count;
+        } else {
+            ++f0;
+            ++f1;
+            ++count;
+        }
+
+        /*
+            ForwardIterator0 fast0 = f0;
+            ++fast0;
+            while (fast0 != l0 && !(*f0 < *fast0)) {
+                ++fast0;
+                ++f0;
+            }
+
+            ForwardIterator0 fast1 = f1;
+            ++fast1;
+            while (fast1 != l1 && !(*f1 < *fast1)) {
+                ++fast1;
+                ++f1;
+            }
+        */
+    }
+    count += std::distance(f0, l0);
+    count += std::distance(f1, l1);
+    return count;
+}
+
+
+// Extend for equality:  think about count of elements in case of equality (max count of equal elements) (but equal and equivalent elements can be shuffled) So, total ordering is required
+
+} // namespace v1
+} // namespace sgl

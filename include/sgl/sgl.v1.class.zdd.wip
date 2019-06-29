@@ -1,0 +1,102 @@
+/*
+
+Implementation
+
+We have overlooked several complications that become apparent when implementing ZDDs.
+Representing a ZDD
+
+We represent a ZDD as an array of 3-tuples ⟨V,LO,HI⟩
+. The first member V
+
+is the variable number, while LO and HI point to other tuples in the array.
+
+The first two elements of the array are sentinels representing the FALSE and TRUE nodes. At index 0, we have the tuple ⟨−1,0,0⟩
+, which represents FALSE, and at index 1, we have the tuple ⟨−1,1,1⟩, which represents TRUE. The −1
+
+is a nonsense value signifying that the node is a terminating node; an alternative is the maximum variable plus one.
+
+The LO and HI fields of these two sentinels are also nonsense values, which can be used by algorithms to detect terminal nodes. Normally, a tuple must point to tuples containing a higher V
+
+field or one of these sentinels. Recall also no HI field is allowed to point to the FALSE tuple.
+
+In an example, Knuth suggests using 8 bits for V
+
+, and 28 bits for the other two fields, so that the tuple fits neatly into a 64-bit word. Of course, this suffices only for problems involving 256 variables or less. For this reason, and also to avoid clever boolean logic needed for extracting the relevant field, I use 16, 32 and 32 bits respectively for the three members.
+
+struct node_s {
+  uint16_t v;
+  uint32_t lo, hi;
+};
+
+Reducing a ZDD
+
+Suppose we wish to reduce an unreduced ZDD, that is, we wish to rearrange our array so each ⟨V,LO,HI⟩
+
+tuple is unique and no HI field is 0. The obvious method would be to traverse the ZDD in a bottom-up fashion, hashing tuples along the way, and replacing each node with its duplicate in the hash table if it exists, and also removing nodes with zero HI fields.
+
+Knuth describes a more space-efficient algorithm (based on ideas of Sieling and Wegener), which turns out to be important because ZDDs tend to be gluttonous with memory. We give a brief outline.
+
+We require one more field per node, called AUX, that contains links. Thus we view a node as a 4-tuple ⟨V,LO,HI,AUX⟩
+. Actually, we cheat a little and use AUX as two fields: the sign bit stores one bit of information, and the remainder stores links. Towards the end of the algorithm, we also treat the sign bit of the LO field as a separate field. Hence this algorithm only works if we have at most 2n−1 nodes when links are n
+
+bits wide.
+
+We save room by making AUX play different roles throughout the algorithm. Other than AUX, we only need an array of HEAD links, one per variable, and a single link named AVAIL, which points to the list of deleted nodes.
+
+The first goal is to construct linked lists of nodes with the same label, one per variable. These lists are headed by the HEAD links. Starting from the root, we explore the ZDD depth first, and at each node, during our first visit we use AUX to record the last junction with unexplored choices, and as we are leaving the node, we retool AUX as a link in a list of nodes with the same label as the current node. During this phase, the sign bit of AUX represents whether we have visited a node.
+
+Next, working up from the bottom, we traverse all nodes with the same label by following the list from its HEAD. We form buckets by using AUX to link together nodes with the same LO destination by a method detailed in the next paragraph. The ends of these buckets form another list; we use the AUX bit to differentiate between these links and the links within a bucket.
+
+To find identical LO fields, we use AUX fields of the lower level as scratch space. This is fine since all lower levels have been reduced by now. During the traversal, we set the sign bit in the AUX field of its LO node (which is on the level below) and point the remainder to the current node; if the bit is already set we know the current node has the same LO field as another node.
+
+Meanwhile, we also take the opportunity to delete nodes whose HI destination is TRUE. (In the BDD world, instead we would delete nodes whose LO and HI destinations are identical.) To delete a node, we take it out of the buckets, point LO to the parent and also mark the sign bit of LO, and link it to the AVAIL list via the HI field.
+
+For every bucket, we iterate through its contents and look for nodes with the same HI destination (they already have the same LO destination and the same label). Again, we use the AUX fields of the lower level. As we traverse the bucket, we mark the bit in the AUX field of its HI node and link the remainder to the current node. If already marked, then we know the current node is a duplicate and we delete: we set the sign bit of the LO field and use it to point to the original copy, and add the current node to the AVAIL list via the HI field.
+
+Manipulating the LO field during node deletion allows upper levels to detect and handle deleted children correctly.
+
+The details are fiddly because AUX is reused so often. The first phase uses the sign bit of AUX to record whether a node has been visited, and the link part of AUX serves two purposes. At first, it points to the last node not yet completely explored. During backtracing, as we follow this link, it becomes a link in a HEAD list.
+
+The second phase uses AUX on the current level as an inter-bucket or intra-bucket link, with the sign bit signifying the link type, and then uses AUX on the level below to find identical LO fields. Here, the sign represents if the node has been visited before, and the link points to the parent that first visited. Lastly, the AUX fields of the level below are used in the same fashion to find identical HI fields.
+
+Sometimes AUX is automatically ready for the next step, such as after the depth-first traversal (all AUX sign bits will agree again). Other times, we must clean up particular AUX nodes before reusing them.
+Melding ZDDs
+
+Suppose we wish to compute the union of two ZDDs. The obvious method is to produce tuples of the form ⟨V,W,L,H⟩
+(called templates) while recursively following the melding procedure, where V,W are nodes being melded and L,H
+
+are links to other templates, not nodes. Along the way we keep a hash table of templates to avoid duplication. Then when all templates are generated, we can construct the final ZDD by making nodes for each template, being careful not to produce duplicates or nodes with zero HI fields (again, via hashing).
+
+Knuth instead recommends allocating a huge pool of tuples, and placing the input ZDDs at the beginning of the array. In a preprocessing step, we count the number of templates that will be generated on each level. This gives a bound for a hash table size for that level, which is placed at the high end of the pool. Chaining is employed, and the template fields take on different meanings.
+
+Once all templates are generated, the bottom of the pool is free for use. We place the result there. We apply our previous ideas to convert the templates to nodes: we proceed level by level from the bottom up and bucket sort to avoid duplicates.
+Crit-bit trees
+
+My philosophy is to get it working first, and then get it working fast. Instead of hash tables or bucket sorts, I used crit-bit trees so I could start playing with ZDDs as soon as possible.
+
+Knuth rules out binary search trees because of an additional logarithmic factor in the running time. However, although related, I feel tries are an acceptable alternative. (Also, I look upon them favourably because they are similar to BDDs!) Unlike a binary tree, we do not compare keys at every node. Like hash tables we only read through the key at most once during lookup, and once more to confirm that we reached the correct destination.
+
+The main drawback is that we may have to follow one pointer per key bit in a crit-bit tree, while a hash function operates on all key bits at once. On the other hand, a trie grows as needed, and there is no need to make space estimates or deal with hash collisions.
+
+Although my current implementation does not use the upper end of the pool for trie nodes, it is easy to maintain and debug, and adequate for my experiments.
+ZDD Bases
+
+The above describes how to build a stack-based ZDD calculator. We start with an immense empty array of tuples. We push ZDDs on the stack by starting them at the next unused array element. We operate on the last two ZDDs using the above melding algorithm, which replaces them with the result ZDD.
+
+Sometimes we desire a computational model more flexible than a stack; we might for example want the ZDD equivalent of ab+bc+ca
+
+. In this case, we could let our ZDDs we can share nodes, so that every tuple is unique across all ZDDs. Naturally, we must remember the start node of each ZDD. In other words, our array holds a dag that is a ZDD except it can have more than one source node. This data structure is a ZDD base.
+
+We maintain a map from ⟨V,LO,HI⟩
+tuples to array indices. This structure is called the unique table. Then melding is similar to the obvious melding method previously described, except now we keep the input nodes. For faster lookups, under the hood, the unique table is really an array of maps, one for each V
+
+.
+
+If we wish to support deletion in a ZDD base we can use reference counting to free up nodes.
+Parallel Computation
+
+I have not explored parallelization, but this seems to be a promising avenue. Many problems require the intersection of several families, and naturally, separate threads can compute different intersections.
+
+While computing an intersection, different threads might be able to work on separate paths, but hash table contention might become costly.
+
+*/

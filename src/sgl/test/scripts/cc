@@ -1,0 +1,5 @@
+SCRIPT_DIR=`readlink -f $(dirname $0)`
+. $SCRIPT_DIR/common
+FNAME=$1
+FILE_OUT=$(echo $FNAME | sed $RGX_RENAME_SRC_TO_BINARY)
+$CC $CC_OPTIONS -I $(echo $SGL_LIB) $FNAME -o $(echo $FILE_OUT)

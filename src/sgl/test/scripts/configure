@@ -1,0 +1,36 @@
+SCRIPT_DIR=`readlink -f $(dirname $0)`
+. $SCRIPT_DIR/common
+rm -f $SGL_LIB_TEST_MAKEFILE
+
+# SECTION all
+echo all: >> $SGL_LIB_TEST_MAKEFILE
+for FNAME in $SGL_LIB_TESTS; do 
+FILE_OUT=`echo $FNAME | sed "s/cpp$/out/g;s/^\.\/src/build/g"`
+cat << END                                                    >> $SGL_LIB_TEST_MAKEFILE
+$(echo -e "\t")mkdir -p $(echo $(dirname $FILE_OUT))
+$(echo -e "\t")$CC $CC_OPTIONS -I $(echo $SGL_LIB) $FNAME -o $(echo $FILE_OUT)
+END
+done;
+
+PROGRAMs=""
+for FNAME in $SGL_LIB_TESTS; do 
+    PROGRAMs="$PROGRAMs "
+    PROGRAMs=$PROGRAMs$(echo -e "$FNAME" | sed "s/cpp$/out/g;s/^\.\/src/build/g")
+done;
+
+# SECTION test
+echo test: >> $SGL_LIB_TEST_MAKEFILE
+
+#$(echo -e "\t#")parallel -j $CORES :::$PROGRAMs
+for PROGRAM in $PROGRAMs; do
+cat << END                                                    >> $SGL_LIB_TEST_MAKEFILE
+$(echo -e "\t")$PROGRAM
+END
+done;
+
+
+# SECTION clean
+echo clean: >> $SGL_LIB_TEST_MAKEFILE
+cat << END                                                    >> $SGL_LIB_TEST_MAKEFILE
+$(echo -e "\t")rm -rf "build/*out"
+END

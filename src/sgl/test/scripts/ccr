@@ -1,0 +1,10 @@
+SCRIPT_DIR=`readlink -f $(dirname $0)`
+echo -e "\e[1m"CC"\e[0m\t " $1
+. $SCRIPT_DIR/cc
+echo -e "\e[1m"RUN"\t \e[0m" $FILE_OUT
+./$FILE_OUT
+if [ $? -eq 0 ]; then
+    echo -e "\e[32mOK\t \e[0m $FILE_OUT"
+else
+    echo -e "\e[91mFAIL\t \e[0m $FILE_OUT"
+fi;

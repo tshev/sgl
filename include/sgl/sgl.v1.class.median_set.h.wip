@@ -1,0 +1,135 @@
+#pragma once
+// TODO: VERIFY and Test me. It has bugs.
+
+namespace sgl {
+namespace v1 {
+template<template<typename ValueType, typename Less, typename Allocator> class OrderedContainer, typename T, typename Allocator=std::allocator<T>>
+struct median_container {
+  using multiset_min_type = OrderedContainer<T, std::less<T>, Allocator>;
+  using multiset_max_type = OrderedContainer<T, std::greater<T>, Allocator>;
+
+  multiset_min_type multiset_min;
+  multiset_max_type multiset_max;
+  median_container() = default;
+
+  template<typename RandomAccessIterator0, typename RandomAccessIterator1>
+  median_container(RandomAccessIterator0 first0, RandomAccessIterator0 last0, RandomAccessIterator1 first1, RandomAccessIterator1 last1)
+      : multiset_min(first0, last0), multiset_max(first1, last1) {}
+
+  auto emplace(const T& x) {
+    if (multiset_min.size() < multiset_max.size()) {
+      auto min_element = multiset_min.begin();
+      if (!(*min_element < x)) {
+        multiset_max.emplace(x);
+
+#if (__cplusplus < 201703) 
+        auto top = *multiset_max.begin();
+        multiset_max.erase(multiset_max.begin());
+        multiset_min.emplace(std::move(top));
+#else
+        multiset_min.insert(multiset_max.extract(multiset_max.begin()));
+#endif
+      } else {
+        multiset_min.emplace(x);
+      }
+    } else {
+      if (multiset_min.size() == 0) {
+        multiset_min.insert(x);
+      } else {
+        auto min_element = multiset_min.begin();
+        if (!(*min_element < x)) {
+          multiset_max.emplace(x);
+        } else {
+          multiset_min.emplace(x);
+
+          if (1 < multiset_min.size() - multiset_max.size()) {
+#if (__cplusplus < 201703) 
+            auto min_element = multiset_min.begin();
+            auto top = *min_element;
+            multiset_min.erase(min_element);
+            multiset_max.emplace(std::move(top));
+#else
+            multiset_max.insert(multiset_min.extract(multiset_min.begin()));
+#endif
+          }
+        }
+      }
+    }
+    assertion();
+  }
+
+  void assertion() const {
+    if (0 < multiset_min.size()  && 0 < multiset_max.size()) {
+      assert(*multiset_max.begin() <= *multiset_min.begin());
+    }
+    assert(!(1 < std::abs(std::minus<int64_t>{}(multiset_min.size(), multiset_max.size()))));
+  }
+
+  auto median_element() const {
+    // assert(odd(multiset_max.size() + multiset_min.size()))
+    if (multiset_max.size() < multiset_min.size()) {
+      return multiset_min.begin();
+    }
+    return multiset_max.begin();
+  }
+
+  template<typename It>
+  bool value_comp_multiset_min(const T& x, const It &it) {
+    // stands for equality, not equivalence
+    return it != multiset_min.end() && x == *it;
+  }
+
+  template<typename It>
+  bool value_comp_multiset_max(const T& x, const It &it) {
+    // stands for equality, not equivalence
+    return it != multiset_max.end() && x == *it;
+  }
+
+  auto erase(const T& x) {
+    if (multiset_min.size() < multiset_max.size()) {
+      auto it = multiset_max.find(x);
+      if (value_comp_multiset_max(x, it)) {
+        multiset_max.erase(it);
+      } else {
+        auto it1 = multiset_min.find(x);
+        if (value_comp_multiset_min(x, it1)) {
+          multiset_min.erase(it1);
+#if (__cplusplus < 201703) 
+          auto cpy = *multiset_max.begin();
+          multiset_min.emplace(cpy);
+          multiset_max.erase(multiset_max.begin());
+#else
+
+          multiset_min.insert(multiset_max.extract(multiset_max.begin()));
+#endif
+        }
+      }
+    } else {
+      auto it = multiset_min.find(x);
+      if (value_comp_multiset_min(x, it)) {
+        multiset_min.erase(it);
+      } else {
+        auto it1 = multiset_max.find(x);
+        if (value_comp_multiset_max(x, it1)) {
+          multiset_max.erase(it1);
+
+          if (1 < multiset_min.size() - multiset_max.size()) {
+#if (__cplusplus < 201703)
+            auto cpy = *multiset_min.begin();
+            multiset_max.emplace(cpy);
+            multiset_min.erase(multiset_max.begin());
+#else
+            multiset_max.insert(multiset_min.extract(multiset_min.begin()));
+#endif
+          }
+        }
+      }
+    }
+    assertion(); 
+  }
+};
+
+template<typename T, typename Allocator=std::allocator<T>>
+using median_multiset = median_container<std::multiset, T, Allocator>;
+} // namespace v1
+} // namespace sgl

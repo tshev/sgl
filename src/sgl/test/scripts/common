@@ -1,0 +1,8 @@
+CC=clang++
+CC_OPTIONS="-O3 -std=c++17 -Wall"
+CORES=8
+RGX_RENAME_SRC_TO_BINARY="s/cpp$/out/g;s/^\.\/src/build/g"
+SGL_LIB=../../../include
+SGL_LIB_TEST_MAKEFILE="Makefile"
+SGL_LIB_TESTS=$(find . -name "sgl.v1.test*.cpp")
+
