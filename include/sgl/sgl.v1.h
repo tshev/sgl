@@ -225,5 +225,5 @@
 
 #include "sgl.v1.function.size_cmd.h"
 #include "sgl.v1.function.copy_cmd_args.h"
+#include "sgl.v1.struct.lexicographical_comparison.h"
 #include "sgl.v1.class.argparser.h"
-

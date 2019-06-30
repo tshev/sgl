@@ -71,13 +71,11 @@ class argparser {
 
             typedef std::pair<const_iterator, const_iterator> pair_type;
 
-            auto lb = std::lower_bound(std::begin(key_value_ranges), std::end(key_value_ranges), pair_type(first0, last), [](const key_value_type& kv, const pair_type& y) {
-                return std::lexicographical_compare(kv.first.first, kv.first.second, y.first, y.second);
-            });
-
-            auto ub = std::upper_bound(std::begin(key_value_ranges), std::end(key_value_ranges), pair_type(first0, last), [](const pair_type& y, const key_value_type& kv) {
-                return std::lexicographical_compare( y.first, y.second, kv.first.first, kv.first.second);
-            });
+            auto [lb, ub] = sgl::v1::equal_range(
+                std::begin(key_value_ranges), std::end(key_value_ranges),
+                pair_type(first0, last),
+                sgl::v1::lexicographical_comparison<const_iterator, const_iterator>{},
+                [](const auto &x) { return x.first; });
 
             if (lb != std::end(key_value_ranges) && std::equal(sgl::v1::begin(lb->first), sgl::v1::end(lb->first), first0, last)) {
                 count += ub - lb;
