@@ -64,5 +64,12 @@ ForwardIterator lower_bound(ForwardIterator first, size_t n, const T& value, Bin
     return first;
 }
 
+template<typename ForwardIterator, typename T, typename BinaryPredicate, typename Projection>
+inline
+ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& value, BinaryPredicate pred, Projection proj) {
+    return sgl::v1::lower_bound(first, std::distance(first, last), value, pred, proj);
+}
+
+
 } // namespace v1
 } // namespace sgl

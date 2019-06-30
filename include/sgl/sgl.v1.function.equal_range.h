@@ -5,7 +5,7 @@ namespace v1 {
 
 template <typename ForwardIterator, typename T>
 std::pair<ForwardIterator, ForwardIterator> equal_range(ForwardIterator first, ForwardIterator last, const T& val) {
-  typedef typename std::iterator_traits<ForwardIterator>::distance_type N;
+  typedef typename std::iterator_traits<ForwardIterator>::difference_type N;
   N len = std::distance(first, last);
 
   while (len > 0) {
@@ -32,7 +32,7 @@ std::pair<ForwardIterator, ForwardIterator> equal_range(ForwardIterator first, F
 
 template <typename ForwardIterator, typename T, typename Cmp>
 std::pair<ForwardIterator, ForwardIterator> equal_range(ForwardIterator first, ForwardIterator last, const T& val, Cmp cmp) {
-  typedef typename std::iterator_traits<ForwardIterator>::distance_type N;
+  typedef typename std::iterator_traits<ForwardIterator>::difference_type N;
   N len = std::distance(first, last);
 
   while (len > 0) {
@@ -59,7 +59,7 @@ std::pair<ForwardIterator, ForwardIterator> equal_range(ForwardIterator first, F
 
 template <typename ForwardIterator, typename T, typename Cmp, typename Projection>
 std::pair<ForwardIterator, ForwardIterator> equal_range(ForwardIterator first, ForwardIterator last, const T& val, Cmp cmp, Projection projection) {
-  typedef typename std::iterator_traits<ForwardIterator>::distance_type N;
+  typedef typename std::iterator_traits<ForwardIterator>::difference_type N;
   N len = std::distance(first, last);
 
   while (len > 0) {

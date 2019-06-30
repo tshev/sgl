@@ -6,6 +6,7 @@
 
 // Without dependencies
 #include "sgl.v1.function.advance_to_middle.h"
+#include "sgl.v1.function.advance.h"
 #include "sgl.v1.function.successor_inplace.h"
 #include "sgl.v1.class.label_enumerator.h"
 #include "sgl.v1.struct.delta_square.h"
@@ -15,6 +16,8 @@
 #include "sgl.v1.struct.triple.h"
 #include "sgl.v1.struct.if_else.h"
 #include "sgl.v1.struct.tuple_size.h"
+#include "sgl.v1.function.square.h"
+#include "sgl.v1.function.sqrt.h"
 #include "sgl.v1.function.sqrt_diff_square_sum.h"
 #include "sgl.v1.function.hellinger_distance.h"
 #include "sgl.v1.function.hellinger_distance_square.h"
@@ -151,8 +154,6 @@
 #include "sgl.v1.function.rotate_rightmost.h"
 #include "sgl.v1.function.shift_left.h"
 #include "sgl.v1.function.split.h"
-#include "sgl.v1.function.square.h"
-#include "sgl.v1.function.sqrt.h"
 #include "sgl.v1.function.transform_n.h"
 #include "sgl.v1.function.transform_truncated.h"
 #include "sgl.v1.function.transform_n_truncated.h"
