@@ -11,7 +11,7 @@ ForwardIterator find_adjacent(ForwardIterator f, ForwardIterator l, R r) {
     ++fast;
 
     while (fast != l) {
-        if (*f, *fast) {
+        if (r(*f, *fast)) {
             return f;
         }
         ++f;
