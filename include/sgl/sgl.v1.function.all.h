@@ -3,50 +3,54 @@
 namespace sgl {
 namespace v1 {
 template<typename ForwardIterator0, typename Predicate>
-bool all(ForwardIterator0 first_0, ForwardIterator0 last_0, Predicate predicate) {
-  while (first_0 != last_0) {
-    if (!predicate(*first_0)) {
+inline
+bool all(ForwardIterator0 first0, ForwardIterator0 last0, Predicate predicate) {
+  while (first0 != last0) {
+    if (!predicate(*first0)) {
       return false;
     }
-    ++first_0;
+    ++first0;
   }
   return true;
 }
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename Predicate>
-bool all(ForwardIterator0 first_0, ForwardIterator0 last_0, ForwardIterator1 first_1, Predicate predicate) {
-  while (first_0 != last_0) {
-    if (!predicate(*first_0, *first_1)) {
+inline
+bool all(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, Predicate predicate) {
+  while (first0 != last0) {
+    if (!predicate(*first0, *first1)) {
       return false;
     }
-    ++first_0;
-    ++first_1;
+    ++first0;
+    ++first1;
   }
   return true;
 }
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename Predicate>
-bool all(ForwardIterator0 first_0, ForwardIterator0 last_0, ForwardIterator1 first_1, ForwardIterator0 first_2, Predicate predicate) {
-  while (first_0 != last_0) {
-    if (!predicate(*first_0, *first_1, *first_2)) {
+inline
+bool all(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator0 first2, Predicate predicate) {
+  while (first0 != last0) {
+    if (!predicate(*first0, *first1, *first2)) {
       return false;
     }
-    ++first_0;
-    ++first_1;
-    ++first_2;
+    ++first0;
+    ++first1;
+    ++first2;
   }
   return true;
 }
 
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename Predicate>
-bool all(ForwardIterator0 first_0, ForwardIterator0 last_0, ForwardIterator1 first_1, ForwardIterator1 last_1, Predicate predicate) {
-  while (first_0 != last_0 && first_1 != last_1) {
-    if (!predicate(*first_0, *first_1)) {
+inline
+bool all(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator1 last1, Predicate predicate) {
+  while (first0 != last0 && first1 != last1) {
+    if (!predicate(*first0, *first1)) {
       return false;
     }
-    ++first_0;
-    ++first_1;
+    ++first0;
+    ++first1;
   }
   return true;
 }
