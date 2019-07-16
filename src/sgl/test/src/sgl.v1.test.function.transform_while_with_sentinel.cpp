@@ -34,7 +34,7 @@ void test() {
         int placeholder = 12345;
         sgl::v1::array<int> output(input.size(), placeholder);
         auto out0 = output.begin();
-        auto [input_l, output_l] = sgl::v1::transform_while_with_sentinel(first0, out0, [](int x) { return x != 1; }, [](int x) { return x * x; });
+        auto [input_l, output_l] = sgl::v1::transform_while_with_sentinel(first0, out0, [](int x) { return false; }, [](int x) { return x * x; });
 
         assert(input_l - first0 == 0ll);
         assert(output_l - out0 == 0ll);
