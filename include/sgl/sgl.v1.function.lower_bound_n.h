@@ -44,5 +44,27 @@ ForwardIterator lower_bound(ForwardIterator first, size_t n, const T& value, Bin
     }
     return first;
 }
+
+template<typename ForwardIterator, typename T, typename BinaryPredicate, typename Projection>
+inline
+ForwardIterator lower_bound(ForwardIterator first, size_t n, const T& value, BinaryPredicate pred, Projection proj) {
+    while (n != 0ul) {
+        size_t half = (n >> 1ul);
+        auto middle = first;
+        sgl::v1::advance_to_middle(middle, last);
+        std::advance(middle, half);
+        if (pred(proj(*middle), value)) {
+            first = middle;
+            ++first;
+            n = n - half - 1;
+        } else {
+            n = half;
+        }
+    }
+    return first;
+}
+
+
+
 } // namespace v1
 } // namespace sgl
