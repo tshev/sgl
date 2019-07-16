@@ -3,36 +3,41 @@
 namespace sgl {
 namespace v1 {
 template<typename ForwardIterator, typename OutputIterator, typename Predicate, typename Function>
-OutputIterator transform_while_not(ForwardIterator first, OutputIterator output, Predicate predicate, Function function) {
-  while (!predicate(*first)) {
+inline
+std::pair<ForwardIterator, OutputIterator> transform_while_not(ForwardIterator first, ForwardIterator last, OutputIterator output, Predicate predicate, Function function) {
+  while (first != last && !predicate(*first)) {
     *output = function(*first);
     ++output;
     ++first;
   }
-  return output;
+  return {first, output};
 }
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename OutputIterator, typename Predicate, typename Function>
-OutputIterator transform_while_not(ForwardIterator0 first_0, ForwardIterator1 first_1, OutputIterator output, Predicate predicate, Function function) {
-  while (!predicate(*first_0, *first_1)) {
-    *output = function(*first_0, *first_1);
+inline
+sgl::v1::triple<ForwardIterator0, ForwardIterator1, OutputIterator> transform_while_not(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, OutputIterator output, Predicate predicate, Function function) {
+  while (first0 != last0 && !predicate(*first0, *first1)) {
+    *output = function(*first0, *first1);
     ++output;
-    ++first_0;
-    ++first_1;
+    ++first0;
+    ++first1;
   }
-  return output;
+  return {first0, first1, output};
 }
 
+/*
 template<typename ForwardIterator0, typename ForwardIterator1, typename ForwardIterator2, typename OutputIterator, typename Predicate, typename Function>
-OutputIterator transform_while_not(ForwardIterator0 first_0, ForwardIterator1 first_1, ForwardIterator2 first_2, OutputIterator output, Predicate predicate, Function function) {
-  while (!predicate(*first_0, *first_1, *first_2)) {
-    *output = function(*first_0, *first_1, *first_2);
+inline
+OutputIterator transform_while_not(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator2 first2, OutputIterator output, Predicate predicate, Function function) {
+  while (first0 != last0 && !predicate(*first0, *first1, *first2)) {
+    *output = function(*first0, *first1, *first2);
     ++output;
-    ++first_0;
-    ++first_1;
-    ++first_2;
+    ++first0;
+    ++first1;
+    ++first2;
   }
   return output;
 }
+*/
 } // namespace v1
 } // namespace sgl
