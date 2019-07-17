@@ -5,15 +5,16 @@ namespace v1 {
 
 template<typename RandomAccessIterator>
 inline
-void advance_to_middle(RandomAccessIterator& first, RandomAccessIterator last, std::random_access_iterator_tag) {
+RandomAccessIterator find_middle(RandomAccessIterator first, RandomAccessIterator last, std::random_access_iterator_tag) {
     first += (last - first) / 2ul;
+    return first;
 }
 
 template<typename ForwardIterator>
 inline
-void advance_to_middle(ForwardIterator& first, ForwardIterator last, std::forward_iterator_tag) {
+ForwardIterator find_middle(ForwardIterator first, ForwardIterator last, std::forward_iterator_tag) {
     if (first == last) {
-        return;
+        return first;
     }
     ForwardIterator fast = first;
     ++fast;
@@ -21,18 +22,19 @@ void advance_to_middle(ForwardIterator& first, ForwardIterator last, std::forwar
         ++first;
         ++fast;
         if (fast == last) {
-            return;
+            return first;
         }
         ++fast;
     }
+    return first;
 }
 
 
 template<typename ForwardIterator>
 inline
-void advance_to_middle(ForwardIterator& first, ForwardIterator last) {
+ForwardIterator find_middle(ForwardIterator& first, ForwardIterator last) {
     typedef typename std::iterator_traits<ForwardIterator>::iterator_category iterator_category;
-    sgl::v1::advance_to_middle(first, last, iterator_category{}); 
+    return sgl::v1::find_middle(first, last, iterator_category{}); 
 }
 
 } // namespace v1

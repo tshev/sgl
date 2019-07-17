@@ -1,11 +1,13 @@
+#pragma once
+
 #include <numeric>
 #include <algorithm>
 #include <type_traits>
 #include <iterator>
 #include <string>
 
-// Without dependencies
 #include "sgl.v1.function.advance_to_middle.h"
+#include "sgl.v1.function.find_middle.h"
 #include "sgl.v1.function.advance.h"
 #include "sgl.v1.function.successor_inplace.h"
 #include "sgl.v1.class.label_enumerator.h"

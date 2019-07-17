@@ -6,6 +6,7 @@
 namespace sgl {
 namespace v1 {
 namespace test {
+namespace function_advance_to_middle {
 void test0() {
   for (size_t i = 0; i != 1024; ++i) {
     std::list<int> els(i);
@@ -18,11 +19,11 @@ void test0() {
     }
   }
 }
-
+} // namespace function_advance_to_middle
 } // namespace test
 } // namespace v1
 } // namespace sgl
 
 int main() {
-    sgl::v1::test::test0();
+    sgl::v1::test::function_advance_to_middle::test0();
 }
