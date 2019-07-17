@@ -7,6 +7,7 @@ namespace sgl {
 namespace v1 {
 namespace test {
 namespace function_find_middle {
+
 void test0() {
   for (size_t i = 0ul; i != 16ul; ++i) {
     std::list<int> els(i);
