@@ -2,6 +2,7 @@
 
 namespace sgl {
 namespace v1 {
+// TODO: can be faster in case of Forward Iterators (std::distance(first, last) is unnecessary we can find middle)
 
 template <typename ForwardIterator, typename T>
 std::pair<ForwardIterator, ForwardIterator> equal_range(ForwardIterator first, ForwardIterator last, const T& val) {
