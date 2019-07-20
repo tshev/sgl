@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cassert>
 #include <algorithm>
 #include <list>
@@ -36,6 +37,17 @@ void test() {
         assert(border.first == last1);
         assert(border.second == std::next(first0, 2));
     }
+
+    {
+        auto border = sgl::v1::swap_ranges(first1, last1, first0, first0);
+        assert(*first0 == 1);
+        assert(*std::next(first0, 1) == 2);
+        assert(*first1 == 6);
+        assert(*std::next(first1, 1) == 7);
+        assert(border.first == first1);
+        assert(border.second == first0);
+    }
+
 } 
 
 void test0() {
