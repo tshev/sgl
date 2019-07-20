@@ -24,6 +24,7 @@
 #include "sgl.v1.function.hellinger_distance.h"
 #include "sgl.v1.function.hellinger_distance_square.h"
 #include "sgl.v1.function.hellinger_distance_square2.h"
+#include "sgl.v1.function.swap_ranges.h"
 
 #include "sgl.v1.function.begin.h"
 #include "sgl.v1.function.end.h"
