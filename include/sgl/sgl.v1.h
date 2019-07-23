@@ -28,6 +28,7 @@
 
 #include "sgl.v1.function.begin.h"
 #include "sgl.v1.function.end.h"
+#include "sgl.v1.class.sequence_generator.h"
 
 #include "common.h"
 

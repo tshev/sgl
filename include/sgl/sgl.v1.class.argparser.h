@@ -3,6 +3,41 @@
 namespace sgl {
 namespace v1 {
 
+template<typename T>
+struct __value_parser__ {
+    typedef bool return_type;
+
+    template<typename It, typename U>
+    typename std::enable_if<std::numeric_limits<U>::is_integer && !std::is_same<U, bool>::value, bool>::type
+    operator()(It first, It last, U* x) {
+        auto position = sgl::v1::parse_int(first, last, x);
+        return position != last;
+    }
+
+    template<typename It>
+    bool operator()(It first, It last, bool* x) {
+        bool error = false;
+        static_assert(sizeof(decltype(first)) == sizeof(void*));
+        std::string_view sv(first, last - first);
+        if (first == last || sv == "true" || sv == "True" || (sv.size() == 1ul && *first == '1')) {
+            *x = true;
+        } else if (first != last && (sv == "false" || sv == "False" || (sv.size() == 1ul && *first == '0'))) {
+            *x = false;
+        } else {
+           error = true;
+        }
+
+        return error;
+    }
+
+    template <typename It>
+    bool operator()(It f, It l, std::string_view* x) {
+        *x= std::string_view(f, l - f);
+        return false;
+    }
+};
+
+
 class argparser {
   public:
     typedef char* iterator;
@@ -34,6 +69,45 @@ class argparser {
         parse();
     }
 
+    argparser& operator=(const argparser& x) {
+        command_string = x.command_string;
+        auto xf0 = x.command_string.data();
+        auto first_cs = command_string.data();
+
+        for (const auto& pair : raw_value_ranges) {
+            raw_value_ranges.emplace_back(first_cs + (pair.first - xf0), first_cs +  (pair.second - xf0));
+        }
+
+        for (const auto& pop : key_value_ranges) {
+            const auto& a = pop.first;
+            const auto& b = pop.second;
+            key_value_ranges.emplace_back(
+                std::make_pair(first_cs + (a.first - xf0), first_cs + (a.second - xf0)),
+                std::make_pair(first_cs + (b.first - xf0), first_cs + (b.second - xf0))
+            );
+        }
+
+        return *this;
+    }
+
+    friend
+    inline
+    bool operator==(const argparser& x, const argparser& y) {
+        return x.command_string == y.command_string;
+    }
+
+    friend
+    inline
+    bool operator!=(const argparser& x, const argparser& y) {
+        return !(x == y);
+    }
+
+    friend
+    inline
+    bool operator<(const argparser& x, const argparser& y) {
+        return x.command_string < y.command_string;
+    }
+
     iterator begin() {
         return command_string.data();
     }
@@ -58,14 +132,15 @@ class argparser {
         });
     }
 
-    template <typename Parser>
-    size_t parse_key_value(const char* str, Parser parse) const {
-        return parse_key_value(str, str + std::strlen(str), parse);
+    template <typename Parser, typename Iterator>
+    auto parse_key_value(const char* str, Parser parse, Iterator it) const {
+        return parse_key_value(str, str + std::strlen(str), parse, it);
     }
 
-    template <typename Parser>
-    size_t parse_key_value(const char* first0, const char* last0, Parser parse) const {
+    template <typename Parser, typename Iterator>
+    std::pair<size_t, bool> parse_key_value(const char* first0, const char* last0, Parser parse, Iterator ival) const {
         size_t count = 0;
+        bool error = false;
         while (first0 != last0) {
             const_iterator last = sgl::v1::find(first0, last0, ',');
 
@@ -77,9 +152,9 @@ class argparser {
                 sgl::v1::lexicographical_comparison<const_iterator, const_iterator>{},
                 [](const auto &x) { return x.first; });
 
-            if (lb != std::end(key_value_ranges) && std::equal(sgl::v1::begin(lb->first), sgl::v1::end(lb->first), first0, last)) {
+            if (lb != std::end(key_value_ranges) && sgl::v1::equal(sgl::v1::begin(lb->first), sgl::v1::end(lb->first), first0, last)) {
                 count += ub - lb;
-                parse(sgl::v1::begin(lb->second), sgl::v1::end(lb->second));
+                error |= parse(sgl::v1::begin(lb->second), sgl::v1::end(lb->second), ival);
             }
 
             first0 = last;
@@ -87,102 +162,28 @@ class argparser {
                 ++first0;
             }
         }
-        return count;
+        return {count, error};
     }
 
     template <typename T>
-    typename std::enable_if<std::numeric_limits<T>::is_integer && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
-    get(const char* str) const {
-        T result = 0;
-        bool error = false;
-        size_t count = parse_key_value(str, [&](auto first, auto last) {
-            auto position = sgl::v1::parse_int(first, last, &result);
-            error = position != last;
-        });
-        return {result, count != 1ul || error};
-    }
-
-    template <typename T>
-    typename std::enable_if<std::numeric_limits<T>::is_integer && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
-    get(const char* str, T x) const {
-        T result = 0;
-        bool error = false;
-        size_t count = parse_key_value(str, [&](auto first, auto last) {
-            auto position = sgl::v1::parse_int(first, last, &result);
-            error = position != last;
-        });
-        if (count == 0) { return {x, false}; }
-        return {result, count != 1ul || error};
-    }
-
-    template <typename T>
-    typename std::enable_if<std::is_same<T, std::string_view>::value, std::pair<T, bool>>::type
-    get(const char* str) const {
+    std::pair<T, bool> get(const char* str) const {
         T result;
-        size_t count = parse_key_value(str, [&](auto first, auto last) {
-            static_assert(sizeof(decltype(first)) == sizeof(void*));
-            result = std::string_view(first, last - first);
-        });
-        return {result, count != 1ul};
+        auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
+        return {result, error};
     }
 
     template <typename T>
-    typename std::enable_if<std::is_same<T, std::string_view>::value, std::pair<T, bool>>::type
-    get(const char* str, T x) const {
+    std::pair<T, bool> get(const char* str, const T& default_value) const {
         T result;
-        size_t count = parse_key_value(str, [&](auto first, auto last) {
-            static_assert(sizeof(decltype(first)) == sizeof(void*));
-            result = std::string_view(first, last - first);
-        });
-        if (count == 0) { return {x, false}; }
-        return {result, count != 1ul};
-    }
-
-    template <typename T>
-    typename std::enable_if<std::is_same<T, bool>::value, std::pair<T, bool>>::type
-    get(const char* str) const {
-        T result;
-        bool parsing_ambiguity = false;
-        size_t count = parse_key_value(str, [&](auto first, auto last) {
-            static_assert(sizeof(decltype(first)) == sizeof(void*));
-            std::string_view sv(first, last - first);
-            if (first == last || sv == "true" || sv == "True" || (sv.size() == 1ul && *first == '1')) {
-                result = true;
-            } else if (first != last && (sv == "false" || sv == "False" || (sv.size() == 1ul && *first == '0'))) {
-                result = false;
-            } else {
-                parsing_ambiguity = true;
-            }
-        });
-        return {result, count != 1ul || parsing_ambiguity};
-    }
-
-    template <typename T>
-    typename std::enable_if<std::is_same<T, bool>::value, std::pair<T, bool>>::type
-    get(const char* str, T x) const {
-        T result;
-        bool parsing_ambiguity = false;
-        size_t count = parse_key_value(str, [&](auto first, auto last) {
-            static_assert(sizeof(decltype(first)) == sizeof(void*));
-            std::string_view sv(first, last - first);
-            if (first == last || sv == "true" || sv == "True" || (sv.size() == 1ul && *first == '1')) {
-                result = true;
-            } else if (first != last && (sv == "false" || sv == "False" || (sv.size() == 1ul && *first == '0'))) {
-                result = false;
-            } else {
-                parsing_ambiguity = true;
-            }
-        });
-        if (count == 0) { return {x, false}; }
-        return {result, count != 1ul || parsing_ambiguity};
-    }
-
-    const std::string& command() const {
-        return command_string;
+        auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
+        if (count == 0) {
+            return {default_value, false};
+        }
+        return {result, error};
     }
 
     auto values() const {
-        return std::make_pair(std::cbegin(raw_value_ranges), std::cend(raw_value_ranges));
+        return std::make_pair(std::begin(raw_value_ranges), std::end(raw_value_ranges));
     }
 };
 } // namespace v1
