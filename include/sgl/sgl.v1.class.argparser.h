@@ -91,9 +91,9 @@ class argparser {
     }
 
     template <typename T>
-    typename std::enable_if<std::numeric_limits<T>::value && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
+    typename std::enable_if<std::numeric_limits<T>::is_integer && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
     get(const char* str) const {
-        T result;
+        T result = 0;
         bool error = false;
         size_t count = parse_key_value(str, [&](auto first, auto last) {
             auto position = sgl::v1::parse_int(first, last, &result);
@@ -103,7 +103,21 @@ class argparser {
     }
 
     template <typename T>
-    typename std::enable_if<std::is_same<T, std::string_view>::value, std::pair<T, bool>>::type get(const char* str) const {
+    typename std::enable_if<std::numeric_limits<T>::is_integer && !std::is_same<T, bool>::value, std::pair<T, bool>>::type
+    get(const char* str, T x) const {
+        T result = 0;
+        bool error = false;
+        size_t count = parse_key_value(str, [&](auto first, auto last) {
+            auto position = sgl::v1::parse_int(first, last, &result);
+            error = position != last;
+        });
+        if (count == 0) { return {x, false}; }
+        return {result, count != 1ul || error};
+    }
+
+    template <typename T>
+    typename std::enable_if<std::is_same<T, std::string_view>::value, std::pair<T, bool>>::type
+    get(const char* str) const {
         T result;
         size_t count = parse_key_value(str, [&](auto first, auto last) {
             static_assert(sizeof(decltype(first)) == sizeof(void*));
@@ -113,7 +127,20 @@ class argparser {
     }
 
     template <typename T>
-    typename std::enable_if<std::is_same<T, bool>::value, std::pair<T, bool>>::type get(const char* str) const {
+    typename std::enable_if<std::is_same<T, std::string_view>::value, std::pair<T, bool>>::type
+    get(const char* str, T x) const {
+        T result;
+        size_t count = parse_key_value(str, [&](auto first, auto last) {
+            static_assert(sizeof(decltype(first)) == sizeof(void*));
+            result = std::string_view(first, last - first);
+        });
+        if (count == 0) { return {x, false}; }
+        return {result, count != 1ul};
+    }
+
+    template <typename T>
+    typename std::enable_if<std::is_same<T, bool>::value, std::pair<T, bool>>::type
+    get(const char* str) const {
         T result;
         bool parsing_ambiguity = false;
         size_t count = parse_key_value(str, [&](auto first, auto last) {
@@ -127,6 +154,26 @@ class argparser {
                 parsing_ambiguity = true;
             }
         });
+        return {result, count != 1ul || parsing_ambiguity};
+    }
+
+    template <typename T>
+    typename std::enable_if<std::is_same<T, bool>::value, std::pair<T, bool>>::type
+    get(const char* str, T x) const {
+        T result;
+        bool parsing_ambiguity = false;
+        size_t count = parse_key_value(str, [&](auto first, auto last) {
+            static_assert(sizeof(decltype(first)) == sizeof(void*));
+            std::string_view sv(first, last - first);
+            if (first == last || sv == "true" || sv == "True" || (sv.size() == 1ul && *first == '1')) {
+                result = true;
+            } else if (first != last && (sv == "false" || sv == "False" || (sv.size() == 1ul && *first == '0'))) {
+                result = false;
+            } else {
+                parsing_ambiguity = true;
+            }
+        });
+        if (count == 0) { return {x, false}; }
         return {result, count != 1ul || parsing_ambiguity};
     }
 

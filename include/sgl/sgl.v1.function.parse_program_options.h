@@ -8,7 +8,7 @@ std::pair<OutputIterator0, OutputIterator1> parse_program_options(ForwardIterato
     while (first != last) {
         if (*first == '-') {
             auto [first_new, key_range, value_range] = sgl::v1::parse_program_option(first, last);
-            if (value_range.first == value_range.second || *(value_range.first) == '-') {
+            if (value_range.first == value_range.second) {
                 first = key_range.second;
                 *out1 = {key_range, std::make_pair(value_range.second, value_range.second)};
             } else {
@@ -18,10 +18,12 @@ std::pair<OutputIterator0, OutputIterator1> parse_program_options(ForwardIterato
             }
         } else {
             sgl::v1::expression_separator expression_separator;
-            char separator = ' ';
+            char separator;
             if (expression_separator(*first)) {
                 separator = *first;
                 ++first;
+            } else {
+                separator = ' ';
             }
 
             auto second = sgl::v1::find_adjacent_next(first, last, [separator](auto x, auto y) { return x != '\\' && y == separator; });
