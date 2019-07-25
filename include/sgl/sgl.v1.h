@@ -81,6 +81,8 @@
 
 #include "sgl.v1.function.find.h"
 #include "sgl.v1.function.for_each_split.h"
+#include "sgl.v1.function.zip.h"
+#include "sgl.v1.function.zip_position.h"
 #include "sgl.v1.function.find_not_backward.h"
 #include "sgl.v1.function.find_backward.h"
 #include "sgl.v1.function.find_not.h"

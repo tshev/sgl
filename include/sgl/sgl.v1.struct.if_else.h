@@ -9,12 +9,14 @@ struct if_else;
 template<typename T0, typename T1>
 struct if_else<false, T0, T1> {
     typedef T1 value_type;
+    typedef T1 type;
 };
 
 
 template<typename T0, typename T1>
 struct if_else<true, T0, T1> {
     typedef T0 value_type;
+    typedef T1 type;
 };
 
 } // namespace v1
