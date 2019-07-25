@@ -41,10 +41,10 @@ std::pair<It0, It1> zip(It0 f0, It0 l0, It1 f1, It1 l1, F f) {
     typedef typename std::iterator_category<It0>::iterator_category iterator_category0;
     typedef typename std::iterator_category<It1>::iterator_category iterator_category1;
 
-    constexpr bool enable_forward_iterator =
+    constexpr bool enable_rai =
         std::is_same<iterator_category0, std::random_access_iterator_tag>::value &&
         std::is_same<iterator_category1, std::random_access_iterator_tag>::value;
-    typedef typename sgl::v1::if_else<enable_forward_iterator, std::input_iterator_tag, std::random_access_iterator_tag>::type;
+    typedef typename sgl::v1::if_else<enable_rai, std::random_access_iterator_tag, std::input_iterator_tag>::type;
 
     return zip(f0, l0, f1, l1, f, iterator_category{});
 }
