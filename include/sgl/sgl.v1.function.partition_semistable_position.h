@@ -25,8 +25,8 @@ ForwardIterator partition_semistable_position(ForwardIterator first, ForwardIter
 
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename BinaryPredicate>
-std::pair<ForwardIterator0, ForwardIterator1> partition_semistable(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1,  BinaryPredicate predicate) {
-    sgl::v1::find_if_position_inplace(first0, last0, first0, predicate);
+std::pair<ForwardIterator0, ForwardIterator1> partition_semistable_position(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1,  BinaryPredicate predicate) {
+    sgl::v1::find_if_position_inplace(first0, last0, first1, predicate);
 
     if (first0 == last0) {
         return {first0, first1};
