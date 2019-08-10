@@ -1,3 +1,7 @@
+#pragma once
+namespace sgl {
+namespace v1 {
+
 template<typename ForwardIterator0, typename ForwardIterator1>
 inline
 ForwardIterator0 partition_semistable_by_mask(ForwardIterator0 first, ForwardIterator0 last, ForwardIterator1 first_mask) {
@@ -25,3 +29,5 @@ ForwardIterator0 partition_semistable_by_mask(ForwardIterator0 first, ForwardIte
     return first;
 }
 
+} // namespace v1
+} // namespace sgl
