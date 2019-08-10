@@ -6,6 +6,7 @@
 #include <iterator>
 #include <string>
 
+#include "sgl.v1.function.fill_if.h"
 #include "sgl.v1.function.advance_to_middle.h"
 #include "sgl.v1.function.find_middle.h"
 #include "sgl.v1.function.advance.h"
@@ -28,6 +29,7 @@
 #include "sgl.v1.function.count_classes.h"
 #include "sgl.v1.function.metrics_tp_fp_fn.h"
 #include "sgl.v1.function.metrics_tp_fp.h"
+#include "sgl.v1.function.precision_and_reacall.h"
 
 #include "sgl.v1.function.begin.h"
 #include "sgl.v1.function.end.h"
@@ -45,6 +47,8 @@
 
 #include "sgl.v1.function.accumulate.h"
 #include "sgl.v1.function.accumulate_squared_diffs.h"
+#include "sgl.v1.class.classification_report.h"
+
 #include "sgl.v1.function.all.h"
 #include "sgl.v1.function.any.h"
 #include "sgl.v1.function.construct_ref.h"
