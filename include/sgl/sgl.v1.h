@@ -25,6 +25,9 @@
 #include "sgl.v1.function.hellinger_distance_square.h"
 #include "sgl.v1.function.hellinger_distance_square2.h"
 #include "sgl.v1.function.swap_ranges.h"
+#include "sgl.v1.function.count_classes.h"
+#include "sgl.v1.function.metrics_tp_fp_fn.h"
+#include "sgl.v1.function.metrics_tp_fp.h"
 
 #include "sgl.v1.function.begin.h"
 #include "sgl.v1.function.end.h"
@@ -85,6 +88,8 @@
 #include "sgl.v1.function.zip_position.h"
 #include "sgl.v1.function.find_not_backward.h"
 #include "sgl.v1.function.find_backward.h"
+#include "sgl.v1.function.find_by_mask.h"
+#include "sgl.v1.function.find_by_mask_backward.h"
 #include "sgl.v1.function.find_not.h"
 #include "sgl.v1.function.find_nth_match.h"
 #include "sgl.v1.function.find_nth_missmatch.h"
