@@ -7,6 +7,7 @@
 #include <string>
 
 #include "sgl.v1.function.fill_if.h"
+#include "sgl.v1.function.partition_semistable_by_mask.h"
 #include "sgl.v1.function.advance_to_middle.h"
 #include "sgl.v1.function.find_middle.h"
 #include "sgl.v1.function.advance.h"
