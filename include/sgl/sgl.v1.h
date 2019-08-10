@@ -114,6 +114,8 @@
 #include "sgl.v1.function.first_predecessor_transformation_unguarded.h"
 #include "sgl.v1.function.first_predecessor_transformation.h"
 #include "sgl.v1.function.for_each.h"
+#include "sgl.v1.function.for_each_in_map.h"
+#include "sgl.v1.function.for_each_value_in_map.h"
 #include "sgl.v1.function.for_each_block.h"
 #include "sgl.v1.function.for_each_subrange.h"
 #include "sgl.v1.function.sort_delimited_subranges.h"
