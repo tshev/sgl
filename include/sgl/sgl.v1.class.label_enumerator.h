@@ -5,7 +5,7 @@ namespace v1 {
 
 template<typename T, typename S>
 class label_enumerator {
-    std::unordered_map<T, size_t> labels;
+    std::unordered_map<T, S> labels;
     S current_label_id = 0;
 
 public:
@@ -23,6 +23,26 @@ public:
             return result;
         }
         return pos->second;
+    }
+
+    auto begin() {
+        return labels.begin();
+    }
+
+    auto begin() const {
+        return labels.begin();
+    }
+
+    auto end() {
+        return labels.end();
+    }
+
+    auto end() const {
+        return labels.end();
+    }
+
+    S next_label_id() const {
+        return current_label_id;
     }
 };
 
