@@ -5,13 +5,16 @@
 #include <type_traits>
 #include <iterator>
 #include <string>
+#include "sgl.v1.function.swap_step.h"
+#include "sgl.v1.function.find_by_mask.h"
+#include "sgl.v1.function.find_by_mask_backward.h"
 
 #include "sgl.v1.function.fill_if.h"
-#include "sgl.v1.function.partition_semistable_by_mask.h"
 #include "sgl.v1.function.advance_to_middle.h"
 #include "sgl.v1.function.find_middle.h"
 #include "sgl.v1.function.advance.h"
 #include "sgl.v1.function.successor_inplace.h"
+#include "sgl.v1.function.partition_semistable_by_mask.h"
 #include "sgl.v1.class.label_enumerator.h"
 #include "sgl.v1.struct.delta_square.h"
 #include "sgl.v1.struct.plus.h"
@@ -93,8 +96,6 @@
 #include "sgl.v1.function.zip_position.h"
 #include "sgl.v1.function.find_not_backward.h"
 #include "sgl.v1.function.find_backward.h"
-#include "sgl.v1.function.find_by_mask.h"
-#include "sgl.v1.function.find_by_mask_backward.h"
 #include "sgl.v1.function.find_not.h"
 #include "sgl.v1.function.find_nth_match.h"
 #include "sgl.v1.function.find_nth_missmatch.h"

@@ -6,7 +6,8 @@ namespace v1 {
 template<typename Iterator>
 inline
 void swap_step(Iterator& x, Iterator& y) {
-    std::swap(*x, *y);
+    using std::swap;
+    swap(*x, *y);
     ++x;
     ++y;
 }
