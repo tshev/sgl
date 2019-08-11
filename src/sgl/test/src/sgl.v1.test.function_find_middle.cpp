@@ -15,7 +15,7 @@ void test0() {
       auto first = els.begin();
       auto last = els.end();
       auto m0 = sgl::v1::find_middle(first, last);
-      assert(std::distance(first, m0) == els.size() / 2ul);
+      assert(size_t(std::distance(first, m0)) == els.size() / 2ul);
     }
   }
 }

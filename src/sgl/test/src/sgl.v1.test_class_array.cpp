@@ -66,7 +66,7 @@ struct sgl::v1::array<int>::unittest {
             }
 
             assert(array.size() == decltype(array)::initial_capacity);
-            assert(array.end() - array.begin() == array.size());
+            assert(size_t(array.end() - array.begin()) == array.size());
 
             for (size_t i = 1ul; i < decltype(array)::initial_capacity; ++i) {
                 assert(array[i] == int(i));
@@ -96,7 +96,7 @@ struct sgl::v1::array<int>::unittest {
             assert(array.finish_ == array.first_ + decltype(array)::initial_capacity);
 
             assert(array.size() == 1ul);
-            assert(array.end() - array.begin() == array.size());
+            assert(size_t(array.end() - array.begin()) == array.size());
 
             assert(array.capacity() == decltype(array)::initial_capacity);
             assert(array.capacity_unused() == 0ul);
@@ -132,7 +132,7 @@ struct sgl::v1::array<int>::unittest {
             array.push_back(303);
             assert(array.capacity() == 2ul * s);
             assert(array.size() == s + 1ul);
-            assert(array.end() - array.begin() == array.size());
+            assert(size_t(array.end() - array.begin()) == array.size());
         }
 
         {

@@ -280,7 +280,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     void shrink_to_fit() {
         size_type s = size();
         if (s == 0ul) {
-            array::~array();
+            this->~array();
             base_type::reset();
         } else {
             reserve_unguarded(s, s);
@@ -406,7 +406,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void insert_unguarded(iterator position, const value_type& x, size_type n) {
-        if (end() - position > n) {
+        if (size_type(end() - position) > n) {
             std::uninitialized_copy(end() - n, end(), end());
             std::copy_backward(position, end() - n, end());
             std::fill(position, position + n, x);

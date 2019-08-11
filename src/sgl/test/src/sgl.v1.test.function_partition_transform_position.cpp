@@ -78,11 +78,11 @@ namespace function_partition_transform_position {
         auto transformation = [](auto position) { return *position; };
         std::pair<iterator0, iterator1> pos = sgl::v1::partition_transform_position(std::begin(values), std::end(values), std::begin(negative_cases), std::begin(positive_cases), pred, transformation);
         assert(pos.first == std::begin(negative_cases));
-        assert(pos.second - std::begin(positive_cases) == values.size());
+        assert(size_t(pos.second - std::begin(positive_cases)) == values.size());
 
         auto negative_pred = [](auto _) { return false; };
         pos = sgl::v1::partition_transform_position(std::begin(values), std::end(values), std::begin(negative_cases), std::begin(positive_cases), negative_pred, transformation);
-        assert(std::distance(std::begin(negative_cases), pos.first) == values.size());
+        assert(size_t(std::distance(std::begin(negative_cases), pos.first)) == values.size());
         assert(pos.first == std::end(negative_cases));
         assert(pos.second == std::begin(positive_cases));
     }

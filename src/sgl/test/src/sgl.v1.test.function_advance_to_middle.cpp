@@ -15,7 +15,7 @@ void test0() {
       auto last = els.end();
       auto m0 = first;
       sgl::v1::advance_to_middle(m0, last);
-      assert(std::distance(first, m0) == els.size() / 2);
+      assert(size_t(std::distance(first, m0)) == els.size() / 2);
     }
   }
 }

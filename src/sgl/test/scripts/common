@@ -1,4 +1,7 @@
+if [ -z "$CC" ]; then
 CC=clang++
+fi;
+
 CC_OPTIONS="-O3 -std=c++17 -Wall"
 CORES=8
 RGX_RENAME_SRC_TO_BINARY="s/cpp$/out/g;s/^\.\/src/build/g"

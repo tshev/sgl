@@ -18,12 +18,6 @@
 #pragma GCC warning "DifferenceType is already defined"
 #endif
 
-#ifndef IncludeGroup
-#define IncludeGroup(__x__) __x__
-#else
-#pragma GCC warning "IncludeGroup is already defined"
-#endif
-
 #ifndef ValueType
 #define ValueType(It) typename std::iterator_traits<It>::value_type
 #else
