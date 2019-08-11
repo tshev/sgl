@@ -4,6 +4,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename ForwardIterator, typename F>
+inline
 ForwardIterator for_each_adjacent(ForwardIterator first, ForwardIterator last, F f) {
     if (first == last) {
         return last;

@@ -34,6 +34,9 @@
 #include "sgl.v1.function.metrics_tp_fp_fn.h"
 #include "sgl.v1.function.metrics_tp_fp.h"
 #include "sgl.v1.function.precision_and_reacall.h"
+#include "sgl.v1.function.count_if.h"
+#include "sgl.v1.function.count_if_not.h"
+#include "sgl.v1.function.count.h"
 
 #include "sgl.v1.function.begin.h"
 #include "sgl.v1.function.end.h"

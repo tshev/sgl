@@ -24,7 +24,7 @@ T gini(ForwardIterator first, ForwardIterator last, const T& val) {
 
 template<typename ForwardIterator, typename T, typename Projection>
 inline
-ValueType(ForwardIterator) gini(ForwardIterator first, ForwardIterator last, const T& val, Projection projection) {
+T gini(ForwardIterator first, ForwardIterator last, const T& val, Projection projection) {
     return std::accumulate(first, last, val, [projection](T x, const auto& y) mutable {
         const T py = projection(y);
         return x + (1 - py) * py;
