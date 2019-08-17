@@ -6,8 +6,15 @@
 #include <iterator>
 #include <string>
 #include "sgl.v1.function.swap_step.h"
+#include "sgl.v1.class.coordinate.h"
 #include "sgl.v1.function.find_by_mask.h"
 #include "sgl.v1.function.find_by_mask_backward.h"
+
+#include "sgl.v1.function.transform_subgroups.h"
+#include "sgl.v1.function.squash_subgroups.h"
+
+#include "sgl.v1.function.transform_subgroups_back.h"
+#include "sgl.v1.function.squash_subgroups_back.h"
 
 #include "sgl.v1.function.fill_if.h"
 #include "sgl.v1.function.advance_to_middle.h"
@@ -154,6 +161,7 @@
 #include "sgl.v1.function.max_iterator.h"
 #include "sgl.v1.function.median_element.h"
 #include "sgl.v1.gcp.h"
+#include "sgl.v1.function.startswith.h"
 #include "sgl.v1.function.min.h"
 #include "sgl.v1.function.min_iterator.h"
 #include "sgl.v1.function.multiplicative_resize.h"
