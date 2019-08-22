@@ -35,6 +35,13 @@ struct __value_parser__ {
         *x= std::string_view(f, l - f);
         return false;
     }
+
+    template <typename It>
+    bool operator()(It f, It l, std::string* x) {
+        *x= std::string(f, l - f);
+        return false;
+    }
+
 };
 
 

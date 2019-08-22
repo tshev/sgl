@@ -88,3 +88,9 @@ bool valid_utf8(uint8_t* str, size_t length)
   }
   return true;
 }
+
+template<typename It>
+bool valid_utf8(It str, size_t length) {
+        return valid_utf8((uint8_t*)str, length);
+
+}

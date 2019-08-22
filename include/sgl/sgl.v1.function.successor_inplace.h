@@ -9,6 +9,15 @@ void successor_inplace(Iterator& x) {
     ++x;
 }
 
+template<typename Iterator>
+inline
+void successor_inplace(Iterator& x, Iterator last) {
+    if (x != last) {
+        ++x;
+    }
+}
+
+
 
 template<typename Iterator0, typename Iterator1>
 inline
