@@ -360,7 +360,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
             sgl::v1::uninitialized_construct(*base_type::last_, std::move(x));
         } else {
             std::uninitialized_copy(end() - 1ul, end(), end());
-            std::copy_backward(position, end() - 1ul, end());
+            std::copy_backward(position, end() - 1ul, end()); // move_backward
             *position = std::move(x);
         }
         ++base_type::last_;
