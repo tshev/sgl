@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     if (argc < 3 || std::strcmp(argv[1], argv[2]) == 0) {
         std::cerr << "invalid input\n";
         if (argc >= 1) {
-            std::cerr << argv[0] << " PATH/TO/IN PATH/TO/OUT" << std::endl;
+            std::cerr << "Usage: " << argv[0] << " PATH_TO_IN PATH_TO_OUT" << std::endl;
         }
         return 1;
     }
@@ -21,8 +21,8 @@ int main(int argc, char* argv[]) {
 
     sgl::v1::file_descriptor fd(argv[2], sgl::v1::io::creat | sgl::v1::io::read_write, 0644);
     std::string buffer;
-    size_t block_size = 4096ul * 1024ul;
-    //buffer.reserve(block_size);
+    constexpr size_t block_size = 4096ul * 1024ul;
+    buffer.reserve(block_size);
     for (auto line : lines) {
         buffer += line;
         buffer += '\n';
