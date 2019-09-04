@@ -111,7 +111,7 @@ class array_base<T, std::allocator<T>> {
 };
 
 template <typename T, typename Allocator = std::allocator<T>,
-          bool skip_default_constructor_and_destructor = std::is_trivially_copyable<T>::value>
+          bool skip_default_constructor_and_destructor = std::is_pod<T>::value>
 class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip_default_constructor_and_destructor>> {
   public:
     static constexpr const bool trivial_semiregular = skip_default_constructor_and_destructor;
@@ -128,8 +128,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     static constexpr size_type initial_capacity = 1;
 
   public:
-    array() : base_type() {
-    }
+    array() : base_type() {}
 
     array(size_type n) : base_type(n) {
         if constexpr (!skip_default_constructor_and_destructor) {
@@ -137,28 +136,14 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         }
     }
 
-    array(size_type n, enable_default_constructor) : base_type(n) {
-        sgl::v1::uninitialized_default_construct(begin(), end());
-    }
-
-    array(size_type n, disable_default_constructor) : base_type(n) {
-    } // TODO doubts
-
-    array(size_type n, Allocator a, enable_default_constructor) : base_type(n, a) { // TODO doubts
-        sgl::v1::uninitialized_default_construct(begin(), end());
-    }
-
-    array(size_type n, Allocator a, disable_default_constructor) : base_type(n, a) {
-    } // TODO doubts
-
-    array(size_type n, Allocator a, bool run_default_constructor) : base_type(n, a) { // TODO doubts
-        if (run_default_constructor) {
-            sgl::v1::uninitialized_default_construct(begin(), end());
-        }
-    }
-
     array(size_type n, const value_type& value) : base_type(n) {
         sgl::v1::uninitialized_copy_construct(begin(), end(), value);
+    }
+
+    array(size_type n, Allocator a) : base_type(n, a) {
+        if constexpr (!skip_default_constructor_and_destructor) {
+            sgl::v1::uninitialized_default_construct(begin(), end());
+        }
     }
 
     array(size_type n, const value_type& value, Allocator a) : base_type(n, a) {
@@ -178,30 +163,9 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array& operator=(const array& x) {
-        if constexpr (sgl::v1::is_nothrow_semiregular<T>::value) {
-            if (capacity() < x.capacity()) {
-                array tmp(x);
-                swap(tmp);
-                return *this;
-            } else {
-                size_type s0 = size();
-                size_type s1 = x.size();
-                if (s0 < s1) {
-                    pointer last = x.first_ + s0;
-                    base_type::last_ =
-                        std::uninitialized_copy(last, x.last_, std::copy(x.first_, last, base_type::first_));
-                } else {
-                    pointer last_new = std::copy(x.first_, x.last_, base_type::first_);
-                    sgl::v1::destruct(last_new, base_type::last_);
-                    base_type::last_ = last_new;
-                }
-                return *this;
-            }
-        } else {
-            array tmp(x);
-            swap(tmp);
-            return *this;
-        }
+        array tmp(x);
+        swap(tmp);
+        return *this;
     }
 
     array& operator=(array&& x) {
@@ -276,7 +240,10 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         }
     }
 
-  public:
+    void reserve_unguarded(size_type n) {
+        reserve_unguarded(n, size());
+    }
+
     void shrink_to_fit() {
         size_type s = size();
         if (s == 0ul) {
@@ -287,13 +254,13 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         }
     }
 
-    void resize_to_larger(size_type n, size_type s) {
+    void resize_to_larger(size_type n, size_type previous_size) {
         const size_type initial_capacity = capacity();
         if (initial_capacity < n) {
             reserve_unguarded(n, n);
         }
         if constexpr (!skip_default_constructor_and_destructor) {
-            sgl::v1::uninitialized_default_construct(base_type::first_ + s, base_type::last_);
+            sgl::v1::uninitialized_default_construct(base_type::first_ + previous_size, base_type::last_);
         }
     }
 
@@ -516,7 +483,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         base_type::finish_ = base_type::last_;
     }
 
-    void assign(size_t n, const value_type& x) {
+    void assign(size_type n, const value_type& x) {
         size_type s = size();
         if (s < n) {
             reallocate_assign(n, x);
@@ -603,18 +570,21 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     struct unittest;
 
   private:
-    void reserve_unguarded(size_type n) {
-        reserve_unguarded(n, size());
-    }
 
     void reserve_unguarded(size_type new_capacity, size_type new_size) {
         // assert(new_capacity >= size())
         T* data = base_type::allocate(new_capacity);
-        if constexpr (std::is_nothrow_move_constructible<T>::value && !std::is_copy_constructible<T>::value) {
+
+        if constexpr (std::is_nothrow_move_constructible<T>::value &&
+                      !std::is_copy_constructible<T>::value) {
+
             std::uninitialized_move(begin(), end(), data);
+
         } else if constexpr (sgl::v1::is_nothrow_semiregular<T>::value &&
                              std::is_trivially_copyable<value_type>::value) {
+
             std::copy(begin(), end(), data);
+
         } else {
             try {
                 if (std::is_trivially_copyable<value_type>::value) {
