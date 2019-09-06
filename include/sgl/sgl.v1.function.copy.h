@@ -2,11 +2,59 @@
 namespace sgl {
 namespace v1 {
 
+inline
+__attribute__((__always_inline__))
+__m256i stream_load(__m256i const* source) {
+    return _mm256_stream_load_si256(source);
+}
+
+inline
+__attribute__((__always_inline__))
+void stream(__m256i source, __m256i* dist) {
+    return _mm256_stream_si256(dist, source);
+}
+
+void* copy(sgl::v1::simd_tag<true>, void const* first0, void* last0, void* out)  {
+    char const* first1 = (char const*)first0;
+    char const* last1 = (char const*)last0;
+    size_t n = last1 - first1;
+    constexpr const size_t step = 32ul;
+    const __m256i* first2 = (__m256i*)first1;
+    const __m256i* last2 = first2 + (n / step / step) * step ;
+    __m256i* out2 = (__m256i*)out;
+
+    while (first2 != last2) {
+        auto loaded = stream_load(first2);
+        stream(loaded, out2);
+        ++first2;
+        ++out2;
+    }
+    _mm_sfence();
+
+    first1 = (char*)first2;
+    auto out1 = (char*)out2;
+    while (first1 != last1) {
+        *out1 = *first1;
+        ++first1;
+    }
+    return out1;
+}
+
 template<typename It, typename O>
 inline
-requires(ForwardIterator(It) && ForwardIterator(O))
-O copy(It first, It last, O o) {
-    return std::copy(first, last, o);
+requires(ForwardIterator(It) && OutputIterator(O))
+O copy(It first, It last, O out) {
+    typedef typename std::iterator_traits<It>::value_type T;
+    if constexpr (sgl::v1::is_pointer<It>() && sgl::v1::is_pointer<O>() && sgl::v1::is_pod<T>()) {
+        return (O)sgl::v1::copy(sgl::v1::simd_tag<true>(), first, last, out);
+    } else {
+        while (first != last) {
+            *out = *first;
+            ++out;
+            ++first;
+        }
+        return out;
+    }
 }
 
 } // namespace v1

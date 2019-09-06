@@ -12,6 +12,9 @@
 
 #include "sgl.v1.function.transform_subgroups.h"
 #include "sgl.v1.function.squash_subgroups.h"
+#include "sgl.v1.function.is_pod.h"
+#include "sgl.v1.function.is_pointer.h"
+#include "sgl.v1.struct.simd_tag.h"
 
 #include "sgl.v1.function.transform_subgroups_back.h"
 #include "sgl.v1.function.squash_subgroups_back.h"
