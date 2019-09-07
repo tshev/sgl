@@ -20,10 +20,11 @@ void* copy(sgl::v1::simd_tag<true>, void const* first0, void* last0, void* out) 
     size_t n = last1 - first1;
     constexpr const size_t step = 32ul;
     const __m256i* first2 = (__m256i*)first1;
-    const __m256i* last2 = first2 + (n / step / step) * step ;
+    const __m256i* last2 = first2 + ((n / step) * step) / step;
     __m256i* out2 = (__m256i*)out;
 
     while (first2 != last2) {
+        //_mm_prefetch(first2, _mm_hint(32));
         auto loaded = stream_load(first2);
         stream(loaded, out2);
         ++first2;
@@ -72,15 +73,16 @@ requires(ForwardIterator(It) && OutputIterator(O))
 O copy(It first, It last, O out) {
     typedef typename std::iterator_traits<It>::value_type T;
     if constexpr (sgl::v1::is_pointer<It>() && sgl::v1::is_pointer<O>() && sgl::v1::is_pod<T>()) {
-        return (O)sgl::v1::copy(sgl::v1::simd_tag<false>(), first, last, out);
-    } else {
-        while (first != last) {
-            *out = *first;
-            ++out;
-            ++first;
+        if (last < out || out < first) {
+            return (O)sgl::v1::copy(sgl::v1::simd_tag<false>(), first, last, out);
         }
-        return out;
     }
+    while (first != last) {
+        *out = *first;
+        ++out;
+        ++first;
+    }
+    return out;
 }
 
 } // namespace v1
