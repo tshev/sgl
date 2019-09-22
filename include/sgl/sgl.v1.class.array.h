@@ -9,13 +9,6 @@
 namespace sgl {
 namespace v1 {
 
-struct enable_default_constructor {
-    bool x[0];
-};
-struct disable_default_constructor {
-    bool x[0];
-};
-
 template <typename T, typename Allocator>
 class array_base {
   protected:
@@ -51,7 +44,7 @@ class array_base {
         }
     }
 
-    void reset() {
+    void detach() {
         first_ = nullptr;
         last_ = nullptr;
         finish_ = nullptr;
@@ -99,7 +92,7 @@ class array_base<T, std::allocator<T>> {
         }
     }
 
-    void reset() {
+    void detach() {
         first_ = nullptr;
         last_ = nullptr;
         finish_ = nullptr;
@@ -113,6 +106,12 @@ class array_base<T, std::allocator<T>> {
 template <typename T, typename Allocator = std::allocator<T>,
           bool skip_default_constructor_and_destructor = std::is_pod<T>::value>
 class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip_default_constructor_and_destructor>> {
+    struct prefer_move {
+        static constexpr const bool value =
+            (std::is_move_constructible<T>::value && !std::is_copy_constructible<T>::value) ||
+            (std::is_nothrow_move_constructible<T>::value && !std::is_nothrow_copy_constructible<T>::value);
+    };
+
   public:
     static constexpr const bool trivial_semiregular = skip_default_constructor_and_destructor;
 
@@ -150,6 +149,11 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         sgl::v1::uninitialized_copy_construct(begin(), end(), value);
     }
 
+    template<typename It>
+    array(It first, It last) : base_type(std::distance(first, last)) {
+        std::uninitialized_copy(first, last, begin());
+    }
+
     array(std::initializer_list<value_type> x) : base_type(x.size()) {
         std::uninitialized_copy(x.begin(), x.end(), begin());
     }
@@ -159,10 +163,13 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array(array&& x) : base_type::first_(x.first_), base_type::last_(x.last_), base_type::finish_(x.finish_) {
-        x.reset();
+        x.detach();
     }
 
     array& operator=(const array& x) {
+        // TODO make faster
+        // 1. Try to avoid a useless memory allocation
+        //
         array tmp(x);
         swap(tmp);
         return *this;
@@ -173,7 +180,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         base_type::first_ = x.first_;
         base_type::last_ = x.last_;
         base_type::finish_ = x.finish_;
-        x.reset();
+        x.detach();
 
         return *this;
     }
@@ -218,19 +225,19 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         return base_type::finish_ - base_type::last_;
     }
 
-    pointer begin() {
+    iterator begin() {
         return base_type::first_;
     }
 
-    const_pointer begin() const {
+    const_iterator begin() const {
         return base_type::first_;
     }
 
-    pointer end() {
+    iterator end() {
         return base_type::last_;
     }
 
-    const_pointer end() const {
+    const_iterator end() const {
         return base_type::last_;
     }
 
@@ -248,7 +255,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         size_type s = size();
         if (s == 0ul) {
             this->~array();
-            base_type::reset();
+            base_type::detach();
         } else {
             reserve_unguarded(s, s);
         }
@@ -571,37 +578,39 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
   private:
 
-    void reserve_unguarded(size_type new_capacity, size_type new_size) {
+    void reserve_unguarded(size_type new_capacity, size_type size) {
         // assert(new_capacity >= size())
         T* data = base_type::allocate(new_capacity);
 
-        if constexpr (std::is_nothrow_move_constructible<T>::value &&
-                      !std::is_copy_constructible<T>::value) {
-
-            std::uninitialized_move(begin(), end(), data);
-
-        } else if constexpr (sgl::v1::is_nothrow_semiregular<T>::value &&
-                             std::is_trivially_copyable<value_type>::value) {
-
-            std::copy(begin(), end(), data);
-
-        } else {
-            try {
-                if (std::is_trivially_copyable<value_type>::value) {
-                    std::uninitialized_copy(begin(), end(), data);
-                } else {
-                    sgl::v1::uninitialized_move(begin(), end(), data);
+        if constexpr (prefer_move::value) {
+            if (std::is_nothrow_move_constructible<T>::value) {
+                // std::uninitialized_move would call std::move
+                std::uninitialized_move(begin(), end(), data);
+            } else {
+                try {
+                    std::uninitialized_move(begin(), end(), data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
                 }
-            } catch (...) {
-                base_type::deallocate(data);
-                throw;
+            }
+        } else {
+            if (std::is_nothrow_copy_constructible<T>::value) {
+                std::uninitialized_copy(begin(), end(), data);
+            } else {
+                try {
+                    std::uninitialized_copy(begin(), end(), data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
             }
         }
 
         this->~array();
 
         base_type::first_ = data;
-        base_type::last_ = data + new_size;
+        base_type::last_ = data + size;
         base_type::finish_ = data + new_capacity;
     }
 
@@ -657,8 +666,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         //size_type offset = position - begin();
 
         if constexpr (std::is_nothrow_move_assignable<T>::value) {
-            sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, value, n,
-                                                          data);
+            sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, value, n, data);
             this->~array();
         } else {
             try {
