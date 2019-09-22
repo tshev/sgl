@@ -1,7 +1,12 @@
 #pragma once
+#include <smmintrin.h>
+#include <immintrin.h>
+
+
 namespace sgl {
 namespace v1 {
 
+#ifdef __AVX2__
 inline
 __attribute__((__always_inline__))
 __m256i stream_load(__m256i const* source) {
@@ -42,6 +47,7 @@ void* copy(sgl::v1::simd_tag<true>, void const* first0, void* last0, void* out) 
 }
 
 
+
 void* copy(sgl::v1::simd_tag<false>, void const* first0, void* last0, void* out)  {
     char const* first1 = (char const*)first0;
     char const* last1 = (char const*)last0;
@@ -66,17 +72,20 @@ void* copy(sgl::v1::simd_tag<false>, void const* first0, void* last0, void* out)
     return sgl::v1::copy(sgl::v1::simd_tag<true>(), middle, last0, out1);
 }
 
+#endif
 
 template<typename It, typename O>
 inline
 requires(ForwardIterator(It) && OutputIterator(O))
 O copy(It first, It last, O out) {
+    #ifdef __AVX2__
     typedef typename std::iterator_traits<It>::value_type T;
     if constexpr (sgl::v1::is_pointer<It>() && sgl::v1::is_pointer<O>() && sgl::v1::is_pod<T>()) {
         if (last < out || out < first) {
             return (O)sgl::v1::copy(sgl::v1::simd_tag<false>(), first, last, out);
         }
     }
+    #endif
     while (first != last) {
         *out = *first;
         ++out;
