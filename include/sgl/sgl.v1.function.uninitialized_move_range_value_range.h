@@ -11,27 +11,31 @@ ForwardIterator1 __uninitialized_move_range_value_range(ForwardIterator0 first,
                                                        typename std::iterator_traits<ForwardIterator0>::value_type&& x,
                                                        ForwardIterator1 output) {
     typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
-    ForwardIterator1 current = output;
-    try {
-        while (first != middle) {
-            ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
-            ++first;
+    if constexpr (std::is_trivial<value_type>::value) {
+        return std::copy_range_value_range(first, middle, last, x, output);
+    } else {
+        ForwardIterator1 current = output;
+        try {
+            while (first != middle) {
+                ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
+                ++first;
+                ++current;
+            }
+            new (std::addressof(*current)) value_type(std::move(x));
             ++current;
+            while (first != last) {
+                ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
+                ++first;
+                ++current;
+            }
+            return current;
+        } catch (...) {
+            while (output != current) {
+                output->~value_type();
+                ++output;
+            }
+            throw;
         }
-        new (std::addressof(*current)) value_type(std::move(x));
-        ++current;
-        while (first != last) {
-            ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
-            ++first;
-            ++current;
-        }
-        return current;
-    } catch (...) {
-        while (output != current) {
-            output->~value_type();
-            ++output;
-        }
-        throw;
     }
 }
 
@@ -44,6 +48,9 @@ ForwardIterator1 __uninitialized_move_range_value_range(ForwardIterator0 first,
                                                        size_t n,
                                                        ForwardIterator1 output) {
     typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
+    if constexpr (std::is_trivial<value_type>::value) {
+        return std::copy_range_value_range(first, middle, last, x, n, output);
+    } else {
     ForwardIterator0 current = output;
     try {
         while (first != middle) {
@@ -57,8 +64,9 @@ ForwardIterator1 __uninitialized_move_range_value_range(ForwardIterator0 first,
             ++current;
         }
         // move value
-        if (n >= 1) {
+        if (0 < n) {
             new (std::addressof(*current)) value_type(std::move(x));
+            ++current;
         }
         while (first != last) {
             ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
@@ -173,29 +181,33 @@ ForwardIterator uninitialized_move_range_value_range(ForwardIterator first,
                                                      ForwardIterator last,
                                                      const typename std::iterator_traits<ForwardIterator>::value_type& x, ForwardIterator output) {
     typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
-    ForwardIterator current = output;
-    try {
-        while (first != middle) {
-            ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
-            ++first;
-            ++current;
-        }
+    if (std::is_trivial<value_type>::value) {
+        return uninitialized_move_range_value_range(first, middle, last, x, output);
+    } else {
+        ForwardIterator current = output;
+        try {
+            while (first != middle) {
+                ::new (static_cast<void *>(std::addressof(*current))) value_type(std::move(*first));
+                ++first;
+                ++current;
+            }
 
-        new (std::addressof(*current)) value_type(x);
-        ++current;
-
-        while (first != last) {
-            ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
-            ++first;
+            new (std::addressof(*current)) value_type(x);
             ++current;
+
+            while (first != last) {
+                ::new (static_cast<void *>(std::addressof(*current))) value_type(std::move(*first));
+                ++first;
+                ++current;
+            }
+            return current;
+        } catch (...) {
+            while (output != current) {
+                output->~value_type();
+                ++output;
+            }
+            throw;
         }
-        return current;
-    } catch (...) {
-        while (output != current) {
-            output->~value_type();
-            ++output;
-        }
-        throw;
     }
 }
 
@@ -208,31 +220,35 @@ ForwardIterator uninitialized_move_range_value_range(ForwardIterator first,
                                                      size_t n,
                                                      ForwardIterator output) {
     typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
-    ForwardIterator current = output;
-    try {
-        while (first != middle) {
-            ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
-            ++first;
-            ++current;
-        }
+    if (std::is_trivial<value_type>::value) {
+        return uninitialized_move_range_value_range(first, middle, last, x, n, output);
+    } else {
+        ForwardIterator current = output;
+        try {
+            while (first != middle) {
+                ::new (static_cast<void *>(std::addressof(*current))) value_type(std::move(*first));
+                ++first;
+                ++current;
+            }
 
-        for (size_t i = 0; i != n; ++i) {
-            new (std::addressof(*current)) value_type(x);
-            ++current;
-        }
+            for (size_t i = 0; i != n; ++i) {
+                new (std::addressof(*current)) value_type(x);
+                ++current;
+            }
 
-        while (first != last) {
-            ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
-            ++first;
-            ++current;
+            while (first != last) {
+                ::new (static_cast<void *>(std::addressof(*current))) value_type(std::move(*first));
+                ++first;
+                ++current;
+            }
+            return current;
+        } catch (...) {
+            while (output != current) {
+                output->~value_type();
+                ++output;
+            }
+            throw;
         }
-        return current;
-    } catch (...) {
-        while (output != current) {
-            output->~value_type();
-            ++output;
-        }
-        throw;
     }
 }
 
