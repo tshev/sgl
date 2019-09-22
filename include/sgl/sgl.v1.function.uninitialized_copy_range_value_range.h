@@ -3,11 +3,14 @@
 namespace sgl {
 namespace v1 {
 
-
-template<typename ForwardIterator0, typename ForwardIterator1>
-ForwardIterator1 uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last, const typename std::iterator_traits<ForwardIterator1>::value_type& x, ForwardIterator1 output) {
-    if constexpr (std::is_trivial<typename std::iterator_traits<ForwardIterator1>::value_type>::value) {
-        return std::copy_range_value_range(first, middle, last, x, output);
+template <typename ForwardIterator0, typename ForwardIterator1>
+ForwardIterator1
+uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
+                                     const typename std::iterator_traits<ForwardIterator1>::value_type& x,
+                                     ForwardIterator1 output) {
+    typedef typename std::iterator_traits<ForwardIterator1>::value_type value_type;
+    if constexpr (std::is_trivial<value_type>::value) {
+        return sgl::v1::copy_range_value_range(first, middle, last, x, output);
     } else {
         // typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
         ForwardIterator1 current = output;
@@ -32,12 +35,14 @@ ForwardIterator1 uninitialized_copy_range_value_range(ForwardIterator0 first, Fo
     }
 }
 
-
-template<typename ForwardIterator0, typename ForwardIterator1>
-ForwardIterator1 uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last, const typename std::iterator_traits<ForwardIterator1>::value_type& x, size_t n, ForwardIterator1 output) {
+template <typename ForwardIterator0, typename ForwardIterator1>
+ForwardIterator1
+uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
+                                     const typename std::iterator_traits<ForwardIterator1>::value_type& x, size_t n,
+                                     ForwardIterator1 output) {
     // typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
     if constexpr (std::is_trivial<typename std::iterator_traits<ForwardIterator1>::value_type>::value) {
-        return std::copy_range_value_range(first, middle, last, x, n, output);
+        return sgl::v1::copy_range_value_range(first, middle, last, x, n, output);
     } else {
         ForwardIterator1 current = output;
         try {

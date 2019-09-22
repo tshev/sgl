@@ -71,20 +71,14 @@ class array_base<T, std::allocator<T>> {
 
     array_base() = default;
 
-    array_base(size_type n) : first_(allocate(n)), last_(first_ + n), finish_(last_) {
-    }
+    array_base(size_type n) : first_(allocate(n)), last_(first_ + n), finish_(last_) {}
 
     array_base(size_type n, std::allocator<T> a)
-        : first_(std::allocator<T>().allocate(n)), last_(first_ + n), finish_(last_) {
-    }
+        : first_(std::allocator<T>().allocate(n)), last_(first_ + n), finish_(last_) {}
 
-    T* allocate(size_type n) {
-        return std::allocator<T>().allocate(n);
-    }
+    T* allocate(size_type n) { return std::allocator<T>().allocate(n); }
 
-    void deallocate(T* data) {
-        std::allocator<T>().deallocate(data, finish_ - first_);
-    }
+    void deallocate(T* data) { std::allocator<T>().deallocate(data, finish_ - first_); }
 
     void destructor_array_base() {
         if (first_ != finish_) {
@@ -618,12 +612,12 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     template<typename It>
     void allocate_copy_swap(size_type new_capacity, It first, It last) {
         T* data = base_type::allocate(new_capacity);
-        T* last;
+        T* new_last;
         if constexpr (std::is_nothrow_copy_constructible<T>::value) {
-            last = std::uninitialized_copy(first, last, data);
+            new_last = std::uninitialized_copy(first, last, data);
         } else {
             try {
-                last = base_type::last_ = std::uninitialized_copy(first, last, data);
+                new_last = base_type::last_ = std::uninitialized_copy(first, last, data);
             } catch (...) {
                 base_type::deallocate(data);
                 throw;
@@ -632,19 +626,19 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         this->~array();
 
         base_type::first_ = data;
-        base_type::last_ = last;
+        base_type::last_ = new_last;
         base_type::finish_ = data + new_capacity;
     }
 
     template<typename It>
     void allocate_move_swap(size_type new_capacity, It first, It last) {
         T* data = base_type::allocate(new_capacity);
-        T* last;
+        T* new_last;
         if constexpr (std::is_nothrow_move_constructible<T>::value) {
-             last = std::uninitialized_move(first, last, data);
+             new_last = std::uninitialized_move(first, last, data);
         } else {
             try {
-                last = std::uninitialized_move(first, last, data);
+                new_last = std::uninitialized_move(first, last, data);
             } catch (...) {
                 base_type::deallocate(data);
                 throw;
@@ -653,7 +647,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         this->~array();
 
         base_type::first_ = data;
-        base_type::last_ = last;
+        base_type::last_ = new_last;
         base_type::finish_ = data + new_capacity;
     }
 
