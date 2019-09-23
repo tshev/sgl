@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <iterator>
 #include <string>
+#include "sgl.v1.function.repeat_n.h"
 #include "sgl.v1.function.swap_step.h"
 #include "sgl.v1.class.coordinate.h"
 #include "sgl.v1.function.find_by_mask.h"
