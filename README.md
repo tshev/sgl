@@ -6,4 +6,4 @@
 The library is in active development. Don't use it. 
 
 # Code of conduct
-Read it [here](./.github/CODE_OF_CONDUCT).
+Read it [here](.github/CODE_OF_CONDUCT.md)
