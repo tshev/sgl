@@ -3,8 +3,8 @@
 namespace sgl {
 namespace v1 {
 
-template<typename T, typename OutputIterator>
-OutputIterator repeat_n(const T& value, size_t n, OutputIterator out) {
+template<typename T, typename N, typename OutputIterator>
+OutputIterator repeat_n(const T& value, N n, OutputIterator out) {
     while (n-- > 0) {
         *out = value;
         ++out;
