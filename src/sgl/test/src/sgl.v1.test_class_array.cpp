@@ -431,12 +431,22 @@ void test_with_unique_ptr() {
     assert(*data[0] == 1);
     assert(*data[1] == 2);
     assert(*data[2] == 4);
-
     assert(data[3] == nullptr);
     assert(data[4] == nullptr);
     assert(data[5] == nullptr);
     data.insert(data.end(), std::make_unique<int>(5));
+    assert(data.size() == 7);
     assert(!data.empty());
+
+    data.erase(data.begin());
+    assert(data.size() == 6);
+    assert(data.capacity() == 12);
+    assert(*data[0] == 2);
+    assert(*data[1] == 4);
+    assert(data[2] == nullptr);
+    assert(data[3] == nullptr);
+    assert(data[4] == nullptr);
+
 }
 
 void run_unittest() {
