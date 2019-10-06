@@ -327,8 +327,13 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         if (end() == position) {
             sgl::v1::uninitialized_construct(*base_type::last_, std::move(x));
         } else {
-            std::uninitialized_copy(end() - 1ul, end(), end());
-            std::copy_backward(position, end() - 1ul, end()); // move_backward
+            if constexpr (prefer_move::value) {
+                std::uninitialized_move(end() - 1ul, end(), end());
+                std::move_backward(position, end() - 1ul, end()); // move_backward
+            } else {
+                std::uninitialized_copy(end() - 1ul, end(), end());
+                std::copy_backward(position, end() - 1ul, end()); // move_backward
+            }
             *position = std::move(x);
         }
         ++base_type::last_;
@@ -502,8 +507,8 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     template <typename ForwardIterator>
     // typename sgl::v1::enable_if_forward_iterator<ForwardIterator>::type
-    typename std::enable_if<!std::is_arithmetic<ForwardIterator>::value>::type assign(ForwardIterator first,
-                                                                                      ForwardIterator last) {
+    typename std::enable_if<!std::is_arithmetic<ForwardIterator>::value>::type
+    assign(ForwardIterator first, ForwardIterator last) {
         allocate_copy_swap(std::distance(first, last), first, last);
     }
 
@@ -678,7 +683,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         T* data = base_type::allocate(new_capacity);
         //size_type offset = position - begin();
 
-        if (std::is_nothrow_move_assignable<T>::value) {
+        if constexpr (prefer_move::value) {
             sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_,
                                                           std::move(value), data);
             this->~array();

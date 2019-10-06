@@ -8,6 +8,7 @@
 #include <string>
 #include <iterator>
 
+#include <sgl/sgl.v1.function.repeat_n.h>
 #include <sgl/sgl.v1.struct.totally_ordered.h>
 #include <sgl/sgl.v1.struct.triple.h>
 #include <sgl/sgl.v1.function.repeat_n.h>
@@ -401,6 +402,54 @@ void test_empty_array_for_string() {
     }
 }
 
+void test_with_unique_ptr() {
+    sgl::v1::array<std::unique_ptr<int>> data;
+    assert(data.empty());
+    assert(data.size() == 0);
+    assert(data.capacity() == 0);
+    data.push_back(std::make_unique<int>(1));
+    assert(!data.empty());
+    assert(data.size() == 1);
+    data.push_back(std::make_unique<int>(2));
+    assert(!data.empty());
+    assert(data.size() == 2);
+    assert(data.capacity() == 2);
+    data.push_back(std::make_unique<int>(4));
+    assert(!data.empty());
+    assert(data.size() == 3);
+    assert(data.capacity() == 4);
+    assert(*data.back() == 4);
+    assert(*data.front() == 1);
+
+    assert(*data[0] == 1);
+    assert(*data[1] == 2);
+    assert(*data[2] == 4);
+
+    data.resize(6);
+    assert(data.size() == 6);
+    assert(data.capacity() == 6);
+
+    assert(*data[0] == 1);
+    assert(*data[1] == 2);
+    assert(*data[2] == 4);
+    assert(data[3] == nullptr);
+    assert(data[4] == nullptr);
+    assert(data[5] == nullptr);
+    data.insert(data.end(), std::make_unique<int>(5));
+    assert(data.size() == 7);
+    assert(!data.empty());
+
+    data.erase(data.begin());
+    assert(data.size() == 6);
+    assert(data.capacity() == 12);
+    assert(*data[0] == 2);
+    assert(*data[1] == 4);
+    assert(data[2] == nullptr);
+    assert(data[3] == nullptr);
+    assert(data[4] == nullptr);
+
+}
+
 void run_unittest() {
     sgl::v1::array<int>::unittest::test();
     sgl::v1::array<std::string>::unittest::test();
@@ -416,5 +465,6 @@ void run_unittest() {
 int main() {
     sgl::v1::test::class_array::test_empty_array();
     sgl::v1::test::class_array::test_empty_array_for_string();
+    sgl::v1::test::class_array::test_with_unique_ptr();
     sgl::v1::test::class_array::run_unittest();
 }
