@@ -10,6 +10,7 @@
 
 #include <sgl/sgl.v1.struct.totally_ordered.h>
 #include <sgl/sgl.v1.struct.triple.h>
+#include <sgl/sgl.v1.function.repeat_n.h>
 #include <sgl/sgl.v1.function.uninitialized_construct.h>
 #include <sgl/sgl.v1.function.destruct.h>
 #include <sgl/sgl.v1.function.copy_range_value_range.h>
