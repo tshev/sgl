@@ -26,7 +26,7 @@ void advance(InputIterator& iterator, N n) {
 
 template<typename InputIterator0, typename InputIterator1>
 inline
-void advance(InputIterator0& first0, InputIterator last0, InputIterator1& first1, std::input_iterator_tag) {
+void advance(InputIterator0& first0, InputIterator0 last0, InputIterator1& first1, std::input_iterator_tag) {
     while (first0 != last0) {
         ++first0;
         ++first1;
@@ -43,9 +43,9 @@ void advance(RandomAccessIterator0& first0, RandomAccessIterator0 last0, RandomA
 
 template<typename InputIterator0, typename InputIterator1>
 inline
-void advance(InputIterator0& first0, InputIterator last0, InputIterator1& first1) {
-    typedef std::iterator_traits<InputIterator0>::iterator_category iterator_category0;
-    typedef std::iterator_traits<InputIterator1>::iterator_category iterator_category1;
+void advance(InputIterator0& first0, InputIterator0 last0, InputIterator1& first1) {
+    typedef typename std::iterator_traits<InputIterator0>::iterator_category iterator_category0;
+    typedef typename std::iterator_traits<InputIterator1>::iterator_category iterator_category1;
     if constexpr (std::is_base_of<std::random_access_iterator_tag, iterator_category0>::value && std::is_base_of<std::random_access_iterator_tag, iterator_category1>::value) {
         sgl::v1::advance(first0, last0, first1, std::random_access_iterator_tag());
     } else {
