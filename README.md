@@ -7,3 +7,7 @@ The library is in active development. Don't use it.
 
 # Code of conduct
 Read it [here](.github/CODE_OF_CONDUCT.md)
+
+# TODO: think about
+- functors for SIMD instructions
+- SIMD and 2D iterators
