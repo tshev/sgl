@@ -1,4 +1,6 @@
 #pragma once
+// The most rudimental implementation
+// TODO: improve the performance
 
 namespace sgl {
 namespace v1 {
@@ -21,7 +23,7 @@ It0 gauss_method_forward(It0 first, It0 middle, It0 last, It1 b, Projection proj
             ++b_current;
             auto norm = proj(*first_current);
             if (norm != 0) {
-                sgl::v1::for_each(first, middle, first_current, [proj, first, norm](auto& x, auto& r) {
+                sgl::v1::for_each(first, middle, first_current, [proj, first, norm](const auto& x, auto& r) {
                     proj(r) = (proj(r) / norm * proj(*first)) - proj(x);
                 });
                 *b_current = *b_current / norm * proj(*first) - proj(*b);
@@ -51,7 +53,7 @@ It0 gauss_method_forward(It0 first, It0 middle, It0 last, Projection proj) {
 
             auto norm = proj(*first_current);
             if (norm != 0) {
-                sgl::v1::for_each(first, middle, first_current, [proj, first, norm](auto x, auto& r) {
+                sgl::v1::for_each(first, middle, first_current, [proj, first, norm](const auto& x, auto& r) {
                     proj(r) = (proj(r) / norm * proj(*first)) - proj(x);
                 });
             }
@@ -69,10 +71,7 @@ template<typename It0, typename Projection>
 inline
 It0 gauss_method_forward(It0 first, It0 middle, It0 last) {
     typedef typename std::iterator_traits<It0>::value_type T;
-    struct identity {
-        T& operator()(T& x) const { return x; }
-    };
-    return sgl::v1::gauss_method_forward(first, middle, last, identity{});
+    return sgl::v1::gauss_method_forward(first, middle, last, sgl::v1::identity<T>{});
 }
 
 } // namespace v1
