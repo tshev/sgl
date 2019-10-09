@@ -15,14 +15,14 @@ class array_base {
     typedef T value_type;
     typedef T* pointer;
     typedef const T* const_pointer;
-    typedef T* iterator;
-    typedef const T* const_iterator;
+    typedef pointer iterator;
+    typedef const const_pointer const_iterator;
     typedef size_t size_type;
 
     Allocator allocator;
-    T* first_ = nullptr;
-    T* last_ = nullptr;
-    T* finish_ = nullptr;
+    pointer first_ = nullptr;
+    pointer last_ = nullptr;
+    pointer finish_ = nullptr;
 
     array_base() = default;
 
@@ -30,11 +30,11 @@ class array_base {
 
     array_base(size_type n, Allocator a) : allocator(a), first_(allocate(n)), last_(first_ + n), finish_(last_) {}
 
-    T* allocate(size_type n) {
+    pointer allocate(size_type n) {
         return allocator.allocate(n);
     }
 
-    void deallocate(T* data) {
+    void deallocate(pointer data) {
         allocator.deallocate(data, finish_ - first_);
     }
 
@@ -61,8 +61,8 @@ class array_base<T, std::allocator<T>> {
     typedef T value_type;
     typedef T* pointer;
     typedef const T* const_pointer;
-    typedef T* iterator;
-    typedef const T* const_iterator;
+    typedef pointer iterator;
+    typedef const_pointer const_iterator;
     typedef size_t size_type;
 
     T* first_ = nullptr;
@@ -76,9 +76,9 @@ class array_base<T, std::allocator<T>> {
     array_base(size_type n, std::allocator<T> a)
         : first_(std::allocator<T>().allocate(n)), last_(first_ + n), finish_(last_) {}
 
-    T* allocate(size_type n) { return std::allocator<T>().allocate(n); }
+    pointer allocate(size_type n) { return std::allocator<T>().allocate(n); }
 
-    void deallocate(T* data) { std::allocator<T>().deallocate(data, finish_ - first_); }
+    void deallocate(pointer data) { std::allocator<T>().deallocate(data, finish_ - first_); }
 
     void destructor_array_base() {
         if (first_ != finish_) {

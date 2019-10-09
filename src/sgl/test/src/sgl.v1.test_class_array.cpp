@@ -21,6 +21,7 @@
 #include <sgl/sgl.v1.function.copy_construct.h>
 #include <sgl/sgl.v1.function.uninitialized_move.h>
 #include <sgl/sgl.v1.function.uninitialized_copy_construct.h>
+#include <sgl/sgl.v1.function.default_construct.h>
 #include <sgl/sgl.v1.function.uninitialized_default_construct.h>
 #include <sgl/sgl.v1.function.uninitialized_move_range_value_range.h>
 #include <sgl/sgl.v1.function.equal.h>

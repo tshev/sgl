@@ -94,6 +94,7 @@
 #include "sgl.v1.function.copy_range_value_range.h"
 #include "sgl.v1.function.cumulate.h"
 #include "sgl.v1.function.cumulate_one.h"
+#include "sgl.v1.function.default_construct.h"
 #include "sgl.v1.function.uninitialized_default_construct.h"
 #include "sgl.v1.function.equal_ranges.h"
 #include "sgl.v1.function.equal.h"
