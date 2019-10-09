@@ -166,23 +166,31 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array& operator=(const array& x) {
-        size_type c0 = capacity();
-        size_type c1 = x.capacity();
-        if (c0 < c1) {
+        if constexpr (std::is_nothrow_copy_constructible<value_type>::value) {
+            size_type c0 = capacity();
+            size_type c1 = x.capacity();
+            if (c0 < c1) {
+                array tmp(x);
+                swap(tmp);
+                return *this;
+            } else {
+                size_type s0 = size();
+                size_type s1 = x.size();
+                if (s0 < s1 ) {
+                    const_pointer middle = x.begin() + s0;
+                    base_type::last_ = std::uninitialized_copy(middle, x.end(), std::copy(x.begin(), middle, begin()));
+                } else {
+                    pointer last_new = std::copy(x.begin(), x.end(), begin());
+                    if constexpr (!skip_default_constructor_and_destructor) {
+                        sgl::v1::destruct(base_type::last_, last_new);
+                    } 
+                    base_type::last_ = last_new;
+                }
+                return *this;
+            }
+        } else {
             array tmp(x);
             swap(tmp);
-            return *this;
-        } else {
-            size_type s0 = size();
-            size_type s1 = x.size();
-            if (s0 < s1 ) {
-                const_pointer middle = x.begin() + s0;
-                base_type::last_ = std::uninitialized_copy(middle, x.end(), std::copy(x.begin(), middle, begin()));
-            } else {
-                pointer last_new = std::copy(x.begin(), x.end(), begin());
-                sgl::v1::destruct(base_type::last_, last_new); 
-                base_type::last_ = last_new;
-            }
             return *this;
         }
     }
