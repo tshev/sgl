@@ -1,3 +1,5 @@
+#pragma once
+
 namespace sgl {
 namespace v1 {
 template<typename ForwardIterator0, typename ForwardIterator1>
