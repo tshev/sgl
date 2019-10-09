@@ -122,6 +122,16 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
   public:
     array() : base_type() {}
+    // 
+    template<typename It> 
+    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last) : base_type(std::distance(first, last)) {
+        std::uninitialized_copy(first, last, begin());
+    }
+
+    template<typename It>
+    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, Allocator a) : base_type(std::distance(first, last), a) {
+        std::uninitialized_copy(first, last, begin());
+    }
 
     array(size_type n) : base_type(n) {
         if constexpr (!skip_default_constructor_and_destructor) {
@@ -143,11 +153,6 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         sgl::v1::uninitialized_copy_construct(begin(), end(), value);
     }
 
-    template<typename It>
-    array(It first, It last) : base_type(std::distance(first, last)) {
-        std::uninitialized_copy(first, last, begin());
-    }
-
     array(std::initializer_list<value_type> x) : base_type(x.size()) {
         std::uninitialized_copy(x.begin(), x.end(), begin());
     }
@@ -161,12 +166,25 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array& operator=(const array& x) {
-        // TODO make faster
-        // 1. Try to avoid a useless memory allocation
-        //
-        array tmp(x);
-        swap(tmp);
-        return *this;
+        size_type c0 = capacity();
+        size_type c1 = x.capacity();
+        if (c0 < c1) {
+            array tmp(x);
+            swap(tmp);
+            return *this;
+        } else {
+            size_type s0 = size();
+            size_type s1 = x.size();
+            if (s0 < s1 ) {
+                const_pointer middle = x.begin() + s0;
+                base_type::last_ = std::uninitialized_copy(middle, x.end(), std::copy(x.begin(), middle, begin()));
+            } else {
+                pointer last_new = std::copy(x.begin(), x.end(), begin());
+                sgl::v1::destruct(base_type::last_, last_new); 
+                base_type::last_ = last_new;
+            }
+            return *this;
+        }
     }
 
     array& operator=(array&& x) {

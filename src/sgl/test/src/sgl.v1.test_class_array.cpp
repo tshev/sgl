@@ -11,6 +11,7 @@
 #include <sgl/sgl.v1.function.repeat_n.h>
 #include <sgl/sgl.v1.struct.totally_ordered.h>
 #include <sgl/sgl.v1.struct.triple.h>
+#include <sgl/sgl.v1.function.min.h>
 #include <sgl/sgl.v1.function.repeat_n.h>
 #include <sgl/sgl.v1.function.uninitialized_construct.h>
 #include <sgl/sgl.v1.function.destruct.h>
@@ -451,6 +452,36 @@ void test_with_unique_ptr() {
 
 }
 
+
+void test_assignment() {
+    sgl::v1::array<int> x(16, 15);
+    {
+        sgl::v1::array<int> y(15, 1);
+        y.reserve(64);
+        y = x;
+        assert(y.size() == x.size());
+        assert(y.size() == 16);
+        std::for_each(y.begin(), y.end(), [](auto x) { assert(x == 15); });
+    }
+
+    {
+        sgl::v1::array<int> y(32, 13);
+        y = x;
+        assert(y.size() == x.size());
+        assert(y.size() == 16);
+        std::for_each(y.begin(), y.end(), [](auto x) { assert(x == 15); });
+    }
+
+    {
+        sgl::v1::array<int> y(1);
+        y = x;
+        assert(y.size() == x.size());
+        assert(y.size() == 16);
+        std::for_each(y.begin(), y.end(), [](auto x) { assert(x == 15); });
+    }
+}
+
+
 void run_unittest() {
     sgl::v1::array<int>::unittest::test();
     sgl::v1::array<std::string>::unittest::test();
@@ -467,5 +498,6 @@ int main() {
     sgl::v1::test::class_array::test_empty_array();
     sgl::v1::test::class_array::test_empty_array_for_string();
     sgl::v1::test::class_array::test_with_unique_ptr();
+    sgl::v1::test::class_array::test_assignment();
     sgl::v1::test::class_array::run_unittest();
 }
