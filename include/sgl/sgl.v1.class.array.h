@@ -167,15 +167,15 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     array& operator=(const array& x) {
         if constexpr (std::is_nothrow_copy_constructible<value_type>::value) {
-            size_type c0 = capacity();
-            size_type c1 = x.capacity();
+            const size_type c0 = capacity();
+            const size_type c1 = x.capacity();
             if (c0 < c1) {
                 array tmp(x);
                 swap(tmp);
                 return *this;
             } else {
-                size_type s0 = size();
-                size_type s1 = x.size();
+                const size_type s0 = size();
+                const size_type s1 = x.size();
                 if (s0 < s1 ) {
                     const_pointer middle = x.begin() + s0;
                     base_type::last_ = std::uninitialized_copy(middle, x.end(), std::copy(x.begin(), middle, begin()));
@@ -272,7 +272,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void shrink_to_fit() {
-        size_type s = size();
+        const size_type s = size();
         if (s == 0ul) {
             this->~array();
             base_type::detach();
@@ -307,7 +307,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void resize(size_type n) {
-        size_type s = size();
+        const size_type s = size();
         if (s < n) {
             resize_to_larger(n, s);
         } else {
@@ -316,7 +316,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void resize(size_type n, const value_type& x) {
-        size_type s = size();
+        const size_type s = size();
         if (s < n) {
             resize_to_larger(n, s, x);
         } else {
@@ -325,8 +325,8 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void reserve() {
-        size_type initial_size = size();
-        size_type initial_capacity = capacity();
+        const size_type initial_size = size();
+        const size_type initial_capacity = capacity();
         if (initial_capacity == 0) {
             reserve_unguarded(array::initial_capacity, initial_size);
         } else {
@@ -335,7 +335,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     iterator insert(iterator position, value_type&& x) {
-        size_type offset = position - begin();
+        const size_type offset = position - begin();
 
         if (base_type::last_ == base_type::finish_) {
             const size_type initial_size = size();
@@ -366,7 +366,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     iterator insert(iterator position, const value_type& x) {
-        size_type offset = position - begin();
+        const size_type offset = position - begin();
 
         if (base_type::last_ == base_type::finish_) {
             const size_type initial_size = size();
@@ -391,7 +391,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     iterator insert(iterator position, const value_type& x, size_type n) {
-        size_type offset = position - begin();
+        const size_type offset = position - begin();
         if (capacity_unused() < n) {
             const size_type initial_size = size();
             const size_type initial_capacity = capacity();
@@ -514,7 +514,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void assign(size_type n, const value_type& x) {
-        size_type s = size();
+        const size_type s = size();
         if (s < n) {
             reallocate_assign(n, x);
         } else {
