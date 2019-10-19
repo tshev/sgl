@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include "algorithm.h"
 
 namespace sgl {
 namespace v1 {
@@ -94,7 +92,7 @@ public:
   explicit constexpr array_k() = default;
 
   array_k(const std::initializer_list<T> &x) {
-    std::copy(std::begin(x), std::end(x), data_);
+    sgl::v1::copy(std::begin(x), std::end(x), data_);
   }
 
   constexpr array_k(size_type n, const T &value) {
@@ -107,7 +105,7 @@ public:
 
   template<typename U>
   array_k(const U &x) {
-    std::copy(std::begin(x), std::end(x), data_);
+    sgl::v1::copy(std::begin(x), std::end(x), data_);
   }
 
   array_k(const char *x) {

@@ -1,35 +1,12 @@
 //#include <sgl/test_suite.h>
 //#include <sgl/sgl.h>
-#include <iostream>
-#include <cassert>
-
-#include <memory>
 #include <algorithm>
-#include <string>
+#include <cassert>
+#include <iostream>
 #include <iterator>
+#include <string>
 
-#include <sgl/sgl.v1.function.repeat_n.h>
-#include <sgl/sgl.v1.struct.totally_ordered.h>
-#include <sgl/sgl.v1.struct.triple.h>
-#include <sgl/sgl.v1.function.min.h>
-#include <sgl/sgl.v1.function.repeat_n.h>
-#include <sgl/sgl.v1.function.uninitialized_construct.h>
-#include <sgl/sgl.v1.function.destruct.h>
-#include <sgl/sgl.v1.function.copy_range_value_range.h>
-#include <sgl/sgl.v1.function.uninitialized_copy_range_value_range.h>
-#include <sgl/sgl.v1.struct.is_nothrow_semiregular.h>
-#include <sgl/sgl.v1.function.copy_bounded.h>
-#include <sgl/sgl.v1.function.copy_construct.h>
-#include <sgl/sgl.v1.function.uninitialized_move.h>
-#include <sgl/sgl.v1.function.uninitialized_copy_construct.h>
-#include <sgl/sgl.v1.function.default_construct.h>
-#include <sgl/sgl.v1.function.uninitialized_default_construct.h>
-#include <sgl/sgl.v1.function.uninitialized_move_range_value_range.h>
-#include <sgl/sgl.v1.function.equal.h>
-#include <sgl/sgl.v1.struct.totally_ordered.h>
-#include <sgl/sgl.v1.function.multiplicative_resize.h>
-
-#include <sgl/sgl.v1.class.array.h>
+#include <sgl/sgl.v1.class.array.hpp>
 
 namespace sgl {
 namespace v1 {

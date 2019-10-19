@@ -1,7 +1,4 @@
 #pragma once
-#include <smmintrin.h>
-#include <immintrin.h>
-
 
 namespace sgl {
 namespace v1 {

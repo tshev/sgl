@@ -4,14 +4,6 @@
 
 namespace sgl {
 namespace v1 {
-struct copy_string_predicate {
-  size_t n;
-  size_t i = 0;
-  copy_string_predicate(size_t n) : n(n), i(0) {}
-  bool operator()(char sym) {
-    return i++ != n && sym != '\0';
-  }
-};
 
 
 template<typename T, size_t N>

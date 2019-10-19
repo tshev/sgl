@@ -4,6 +4,7 @@
 #include <iterator>
 #include <algorithm>
 
+#include <sgl/sgl.v1.function.default_construct.h>
 #include <sgl/sgl.v1.function.repeat_n.h>
 #include <sgl/sgl.v1.struct.totally_ordered.h>
 #include <sgl/sgl.v1.struct.triple.h>

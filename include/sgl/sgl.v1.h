@@ -213,6 +213,7 @@
 #include "sgl.v1.function.unique_count.h"
 #include "sgl.v1.function.unique_squashed.h"
 #include "sgl.v1.function.unique_transform.h"
+#include "sgl.v1.function.soundex_squash.h"
 #include "sgl.v1.function.soundex.h"
 #include "sgl.v1.function.uninitialized_copy_range_value_range.h"
 #include "sgl.v1.function.uninitialized_move.h"
@@ -248,7 +249,6 @@
 #include "sgl.v1.struct.instrumented.h"
 #include "sgl.v1.class.file_descriptor.h"
 #include "sgl.v1.class.mmap.h"
-#include "sgl.v1.class.array_static.h"
 #include "sgl.v1.struct.array_view.h"
 #include "sgl.v1.class.circular_buffer.h"
 #include "sgl.v1.struct.observer.h"
@@ -259,6 +259,8 @@
 
 // data structures
 #include "sgl.v1.class.array.h"
+#include "sgl.v1.class.array_k.h"
+#include "sgl.v1.class.array_static.h"
 #include "sgl.v1.class.linked_list.h"
 #include "sgl.v1.class.queue.h"
 
