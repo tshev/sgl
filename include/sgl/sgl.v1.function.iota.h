@@ -2,6 +2,18 @@
 namespace sgl {
 namespace v1 {
 
+
+template<typename ForwardIterator>
+constexpr
+void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val) {
+  while (f != l) {
+    *f = val;
+    ++f;
+    ++val;
+  }
+}
+
+
 template<typename ForwardIterator>
 void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val, const ValueType(ForwardIterator) &step) {
   while (f != l) {

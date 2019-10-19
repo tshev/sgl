@@ -213,6 +213,7 @@
 #include "sgl.v1.function.unique_count.h"
 #include "sgl.v1.function.unique_squashed.h"
 #include "sgl.v1.function.unique_transform.h"
+#include "sgl.v1.function.soundex.h"
 #include "sgl.v1.function.uninitialized_copy_range_value_range.h"
 #include "sgl.v1.function.uninitialized_move.h"
 #include "sgl.v1.function.uninitialized_move_range_value_range.h"
