@@ -99,6 +99,16 @@ public:
         return begin() + size() / sizeof(T);
     }
 
+    const_pointer begin() const {
+        return data();
+    }
+
+    const_pointer end() const {
+        return begin() + size() / sizeof(T);
+    }
+
+
+
     pointer data() {
         return addr_;
     }

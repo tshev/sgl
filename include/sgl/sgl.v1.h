@@ -1,10 +1,15 @@
 #pragma once
 
 #include <numeric>
+#include <unistd.h>
+#include <cassert>
 #include <algorithm>
+#include <cmath>
 #include <type_traits>
 #include <iterator>
 #include <string>
+#include <random>
+#include "macros.h"
 #include "sgl.v1.function.repeat_n.h"
 #include "sgl.v1.struct.identity.h"
 #include "sgl.v1.function.swap_step.h"
