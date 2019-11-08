@@ -15,5 +15,20 @@ OutputIterator copy_if(ForwardIterator first, ForwardIterator last, OutputIterat
     return out;
 }
 
+template<typename ForwardIterator, typename ForwardIterator1, typename OutputIterator, typename UnaryPredicate>
+OutputIterator copy_if(ForwardIterator first, ForwardIterator last, ForwardIterator1 first1, OutputIterator out, UnaryPredicate pred) {
+    while (first != last) {
+        if (pred(*first, *first1)) {
+            *out = *first;
+            ++out;
+        }
+        ++first;
+        ++first1;
+    }
+    return out;
+}
+
+
+
 }
 }

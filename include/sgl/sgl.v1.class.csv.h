@@ -28,19 +28,14 @@ std::pair<It, It> csv_column(It first, It last) {
 
 template<typename It, typename Out>
 Out from_csv_string(It first, It last, Out out) {
-    if (first != last) {
-        auto m = first;
-        ++m;
-        if (m == last) {
-            *out = *first;
-        } else {
-            sgl::v1::for_each(first, last, m, [&out](auto slow, auto fast) mutable {
-                if (slow != fast || slow != '"') {
-                    *out = slow;
-                }
-            });
-        }
-    }
+    if (first == last) { return out; }
+    auto m = first;
+    ++m;
+    if (m == last) {
+        *out = *first;
+    } else {
+        sgl::v1::copy_if(first, last, m, out, [](auto slow, auto fast) {return slow != fast || slow != '"';});
+   }
     return out;
 }
 
