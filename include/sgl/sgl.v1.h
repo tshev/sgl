@@ -12,6 +12,7 @@
 #include <cstdint>
 #include "macros.h"
 #include "sgl.v1.class.continuous_inclosed_queue_span.h"
+#include "sgl.v1.class.projection_iterator.h"
 #include "sgl.v1.function.repeat_n.h"
 #include "sgl.v1.struct.identity.h"
 #include "sgl.v1.function.swap_step.h"
