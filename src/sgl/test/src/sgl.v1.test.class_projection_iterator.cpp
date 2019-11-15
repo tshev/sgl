@@ -1,6 +1,8 @@
 #include <cassert>
+#include <type_traits>
 #include <iterator>
 #include <sgl/sgl.v1.class.projection_iterator.h>
+
 namespace sgl {
 namespace v1 {
 namespace test {
@@ -39,6 +41,9 @@ void test() {
     assert(tmp == p);
     p--;
     assert(tmp - 1 == p);
+
+    typedef std::iterator_traits<decltype(p)>::value_type value_type;
+    static_assert(std::is_same<value_type, int>::value);
 }
 
 } // namespace class_projection_iterator
