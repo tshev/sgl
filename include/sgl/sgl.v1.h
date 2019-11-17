@@ -11,6 +11,7 @@
 #include <random>
 #include <cstdint>
 #include "macros.h"
+#include "sgl.v1.class.lru_cache.h"
 #include "sgl.v1.class.continuous_inclosed_queue_span.h"
 #include "sgl.v1.class.projection_iterator.h"
 #include "sgl.v1.function.repeat_n.h"

@@ -1,12 +1,11 @@
-#include <iostream>
-#include <cassert>
-#include <numeric>
-#include <vector>
-#include <unordered_map>
+#pragma once
 
+namespace sgl {
+namespace v1 {
 
 template<typename K, typename V>
 class lru_cache {
+    // TODO: rewrite with a forward list
     struct node_t {
         K value;
         size_t next = 0;
@@ -191,7 +190,11 @@ public:
 
 };
 
+}  // namespace v1
+}  // namespace sgl
 
+
+/*
 int main() {
     lru_cache<int, int> cache(100);
     cache.insert(0, 100);
@@ -208,3 +211,4 @@ int main() {
     }
 
 }
+*/
