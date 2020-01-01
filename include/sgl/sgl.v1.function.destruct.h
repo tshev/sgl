@@ -1,6 +1,7 @@
 #pragma once
 namespace sgl {
 namespace v1 {
+
 template<typename Pointer>
 void destruct(Pointer first, Pointer last) {
     typedef typename std::iterator_traits<Pointer>::value_type value_type;

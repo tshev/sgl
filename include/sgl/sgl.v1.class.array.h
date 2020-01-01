@@ -125,12 +125,12 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     // 
     template<typename It> 
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last) : base_type(std::distance(first, last)) {
-        std::uninitialized_copy(first, last, begin());
+        sgl::v1::uninitialized_copy(first, last, begin());
     }
 
     template<typename It>
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, Allocator a) : base_type(std::distance(first, last), a) {
-        std::uninitialized_copy(first, last, begin());
+        sgl::v1::uninitialized_copy(first, last, begin());
     }
 
     array(size_type n) : base_type(n) {
@@ -154,11 +154,11 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array(std::initializer_list<value_type> x) : base_type(x.size()) {
-        std::uninitialized_copy(x.begin(), x.end(), begin());
+        sgl::v1::uninitialized_copy(x.begin(), x.end(), begin());
     }
 
     array(const array& x) : base_type(x.size()) {
-        std::uninitialized_copy(x.begin(), x.end(), begin());
+        sgl::v1::uninitialized_copy(x.begin(), x.end(), begin());
     }
 
     array(array&& x) : base_type::first_(x.first_), base_type::last_(x.last_), base_type::finish_(x.finish_) {

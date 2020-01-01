@@ -477,4 +477,5 @@ int main() {
     sgl::v1::test::class_array::test_with_unique_ptr();
     sgl::v1::test::class_array::test_assignment();
     sgl::v1::test::class_array::run_unittest();
+
 }

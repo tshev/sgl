@@ -11,6 +11,8 @@
 #include <random>
 #include <cstdint>
 #include "macros.h"
+#include "sgl.v1.function.transform_positions.h"
+#include "sgl.v1.function.copy_elements.h"
 #include "sgl.v1.class.lru_cache.h"
 #include "sgl.v1.class.continuous_inclosed_queue_span.h"
 #include "sgl.v1.class.projection_iterator.h"
@@ -84,6 +86,7 @@
 #include "sgl.v1.function.all.h"
 #include "sgl.v1.function.any.h"
 #include "sgl.v1.function.construct_ref.h"
+
 #include "sgl.v1.function.uninitialized_construct.h"
 
 #include "sgl.v1.function.contains_all.h"
@@ -92,8 +95,13 @@
 #include "sgl.v1.function.copy_construct.h"
 #include "sgl.v1.function.copy_cyclic.h"
 #include "sgl.v1.function.destruct.h"
-#include "sgl.v1.function.uninitialized_copy_construct.h"
 #include "sgl.v1.function.copy.h"
+
+#include "sgl.v1.function.uninitialized_copy_construct.h"
+#include "sgl.v1.function.uninitialized_copy_trivial.h"
+#include "sgl.v1.function.uninitialized_copy.h"
+
+#include "sgl.v1.function.copy_elements.h"
 #include "sgl.v1.function.copy_n.h"
 #include "sgl.v1.function.copy_if.h"
 #include "sgl.v1.function.copy_n_while.h"

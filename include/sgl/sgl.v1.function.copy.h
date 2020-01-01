@@ -16,57 +16,96 @@ void stream(__m256i source, __m256i* dist) {
     return _mm256_stream_si256(dist, source);
 }
 
-void* copy(sgl::v1::simd_tag<true>, void const* first0, void* last0, void* out)  {
-    char const* first1 = (char const*)first0;
-    char const* last1 = (char const*)last0;
+template<size_t N>
+struct copy_op {};
+
+template<>
+struct copy_op<32> {
+__attribute__((__always_inline__))
+void operator()(void const* source, void* distanation) const {
+    _mm256_storeu_si256((__m256i*)distanation, _mm256_stream_load_si256((const __m256i*)source));
+}
+};
+
+template<size_t N>
+struct ublock {};
+
+
+template<>
+struct ublock<32> {
+    __m256i* val;
+
+    ublock(void* val) : val((__m256i*)val) {}
+    ublock(const void* val) : val((__m256i*)val) {}
+
+    template<typename T>
+    operator T() {
+        return (T)val;
+    }
+
+    struct value_type {
+        __m256i* val;
+
+        value_type(void* val) : val((__m256i*)val) {}
+        value_type(const void* val) : val((__m256i*)val) {}
+
+        value_type& operator=(const value_type& value) {
+            _mm256_storeu_si256((__m256i*)val, _mm256_stream_load_si256((const __m256i*)value.val));
+            return *this;
+        }
+    };
+
+    ublock& operator=(const ublock& value) {
+        val = value.val;
+        return *this;
+    }
+
+    friend
+    inline
+    bool operator==(const ublock& x, const ublock& y) {
+        return x.val == y.val;
+    }
+
+    friend
+    inline
+    bool operator!=(const ublock& x, const ublock& y) {
+        return !(x == y);
+    }
+
+    value_type operator*() {
+        return value_type(val);
+    }
+
+    ublock& operator++() {
+        ++val;
+        return *this;
+    }
+
+    char* bytes() {
+        return (char*)val;
+    }
+};
+
+
+char* copy(sgl::v1::simd_tag<true>, char const* first1, char const* last1, char* out)  {
     size_t n = last1 - first1;
     constexpr const size_t step = 32ul;
-    const __m256i* first2 = (__m256i*)first1;
-    const __m256i* last2 = first2 + ((n / step) * step) / step;
-    __m256i* out2 = (__m256i*)out;
-
-    while (first2 != last2) {
-        //_mm_prefetch(first2, _mm_hint(32));
-        auto loaded = stream_load(first2);
-        stream(loaded, out2);
-        ++first2;
-        ++out2;
-    }
-    _mm_sfence();
-
-    first1 = (char*)first2;
-    auto out1 = (char*)out2;
-    while (first1 != last1) {
-        *out1 = *first1;
-        ++first1;
-    }
-    return out1;
+    const char* last2 = first1 + (n / step) * step;
+    auto out2 = copy_elements(ublock<step>(first1), ublock<step>(last2), ublock<step>(out)); 
+    return sgl::v1::copy_elements(last2, last1, static_cast<char*>(out2));
 }
 
 
-
-void* copy(sgl::v1::simd_tag<false>, void const* first0, void* last0, void* out)  {
-    char const* first1 = (char const*)first0;
-    char const* last1 = (char const*)last0;
-    char* out1 = (char*)out;
+char* copy(sgl::v1::simd_tag<false>, char const* first1, char const* last1, char* out1)  {
     size_t n0 = last1 - first1;
     constexpr const size_t step = 32ul;
     size_t n_head = (size_t)first1 % step;
     if (n0 < n_head) {
-        while (first1 != last1) {
-            *out1 = *first1;
-            ++out1;
-            ++first1;
-        }
-        return out1;
+        return sgl::v1::copy_elements(first1, last1, out1);
     }
     char const* middle = first1 + n_head; 
-    while (first1 != middle) {
-        *out1 = *first1;
-        ++out1;
-        ++first1;
-    }
-    return sgl::v1::copy(sgl::v1::simd_tag<true>(), middle, last0, out1);
+    out1 = sgl::v1::copy_elements(first1, middle, out1);
+    return sgl::v1::copy(sgl::v1::simd_tag<true>(), middle, last1, out1);
 }
 
 #endif
@@ -77,18 +116,13 @@ requires(ForwardIterator(It) && OutputIterator(O))
 O copy(It first, It last, O out) {
     #ifdef __AVX2__
     typedef typename std::iterator_traits<It>::value_type T;
-    if constexpr (sgl::v1::is_pointer<It>() && sgl::v1::is_pointer<O>() && sgl::v1::is_pod<T>()) {
+    if constexpr (std::is_pointer<It>() && std::is_pointer<O>() && std::is_pod<T>()) {
         if (last < out || out < first) {
-            return (O)sgl::v1::copy(sgl::v1::simd_tag<false>(), first, last, out);
+            return (O)sgl::v1::copy(sgl::v1::simd_tag<false>(), (char const*)first, (char const *)last, (char*)out);
         }
     }
     #endif
-    while (first != last) {
-        *out = *first;
-        ++out;
-        ++first;
-    }
-    return out;
+    return sgl::v1::copy_elements(first, last, out);
 }
 
 } // namespace v1

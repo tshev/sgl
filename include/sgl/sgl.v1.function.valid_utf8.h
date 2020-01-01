@@ -64,6 +64,7 @@ bool valid_utf8(uint8_t* str, size_t length)
       str += 1;
     } else if ((str[0] & 0xe0) == 0xc0) {
       // 110.xxxxx 10.xxxxxx
+        
       if (str + 1 >= end) return false;
       if (!continuation(str + 1, 1)) return false;
       if (overlong_2(str)) return false;

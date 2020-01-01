@@ -81,7 +81,6 @@ public:
             const char* current = data;
             std::tuple<Row...> result;
             sgl::v1::for_each_in_tuple(result, [&current, this](auto& value) {
-                  
                 if constexpr (std::is_same<typename std::decay<decltype(value)>::type, std::string>::value) {
                     if (current != last) {
                         if (*current == '"') {
@@ -95,13 +94,12 @@ public:
                             current = l;
                         }
                     }
-                } else {  
+                } else {
                     current = csv_step(sgl::v1::from_string(current, last, &value), last);
                 }
             });
-            return result;            
+            return result;
         }
-    
         iterator& operator++() {
             data = sgl::v1::find(data, last, '\n');
             if (data != last) ++data;

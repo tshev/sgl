@@ -3,7 +3,7 @@
 #include <memory>
 #include <iterator>
 #include <algorithm>
-
+/*
 #include <sgl/sgl.v1.function.default_construct.h>
 #include <sgl/sgl.v1.function.repeat_n.h>
 #include <sgl/sgl.v1.struct.totally_ordered.h>
@@ -24,8 +24,9 @@
 #include <sgl/sgl.v1.function.uninitialized_move_range_value_range.h>
 #include <sgl/sgl.v1.function.equal.h>
 #include <sgl/sgl.v1.struct.totally_ordered.h>
+*/
 
-#include <sgl/sgl.v1.class.array.h>
+#include <sgl/sgl.v1.class.array.hpp>
 
 #include <sgl/sgl.v1.function.successor_inplace.h>
 #include <sgl/sgl.v1.function.find_if_inplace.h>
