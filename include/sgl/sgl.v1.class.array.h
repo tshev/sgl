@@ -122,8 +122,8 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
   public:
     array() : base_type() {}
-    // 
-    template<typename It> 
+    //
+    template<typename It>
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last) : base_type(std::distance(first, last)) {
         sgl::v1::uninitialized_copy(first, last, begin());
     }
@@ -183,7 +183,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
                     pointer last_new = std::copy(x.begin(), x.end(), begin());
                     if constexpr (!skip_default_constructor_and_destructor) {
                         sgl::v1::destruct(base_type::last_, last_new);
-                    } 
+                    }
                     base_type::last_ = last_new;
                 }
                 return *this;

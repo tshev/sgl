@@ -19,56 +19,82 @@ void stream(__m256i source, __m256i* dist) {
 template<size_t N>
 struct copy_op {};
 
+
 template<>
 struct copy_op<32> {
 __attribute__((__always_inline__))
 void operator()(void const* source, void* distanation) const {
-    _mm256_storeu_si256((__m256i*)distanation, _mm256_stream_load_si256((const __m256i*)source));
+    _mm256_storeu_si256((__m256i*)distanation, _mm256_loadu_si256((const __m256i*)source));
 }
 };
 
-template<size_t N>
-struct ublock {};
+template<typename T>
+struct iloadu;
 
+template<typename T>
+struct istoreu;
 
 template<>
-struct ublock<32> {
-    __m256i* val;
+struct istoreu<__m256i> {
+    void operator()(__m256i* mem_addr, __m256i a) const {
+        _mm256_storeu_si256((__m256i*)mem_addr, a);
+    }
+};
 
-    ublock(void* val) : val((__m256i*)val) {}
-    ublock(const void* val) : val((__m256i*)val) {}
+template<>
+struct iloadu<__m256i> {
+    auto operator()(__m256i* mem_addr) const {
+        return _mm256_loadu_si256((__m256i*)mem_addr);
+    }
+};
 
-    template<typename T>
-    operator T() {
-        return (T)val;
+
+
+template<typename T>
+struct block {
+    typedef T inner_type;
+
+    static constexpr size_t size = sizeof(T);
+
+    static constexpr size_t shrink(size_t n) {
+        return (n / block::size) * block::size;
     }
 
     struct value_type {
-        __m256i* val;
-
-        value_type(void* val) : val((__m256i*)val) {}
-        value_type(const void* val) : val((__m256i*)val) {}
+        T* val;
+        value_type(void* val) : val((T*)val) {}
 
         value_type& operator=(const value_type& value) {
-            _mm256_storeu_si256((__m256i*)val, _mm256_stream_load_si256((const __m256i*)value.val));
+            istoreu<T>()(val, iloadu<T>()(value.val));
             return *this;
         }
     };
 
-    ublock& operator=(const ublock& value) {
+
+    T* val;
+
+    block(void* val) : val((T*)val) {}
+    block(const void* val) : val((T*)val) {}
+
+    template<typename U>
+    operator U() {
+        return (U)val;
+    }
+
+    block& operator=(const block& value) {
         val = value.val;
         return *this;
     }
 
     friend
     inline
-    bool operator==(const ublock& x, const ublock& y) {
+    bool operator==(const block& x, const block& y) {
         return x.val == y.val;
     }
 
     friend
     inline
-    bool operator!=(const ublock& x, const ublock& y) {
+    bool operator!=(const block& x, const block& y) {
         return !(x == y);
     }
 
@@ -76,7 +102,7 @@ struct ublock<32> {
         return value_type(val);
     }
 
-    ublock& operator++() {
+    block& operator++() {
         ++val;
         return *this;
     }
@@ -87,25 +113,26 @@ struct ublock<32> {
 };
 
 
-char* copy(sgl::v1::simd_tag<true>, char const* first1, char const* last1, char* out)  {
-    size_t n = last1 - first1;
-    constexpr const size_t step = 32ul;
-    const char* last2 = first1 + (n / step) * step;
-    auto out2 = copy_elements(ublock<step>(first1), ublock<step>(last2), ublock<step>(out)); 
-    return sgl::v1::copy_elements(last2, last1, static_cast<char*>(out2));
+
+
+char* copy(sgl::v1::simd_tag<true>, char const* first0, char const* last0, char* out0)  {
+    typedef block<__m256i> block_t;
+    const char* last1 = first0 + block_t::shrink(last0 - first0);
+    auto out1 = copy_elements(block_t(first0), block_t(last1), block_t(out0));
+    return sgl::v1::copy_elements(last1, last0, static_cast<char*>(out1));
 }
 
 
-char* copy(sgl::v1::simd_tag<false>, char const* first1, char const* last1, char* out1)  {
-    size_t n0 = last1 - first1;
-    constexpr const size_t step = 32ul;
-    size_t n_head = (size_t)first1 % step;
+char* copy(sgl::v1::simd_tag<false>, char const* first, char const* last, char* out1)  {
+    size_t n0 = last - first;
+    constexpr const size_t block_size = 32ul;
+    size_t n_head = (size_t)first % block_size;
     if (n0 < n_head) {
-        return sgl::v1::copy_elements(first1, last1, out1);
+        return sgl::v1::copy_elements(first, last, out1);
     }
-    char const* middle = first1 + n_head; 
-    out1 = sgl::v1::copy_elements(first1, middle, out1);
-    return sgl::v1::copy(sgl::v1::simd_tag<true>(), middle, last1, out1);
+    char const* middle = first + n_head;
+    out1 = sgl::v1::copy_elements(first, middle, out1);
+    return sgl::v1::copy(sgl::v1::simd_tag<true>(), middle, last, out1);
 }
 
 #endif
