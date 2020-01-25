@@ -12,6 +12,7 @@
 #include <cstdint>
 #include "macros.h"
 #include "sgl.v1.function.heaps_law.h"
+#include "sgl.v1.function.dcg.h"
 #include "sgl.v1.function.transform_positions.h"
 #include "sgl.v1.function.copy_elements.h"
 #include "sgl.v1.class.lru_cache.h"
