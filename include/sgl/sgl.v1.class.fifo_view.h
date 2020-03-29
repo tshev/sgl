@@ -1,26 +1,26 @@
 #pragma once
 
 template<typename S>
-class circular_queue_view {
+class fifo_view {
 public:
     typedef S size_type;   
 
-    static constexpr size_type data_offset = sizeof(circular_queue_view::size_type) * 4ul;
+    static constexpr size_type data_offset = sizeof(fifo_view::size_type) * 4ul;
 private: 
     char* storage;
     size_type storage_size;;
 
 
 public:
-    circular_queue_view() = default;
-    circular_queue_view(char* data, size_type data_size) : storage(data), storage_size(data_size) {
+    fifo_view() = default;
+    fifo_view(char* data, size_type data_size) : storage(data), storage_size(data_size) {
         init_position(position_first());
         init_position(position_last());
     }
 
     void init_position(size_type &x) {
         if (x == 0) {
-            x = circular_queue_view::data_offset;
+            x = fifo_view::data_offset;
         }
     }
 
@@ -57,7 +57,7 @@ public:
     }
 
     size_type max_offset() {
-        return storage_size - circular_queue_view::data_offset;
+        return storage_size - fifo_view::data_offset;
     }
 
     bool push_back(const char* data, size_type size) {
@@ -82,10 +82,10 @@ public:
             ++(this->size());
             return true;
         }
-        new_position_last = circular_queue_view::data_offset + sizeof(size_type) + size; 
+        new_position_last = fifo_view::data_offset + sizeof(size_type) + size; 
         if (new_position_last > position_first()) { return false; } // doublecheck
 
-        char* output = storage + circular_queue_view::data_offset;
+        char* output = storage + fifo_view::data_offset;
         *(size_type*)output = size;
         output += sizeof(size_type);
         std::copy(data, data + size, output);
@@ -121,10 +121,10 @@ public:
         //std::cout << "RR = " << position_last() << std::endl;
         if (new_position_first >= alignment()) {
             if (new_position_first == position_last()) {
-                position_last() = circular_queue_view::data_offset;
+                position_last() = fifo_view::data_offset;
             }
             //assert(size() == 1ul);
-            position_first() = circular_queue_view::data_offset;
+            position_first() = fifo_view::data_offset;
             //position_first() = storage_size;
         } else {
             position_first() = new_position_first;

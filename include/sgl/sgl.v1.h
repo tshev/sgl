@@ -294,7 +294,7 @@
 #include "sgl.v1.class.argparser.h"
 #include "sgl.v1.struct.less_tuple_element.h"
 #include "sgl.v1.struct.greater_tuple_element.h"
-#include "sgl.v1.class.circular_queue_view.h"
+#include "sgl.v1.class.fifo_view.h"
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"
