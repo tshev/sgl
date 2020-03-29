@@ -1,3 +1,4 @@
+// almost gargbase (We need a smaller object and faster implementation)
 #pragma once
 namespace sgl {
 namespace v1 {
