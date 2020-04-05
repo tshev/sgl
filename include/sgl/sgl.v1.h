@@ -10,6 +10,10 @@
 #include <string>
 #include <random>
 #include <cstdint>
+#include <mutex>
+#include <shared_mutex>
+#include <thread>
+#include <atomic>
 #include "macros.h"
 #include "sgl.v1.function.heaps_law.h"
 #include "sgl.v1.function.dcg.h"
@@ -24,16 +28,16 @@
 #include "sgl.v1.class.coordinate.h"
 #include "sgl.v1.function.find_by_mask.h"
 #include "sgl.v1.function.find_by_mask_backward.h"
-
+#include "sgl/sgl.v1.function.as_ref.h"
+#include "sgl/sgl.v1.function.construct_at.h"
+#include "sgl.v1.function.ubase10.h"
+#include "sgl.v1.function.base10.h"
 #include "sgl.v1.function.transform_subgroups.h"
 #include "sgl.v1.function.squash_subgroups.h"
 #include "sgl.v1.function.is_pod.h"
 #include "sgl.v1.function.is_pointer.h"
 #include "sgl.v1.struct.simd_tag.h"
 #include "sgl.v1.function.volume_bars.h"
-
-#include "sgl.v1.function.transform_subgroups_back.h"
-#include "sgl.v1.function.squash_subgroups_back.h"
 
 #include "sgl.v1.function.fill_if.h"
 #include "sgl.v1.function.for_subgroups.h"
@@ -83,6 +87,14 @@
 
 #include "sgl.v1.function.accumulate.h"
 #include "sgl.v1.function.accumulate_squared_diffs.h"
+
+#include "sgl.v1.function.transform_subgroups_back.h"
+#include "sgl.v1.function.squash_subgroups_back.h"
+#include "sgl.v1.function.count_digits.h"
+#include "sgl.v1.function.stringification_size.h"
+#include "sgl.v1.function.stringify_batches.h"
+
+
 #include "sgl.v1.class.classification_report.h"
 
 #include "sgl.v1.function.all.h"
@@ -295,6 +307,9 @@
 #include "sgl.v1.struct.less_tuple_element.h"
 #include "sgl.v1.struct.greater_tuple_element.h"
 #include "sgl.v1.class.fifo_view.h"
+#include "sgl.v1.class.lifo_view.h"
+#include "sgl.v1.class.fifo_concurrent.h"
+#include "sgl.v1.class.fifo_stream.h"
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"

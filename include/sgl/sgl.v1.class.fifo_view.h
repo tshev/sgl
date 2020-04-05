@@ -1,19 +1,22 @@
 #pragma once
+// TODO: think about imperfect invariant: (position_first() == position_last()) => (full || empty)
 
-template<typename S>
+namespace sgl {
+namespace v1 {
+template<typename S = uint64_t>
 class fifo_view {
 public:
     typedef S size_type;   
 
     static constexpr size_type data_offset = sizeof(fifo_view::size_type) * 4ul;
 private: 
-    char* storage;
-    size_type storage_size;;
+    char* storage_;
+    size_type storage_size_;;
 
 
 public:
     fifo_view() = default;
-    fifo_view(char* data, size_type data_size) : storage(data), storage_size(data_size) {
+    fifo_view(char* data, size_type data_size) : storage_(data), storage_size_(data_size) {
         init_position(position_first());
         init_position(position_last());
     }
@@ -25,39 +28,45 @@ public:
     }
 
     size_type& size() {
-        return *(size_type*)storage;
+        return *(size_type*)storage_;
     }
 
     const size_type& size() const {
-        return *(size_type*)storage;
+        return *(size_type*)storage_;
     }
 
     size_type& alignment() {
-        return *((size_type*)storage + 1ul);
+        return *((size_type*)storage_ + 1ul);
     }
 
     const size_type& alignment() const {
-        return *((size_type*)storage + 1ul);
+        return *((size_type*)storage_ + 1ul);
     }
 
     size_type& position_first() {
-        return *((size_type*)storage + 2ul);
+        return *((size_type*)storage_ + 2ul);
     }
 
     const size_type& position_first() const {
-        return *((size_type*)storage + 2ul);
+        return *((size_type*)storage_ + 2ul);
     }
 
     size_type& position_last() {
-        return *((size_type*)storage + 3ul);
+        return *((size_type*)storage_ + 3ul);
     }
 
     const size_type& position_last() const {
-        return *((size_type*)storage + 3ul);
+        return *((size_type*)storage_ + 3ul);
     }
 
     size_type max_offset() {
-        return storage_size - fifo_view::data_offset;
+        return storage_size_ - fifo_view::data_offset;
+    }
+
+    bool empty() const {
+        auto pfirst = position_first();
+        auto plast = position_last();
+        return pfirst == plast && pfirst == fifo_view::data_offset;
     }
 
     bool push_back(const char* data, size_type size) {
@@ -70,8 +79,8 @@ public:
         std::cout << "NP = " << new_position_last << std::endl << std::endl;;
         */
 
-        if (new_position_last <= this->storage_size) {
-            char* output = storage + pback;
+        if (new_position_last <= this->storage_size_) {
+            char* output = storage_ + pback;
             *(size_type*)(output) = size;
             output += sizeof(size_type);
             std::copy(data, data + size, output);
@@ -85,7 +94,7 @@ public:
         new_position_last = fifo_view::data_offset + sizeof(size_type) + size; 
         if (new_position_last > position_first()) { return false; } // doublecheck
 
-        char* output = storage + fifo_view::data_offset;
+        char* output = storage_ + fifo_view::data_offset;
         *(size_type*)output = size;
         output += sizeof(size_type);
         std::copy(data, data + size, output);
@@ -94,9 +103,15 @@ public:
         return true;
     }
 
+    template<typename T>
+    bool push_back(const T& value) {
+        static_assert(std::is_pod<T>::value, "Supports only pods");
+        return push_back((const char*)&value, sizeof(T));
+    }
+
     std::pair<char*, size_type> front() {
         size_type pfirst = position_first();
-        char* out = storage + pfirst;
+        char* out = storage_ + pfirst;
         size_type n = *((size_type*)out);
         out += sizeof(size_type);
         return {out, n};
@@ -104,16 +119,15 @@ public:
 
     std::pair<const char*, size_type> front() const {
         size_type pfirst = position_first();
-        const char* out = storage + pfirst;
+        const char* out = storage_ + pfirst;
         size_type n = *((size_type*)out);
         out += sizeof(size_type);
         return {out, n};
     }
 
-
     std::pair<char*, size_type> pop_front() {
         size_type pfirst = position_first();
-        char* out = storage + pfirst;
+        char* out = storage_ + pfirst;
         size_type n = *((size_type*)out);
         out += sizeof(size_type);
         size_type new_position_first = pfirst + sizeof(size_type) + n;
@@ -125,7 +139,7 @@ public:
             }
             //assert(size() == 1ul);
             position_first() = fifo_view::data_offset;
-            //position_first() = storage_size;
+            //position_first() = storage_size_;
         } else {
             position_first() = new_position_first;
         }
@@ -135,3 +149,8 @@ public:
 };
 
 
+
+
+
+} // namespace v1
+} // namespace sgl

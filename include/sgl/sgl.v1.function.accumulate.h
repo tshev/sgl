@@ -11,6 +11,7 @@ T accumulate(ForwardIterator first, ForwardIterator last, T val) {
 }
 
 template<typename ForwardIterator, typename T, typename BinaryOperation>
+inline
 T accumulate(ForwardIterator first, ForwardIterator last, T val, BinaryOperation binary_operation) {
     while (first != last) {
         val = binary_operation(val, *first);

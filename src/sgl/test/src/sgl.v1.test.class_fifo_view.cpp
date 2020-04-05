@@ -160,6 +160,28 @@ namespace class_fifo_view {
             assert(s == "hello123");
             assert(cq.size() == 0);
         }
+
+        {
+            std::vector<char> data(64);
+            sgl::v1::fifo_view cq(&data[0], data.size());
+
+            assert(cq.push_back(int64_t(3)));
+            assert(cq.push_back(int64_t(5)));
+            assert(cq.position_first() != cq.position_last());
+
+            assert(!cq.push_back('a'));
+
+            auto front = cq.pop_front();
+            assert(front.second == sizeof(int64_t));
+            assert(*(int64_t*)front.first == 3);
+            assert(cq.push_back(int64_t(6)));
+
+            assert(cq.position_first() == cq.position_last());
+
+            front = cq.pop_front();
+            assert(front.second == sizeof(int64_t));
+            assert(*(int64_t*)front.first == 5);
+        }
     }
 } // namespace class_fifo_view
 } // namespace test

@@ -1,4 +1,8 @@
 #include <cassert>
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <shared_mutex>
 #include <sgl/sgl.h>
 
 namespace sgl {
