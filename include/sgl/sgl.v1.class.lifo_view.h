@@ -50,6 +50,7 @@ public:
             return !(x == y);
         }
     };
+
     lifo_view() = default;
 
     lifo_view(char* data, size_type size) : storage_(data), storage_size_(size) {
@@ -104,6 +105,10 @@ public:
 
     auto end() {
         return iterator(storage_ + lifo_view::data_offset); 
+    }
+
+    void clear() {
+        offset() = lifo_view::data_offset;
     }
 };
 

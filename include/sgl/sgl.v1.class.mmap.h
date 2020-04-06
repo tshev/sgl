@@ -107,7 +107,9 @@ public:
         return begin() + size() / sizeof(T);
     }
 
-
+    void sync_data() {
+        return msync(MS_SYNC);
+    }
 
     pointer data() {
         return addr_;
@@ -185,7 +187,7 @@ sgl::v1::mmap<U> fmmap(const char* path, T length) {
 template<typename U, typename T>
 inline
 sgl::v1::mmap<U> fmmap(T path) {
-    sgl::v1::file_descriptor fd(path, sgl::v1::io::read_write | sgl::v1::io::creat, 0600); // does not fill with zeros
+    sgl::v1::file_descriptor fd(path, sgl::v1::io::read_write, 0600); // does not fill with zeros
 
     struct stat file_stats;
     if(::fstat(fd.raw(), &file_stats) < 0) {
