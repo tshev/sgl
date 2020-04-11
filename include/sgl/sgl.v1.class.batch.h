@@ -6,7 +6,6 @@ template<typename Integer = uint64_t>
 class batch {
     static constexpr uint8_t state_open = 0u;
     static constexpr uint8_t state_frozen = 1u;
-    static constexpr Integer placeholder_size = 128ul;
 
     sgl::v1::mmap<char> data_;
     uint8_t* state_;
@@ -16,7 +15,7 @@ public:
 
     batch(const char* path, Integer size) : data_(sgl::v1::fmmap<char>(path, size)),
                                             state_((uint8_t*)data_.begin()),
-                                            lifo_(data_.begin() + 1ul + batch::placeholder_size, size - 1ul - batch::placeholder_size) {}
+                                            lifo_(data_.begin() + 1ul, size - 1ul) {}
 
     bool push_back(const char* data, Integer size) {
         return lifo_.push_back(data, size);

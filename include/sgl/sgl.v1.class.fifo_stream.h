@@ -85,7 +85,6 @@ public:
     }
 
     ~fifo_stream() {
-        std::cerr << "~fifo_stream()\n";
         if (--(*count_) == 0u) {
             std::destroy_at(shared_mutex_);
             state_->store(0u);

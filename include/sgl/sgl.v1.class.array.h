@@ -122,7 +122,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
   public:
     array() : base_type() {}
-    //
+
     template<typename It>
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last) : base_type(std::distance(first, last)) {
         sgl::v1::uninitialized_copy(first, last, begin());
@@ -166,10 +166,11 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array& operator=(const array& x) {
+        if (std::addressof(x) == this) { return *this; } // Don't like it, but the behavior should be `identical` to built-in types 
         if constexpr (std::is_nothrow_copy_constructible<value_type>::value) {
             const size_type c0 = capacity();
             const size_type c1 = x.capacity();
-            if (c0 < c1) {
+            if (c0 < c1 || std::addressof(x == this)) {
                 array tmp(x);
                 swap(tmp);
                 return *this;
@@ -196,6 +197,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array& operator=(array&& x) {
+        if (std::addressof(x) == this) { return *this; } // Don't like it, but the behavior should be `identical` to built-in types 
         this->~array();
         base_type::first_ = x.first_;
         base_type::last_ = x.last_;
@@ -218,7 +220,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     friend
     inline
     bool operator==(const array& x, const array& y) {
-        return x.size() == y.size() && sgl::v1::equal(std::begin(x), std::end(x), std::begin(y));
+        return x.size() == y.size() && sgl::v1::equal(x.begin(), x.end(), y.begin());
     }
 
     friend
@@ -230,7 +232,25 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     friend
     inline
     bool operator<(const array& x, const array& y) {
-        return x.first_ < y.first_;
+        return std::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+    }
+
+    friend
+    inline
+    bool operator<=(const array& x, const array& y) {
+        return !(y < x);
+    }
+
+    friend
+    inline
+    bool operator>(const array& x, const array& y) {
+        return y < x;
+    }
+
+    friend
+    inline
+    bool operator>=(const array& x, const array& y) {
+        return !(x < y);
     }
 
     size_type capacity() const {
@@ -605,7 +625,6 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
   private:
 
     void reserve_unguarded(size_type new_capacity, size_type size) {
-        // assert(new_capacity >= size())
         T* data = base_type::allocate(new_capacity);
 
         if constexpr (prefer_move::value) {
