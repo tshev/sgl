@@ -11,8 +11,63 @@ class fifo_view {
     size_type storage_capacity_;
 
 public:
+    class iterator {
+        char* data_;
+
+    public:
+        iterator() = default;
+        iterator(const iterator& x) = default;
+        iterator(char* data) noexcept : data_(data) {}
+
+        friend
+        inline
+        bool operator==(const iterator x, const iterator y) {
+            return x.data_ == y.data_;
+        }
+
+        friend
+        inline
+        bool operator!=(const iterator x, const iterator y) {
+            return !(x == y);
+        }
+
+        friend
+        inline
+        bool operator<(const iterator x, const iterator y) {
+            return x.data_ < y.data_;
+        }
+
+        std::pair<char*, size_type> operator*() noexcept {
+            size_type size = sgl::v1::as_ref<size_type>(data_);
+            return {data_ + sizeof(size_type), size};
+        }
+
+        std::pair<const char*, size_type> operator*() const noexcept {
+            size_type size = sgl::v1::as_ref<size_type>(data_);
+            return {data_ + sizeof(size_type), size};
+        }
+
+        iterator& operator++() noexcept {
+            size_type size = sgl::v1::as_ref<size_type>(data_);
+            data_ += size + sizeof(size_type);
+            return *this;
+        }
+
+        iterator operator++(int) noexcept {
+            iterator tmp(data_);
+            ++(*this);
+            return tmp;
+        }
+    };
+
     fifo_view() = default;
-    fifo_view(char* storage, size_type capacity) : storage_(storage), storage_capacity_(capacity) {}
+
+    fifo_view(char* storage, size_type capacity) : storage_(storage), storage_capacity_(capacity) {
+        if (position_first() == 0) {
+            position_first() = size_type(2) * sizeof(size_type);
+            position_last() = size_type(2) * sizeof(size_type);
+        }
+    }
 
     size_type& position_first() {
         return sgl::v1::as_ref<size_type>(storage_);
@@ -51,6 +106,15 @@ public:
         return true;
     }
 
+    template<typename T>
+    bool push_back(const T& value) {
+        return push_back((const char*)&value, sizeof(T));
+    }
+
+    bool empty() const {
+        return position_first() == position_last();
+    }
+
     std::pair<char*, size_type> pop_front() {
         size_type pfirst = position_first();
         size_type size = sgl::v1::as_ref<size_type>(storage_ + pfirst);
@@ -66,6 +130,22 @@ public:
     std::pair<char*, size_type> front() {
         auto pfirst = position_first();
         return {storage_ + pfirst + sizeof(size_type), sgl::v1::as_ref<size_type>(storage_ + pfirst)};
+    }
+
+    iterator begin() {
+        return iterator(storage_ + position_first());
+    }
+
+    const iterator begin() const {
+        return iterator(storage_ + position_first());
+    }
+
+    iterator end() {
+        return iterator(storage_ + position_last());
+    }
+
+    const iterator end() const {
+        return iterator(storage_ + position_last());
     }
 };
 

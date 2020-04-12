@@ -94,5 +94,19 @@ bool equal(ForwardIterator0 first_0, ForwardIterator0 last_0, ForwardIterator1 f
   return equal(first_0, last_0, first_1, last_1, std::input_iterator_tag{});
 #endif
 }
+
+template<typename ForwardIterator0, typename ForwardIterator1, typename R>
+inline
+bool equal(ForwardIterator0 first_0, ForwardIterator0 last_0, ForwardIterator1 first_1, ForwardIterator1 last_1, R r) {
+  while (first_0 != last_0 && first_1 != last_1) {
+    if (r(*first_0, *first_1)) {} else { return false; }
+    ++first_0;
+    ++first_1;
+  }
+  return first_0 == last_0 && first_1 == last_1;
+}
+
+
+
 } // namespace v1
 } // namespace sgl
