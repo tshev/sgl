@@ -170,7 +170,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         if constexpr (std::is_nothrow_copy_constructible<value_type>::value) {
             const size_type c0 = capacity();
             const size_type c1 = x.capacity();
-            if (c0 < c1 || std::addressof(x == this)) {
+            if (c0 < c1 || std::addressof(x) == this) {
                 array tmp(x);
                 swap(tmp);
                 return *this;
@@ -233,24 +233,6 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     inline
     bool operator<(const array& x, const array& y) {
         return std::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
-    }
-
-    friend
-    inline
-    bool operator<=(const array& x, const array& y) {
-        return !(y < x);
-    }
-
-    friend
-    inline
-    bool operator>(const array& x, const array& y) {
-        return y < x;
-    }
-
-    friend
-    inline
-    bool operator>=(const array& x, const array& y) {
-        return !(x < y);
     }
 
     size_type capacity() const {
