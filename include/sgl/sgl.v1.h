@@ -312,7 +312,7 @@
 #include "sgl.v1.class.fifo_concurrent.h"
 #include "sgl.v1.class.fifo_stream.h"
 #include "sgl.v1.function.parse_storage_capacity.h"
-#include "sgl.v1.function.parse_timedelta.h"
+#include "sgl.v1.function.parse_timedelta_as_ns.h"
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"
