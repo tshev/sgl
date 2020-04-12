@@ -173,8 +173,7 @@ public:
             position_first() = new_position_first;
         }
         --(this->size());
-        if (position_first() == position_last()) {
-            assert(this->size() == 0);
+        if (size() == 0) {
             position_first() = circular_fifo_view::data_offset;
             position_last() = circular_fifo_view::data_offset;
         }

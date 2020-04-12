@@ -308,9 +308,10 @@
 #include "sgl.v1.struct.greater_tuple_element.h"
 #include "sgl.v1.class.fifo_view.h"
 #include "sgl.v1.class.lifo_view.h"
+#include "sgl.v1.class.circular_fifo_view.h"
 #include "sgl.v1.class.batch.h"
-#include "sgl.v1.class.fifo_concurrent.h"
-#include "sgl.v1.class.fifo_stream.h"
+#include "sgl.v1.class.concurrent_circular_fifo.h"
+#include "sgl.v1.class.fifo_storage.h"
 #include "sgl.v1.function.parse_storage_capacity.h"
 #include "sgl.v1.function.parse_timedelta_as_ns.h"
 
