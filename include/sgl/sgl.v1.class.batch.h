@@ -9,7 +9,7 @@ class batch {
 
     sgl::v1::mmap<char> data_;
     uint8_t* state_;
-    sgl::v1::lifo_view<Integer> lifo_;
+    sgl::v1::fifo_view<Integer> lifo_;
 
 public:
 

@@ -15,6 +15,7 @@
 #include <thread>
 #include <atomic>
 #include "macros.h"
+#include "sgl.v1.struct.totally_ordered.h"
 #include "sgl.v1.function.heaps_law.h"
 #include "sgl.v1.function.dcg.h"
 #include "sgl.v1.function.transform_positions.h"
@@ -52,7 +53,6 @@
 #include "sgl.v1.struct.delta_square.h"
 #include "sgl.v1.struct.plus.h"
 #include "sgl.v1.struct.minus.h"
-#include "sgl.v1.struct.totally_ordered.h"
 #include "sgl.v1.struct.triple.h"
 #include "sgl.v1.struct.if_else.h"
 #include "sgl.v1.struct.tuple_size.h"
@@ -294,6 +294,12 @@
 #include "sgl.v1.class.array_static.h"
 #include "sgl.v1.class.linked_list.h"
 #include "sgl.v1.class.queue.h"
+#include "sgl.v1.class.fifo_view.h"
+#include "sgl.v1.class.lifo_view.h"
+#include "sgl.v1.class.circular_fifo_view.h"
+#include "sgl.v1.class.batch.h"
+#include "sgl.v1.class.concurrent_circular_fifo.h"
+#include "sgl.v1.class.fifo_storage.h"
 
 #include "sgl.v1.struct.expression_separator.h"
 #include "sgl.v1.function.parse_program_option.h"
@@ -306,14 +312,10 @@
 #include "sgl.v1.class.argparser.h"
 #include "sgl.v1.struct.less_tuple_element.h"
 #include "sgl.v1.struct.greater_tuple_element.h"
-#include "sgl.v1.class.fifo_view.h"
-#include "sgl.v1.class.lifo_view.h"
-#include "sgl.v1.class.circular_fifo_view.h"
-#include "sgl.v1.class.batch.h"
-#include "sgl.v1.class.concurrent_circular_fifo.h"
-#include "sgl.v1.class.fifo_storage.h"
 #include "sgl.v1.function.parse_storage_capacity.h"
 #include "sgl.v1.function.parse_timedelta_as_ns.h"
+
+// data structures
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"

@@ -1,6 +1,7 @@
 #pragma once
 namespace sgl {
 namespace v1 {
+
 template<typename T>
 struct totally_ordered {
   friend
@@ -21,5 +22,6 @@ struct totally_ordered {
     return !(x < y);
   }
 }; // struct totally_ordered
+
 } // namespace v1
 } // namespace sgl

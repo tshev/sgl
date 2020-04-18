@@ -17,13 +17,13 @@ public:
 };
 
 template<typename Q>
-class fifo_concurrent {
+class concurrent_circular_fifo {
     Q queue_;
     mutable spinlock* shared_mutex_;
 
 public:
-    fifo_concurrent() = default;
-    fifo_concurrent(Q queue, spinlock* shared_mutex) : queue_(queue), shared_mutex_(shared_mutex) {}
+    concurrent_circular_fifo() = default;
+    concurrent_circular_fifo(Q queue, spinlock* shared_mutex) : queue_(queue), shared_mutex_(shared_mutex) {}
 
     bool empty() const {
         std::lock_guard<spinlock> lock(*shared_mutex_);

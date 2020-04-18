@@ -8,7 +8,7 @@ struct fifo_storage {
     spinlock* shared_mutex_;
     std::atomic<uint8_t>* state_;
     std::atomic<uint8_t>* count_;
-    sgl::v1::fifo_concurrent<sgl::v1::circular_fifo_view<uint64_t>> fifo_;
+    sgl::v1::concurrent_circular_fifo<sgl::v1::circular_fifo_view<uint64_t>> fifo_;
 
 public:
 
@@ -28,6 +28,7 @@ public:
     }
 
     fifo_storage(const std::string& path, uint64_t size) : fifo_storage(path.data(), size) {}
+
     fifo_storage(const std::string& path) : fifo_storage(path.data()) {}
 
     void init() {
@@ -45,7 +46,6 @@ public:
                 while (state_->load() == 0);  // can't the object use before it was initialized
             }
         }
-
     }
 
     template<typename T>

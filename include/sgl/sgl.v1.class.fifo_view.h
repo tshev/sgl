@@ -11,7 +11,7 @@ class fifo_view {
     size_type storage_capacity_;
 
 public:
-    class iterator {
+    class iterator : public sgl::v1::totally_ordered<iterator> {
         char* data_;
 
     public:
@@ -64,9 +64,13 @@ public:
 
     fifo_view(char* storage, size_type capacity) : storage_(storage), storage_capacity_(capacity) {
         if (position_first() == 0) {
-            position_first() = size_type(2) * sizeof(size_type);
-            position_last() = size_type(2) * sizeof(size_type);
+            init();
         }
+    }
+
+    void init() {
+        position_first() = size_type(2) * sizeof(size_type);
+        position_last() = size_type(2) * sizeof(size_type);
     }
 
     size_type& position_first() {
@@ -146,6 +150,10 @@ public:
 
     const iterator end() const {
         return iterator(storage_ + position_last());
+    }
+
+    void clear() {
+        init();
     }
 };
 
