@@ -102,6 +102,7 @@
 #include "sgl.v1.function.construct_ref.h"
 
 #include "sgl.v1.function.uninitialized_construct.h"
+#include "sgl.v1.function.uninitialized_construct_range.h"
 
 #include "sgl.v1.function.contains_all.h"
 #include "sgl.v1.function.contains.h"
