@@ -11,7 +11,7 @@ public:
     static constexpr size_type data_offset = sizeof(circular_fifo_view::size_type) * 4ul;
 private: 
     char* storage_;
-    size_type storage_capacity_;
+    size_type storage_capacity_;;
 
 
 public:
@@ -71,7 +71,8 @@ public:
     bool empty() const {
         auto pfirst = position_first();
         auto plast = position_last();
-        return pfirst == plast && pfirst == circular_fifo_view::data_offset;
+        //return pfirst == plast && pfirst == circular_fifo_view::data_offset;
+        return size() == 0;
     }
 
     void clear() {
@@ -99,21 +100,23 @@ public:
         */
         /// b1 | b0
         //      ^
-        size_type new_position_last = position_last() + sizeof(size_type) + size;
+        assert((this->size() == 0 && position_first() == position_last()) || (this->size() != 0));
+        size_type block_size = sizeof(size_type) + size;
+        size_type new_position_last = position_last() + block_size;
         if (position_first() < position_last()) {
             if (new_position_last <= this->storage_capacity_) {
                 _insert(position_last(), data, size);
                 position_last() = new_position_last;
 
-                if (new_position_last > alignment()) { // doublecheck
-                    alignment() = new_position_last; 
-                }
+                //if (new_position_last > alignment()) { // doublecheck
+                alignment() = new_position_last; 
+                //}
 
                 ++(this->size());
                 return true;
             } else {
-                new_position_last = circular_fifo_view::data_offset + sizeof(size_type) + size; 
-                if (new_position_last > position_first()) { return false; }
+                new_position_last = circular_fifo_view::data_offset + block_size; 
+                if (new_position_last >= position_first()) { return false; }
                 alignment() = position_last();
 
                 _insert(circular_fifo_view::data_offset, data, size);
@@ -123,14 +126,16 @@ public:
             }
             return false;
         } else {
-            if (new_position_last <= position_first()) {
+            if (new_position_last < position_first()) {
                 _insert(position_last(), data, size);
+                //_insert(circular_fifo_view::data_offset, data, size);
                 position_last() = new_position_last;
                 ++(this->size());
                 return true;
-            } else if (empty() && new_position_last <= storage_capacity_) {
+            } else if (empty() && new_position_last <= storage_capacity_)  {
                 _insert(circular_fifo_view::data_offset, data, size);
                 position_last() = new_position_last;
+                alignment() = position_last();
                 ++(this->size());
                 return true;
             }
@@ -171,13 +176,15 @@ public:
 
         size_type new_position_first = position_first() + sizeof(size_type) + n;
 
+        std::cout << "= " << position_first() << " " << position_last() << " "<< new_position_first << " " << storage_capacity_ << " " << size() << std::endl;
+        assert(new_position_first <= alignment());
         if (new_position_first >= alignment()) {
-            alignment() = storage_capacity_; 
             position_first() = circular_fifo_view::data_offset;
         } else {
             position_first() = new_position_first;
         }
         --(this->size());
+        assert((this->size() == 0 && new_position_first == position_last()) || (this->size() != 0));
         if (size() == 0) {
             position_first() = circular_fifo_view::data_offset;
             position_last() = circular_fifo_view::data_offset;

@@ -3,7 +3,7 @@ namespace sgl {
 namespace v1 {
 
 template <typename OutputIterator>
-OutputIterator copy_cmd_args(int argc, char* argv[], OutputIterator out) {
+OutputIterator copy_cmd_args(int argc, const char* argv[], OutputIterator out) {
     for (int i = 0; i < argc; ++i) {
         auto first = argv[i];
         auto last = first + strlen(first);

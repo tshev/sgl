@@ -19,7 +19,6 @@
 #include "sgl.v1.function.copy.h"
 #include "sgl.v1.function.uninitialized_copy_construct.h"
 
-#include "sgl.v1.function.uninitialized_copy_trivial.h"
 #include "sgl.v1.function.uninitialized_copy.h"
 #include "sgl.v1.function.copy_construct.h"
 

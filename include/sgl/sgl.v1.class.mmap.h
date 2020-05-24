@@ -56,6 +56,10 @@ public:
         }
     }
 
+    bool partially_formed() const {
+        return addr_ == nullptr;
+    }
+
     mmap(size_type length, int prot, int flags, int fd, off_t offset) : mmap(nullptr, length, prot, flags, fd, offset) {}
     mmap(size_type length, int prot, int flags, int fd) : mmap(nullptr, length, prot, flags, fd, 0) {}
 

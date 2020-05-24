@@ -76,7 +76,7 @@ Out frequency_pairs(It first, It last, Out out, P p) {
 /*
 template<typename ForwardIterator, typename Out>
 Out frequency_pairs(ForwardIterator f, ForwardIterator l, Out out) {
-  typedef ValueType(ForwardIterator) T;
+  typedef SGLValueType(ForwardIterator) T;
 
   if (f == l) return out;
   *out = { *f, 1 };

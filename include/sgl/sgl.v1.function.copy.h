@@ -126,14 +126,18 @@ inline
 char* copy(sgl::v1::simd_tag<true>, char const* first0, char const* last0, char* out0)  {
     return copy(sgl::v1::simd_tag<false>(), first0, last0, out0);
 }
-
-
 #endif
 
 template<typename It, typename O>
 inline
 requires(ForwardIterator(It) && OutputIterator(O))
 O copy(It first, It last, O out) {
+    while (first != last) {
+        *out = *first;
+        ++out;
+        ++first;
+    }
+    return out;
     #ifdef __AVX2__
     typedef typename std::iterator_traits<It>::value_type T;
     if constexpr (std::is_pointer<It>() && std::is_pointer<O>() && std::is_pod<T>()) {

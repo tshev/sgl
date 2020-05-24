@@ -4,7 +4,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename It0, typename It1>
-// requires(ForwardIterator(It0) && Mutable(It0) && ForwardIterator(It1) && Mutable(It1) && ValueType(It0) == ValueType(It1))
+// requires(ForwardIterator(It0) && Mutable(It0) && ForwardIterator(It1) && Mutable(It1) && SGLValueType(It0) == SGLValueType(It1))
 inline
 std::pair<It0, It1> swap_ranges(It0 first0, It0 last0, It1 first1, It1 last1, std::forward_iterator_tag) {
     using std::swap;
@@ -17,7 +17,7 @@ std::pair<It0, It1> swap_ranges(It0 first0, It0 last0, It1 first1, It1 last1, st
 }
 
 template<typename It0, typename It1>
-// requires(RandomAccessIterator(It0) && Mutable(It0) && RandomAccessIterator(It1) && Mutable(It1) && ValueType(It0) == ValueType(It1))
+// requires(RandomAccessIterator(It0) && Mutable(It0) && RandomAccessIterator(It1) && Mutable(It1) && SGLValueType(It0) == SGLValueType(It1))
 inline
 std::pair<It0, It1> swap_ranges(It0 first0, It0 last0, It1 first1, It1 last1, std::random_access_iterator_tag) {
     using std::swap;
@@ -38,7 +38,7 @@ std::pair<It0, It1> swap_ranges(It0 first0, It0 last0, It1 first1, It1 last1, st
 }
 
 template<typename It0, typename It1>
-// requires(ForwardIterator(It0) && Mutable(It0) && ForwardIterator(It1) && Mutable(It1) && ValueType(It0) == ValueType(It1))
+// requires(ForwardIterator(It0) && Mutable(It0) && ForwardIterator(It1) && Mutable(It1) && SGLValueType(It0) == SGLValueType(It1))
 inline
 std::pair<It0, It1> swap_ranges(It0 first0, It0 last0, It1 first1, It1 last1) {
     typedef typename std::iterator_traits<It0>::iterator_category iterator_category0;

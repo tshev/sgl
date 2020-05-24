@@ -10,8 +10,8 @@ template<typename ForwardIterator, typename OutputIterator, typename T, typename
 // requires(
 //   ForwardIterator(ForwardIterator) &&
 //   OutputIterator(OutputIterator) &&
-//   Regular(ValueType(ForwardIterator)) &&
-//   AbelianSemigroup(ValueType(ForwardIterator), Op, OpNegate)
+//   Regular(SGLValueType(ForwardIterator)) &&
+//   AbelianSemigroup(SGLValueType(ForwardIterator), Op, OpNegate)
 // )
 OutputIterator cumulate(ForwardIterator f, ForwardIterator m, ForwardIterator l, OutputIterator out, T identity_element, Op op, OpNegate op_negate) {
   ForwardIterator it = f;
@@ -60,11 +60,11 @@ template<typename ForwardIterator, typename OutputIterator, typename T>
 // requires(
 //   ForwardForwardIteratorerator(ForwardIterator) &&
 //   OutputIterator(OutputIterator) &&
-//   Regular(ValueType(ForwardIterator)) &&
+//   Regular(SGLValueType(ForwardIterator)) &&
 //   AbelianSemigroup(
-//     ValueType(ForwardIterator),
-//     ValueType(ForwardIterator)::operator+=(const ValueType(ForwardIterator)&),
-//     ValueType(ForwardIterator)::operator-=(const ValueType(ForwardIterator)&)
+//     SGLValueType(ForwardIterator),
+//     SGLValueType(ForwardIterator)::operator+=(const SGLValueType(ForwardIterator)&),
+//     SGLValueType(ForwardIterator)::operator-=(const SGLValueType(ForwardIterator)&)
 //   )
 // )
 OutputIterator cumulate(ForwardIterator first, ForwardIterator middle, ForwardIterator last, OutputIterator out, T identity_element) {

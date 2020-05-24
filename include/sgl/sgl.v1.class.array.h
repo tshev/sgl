@@ -101,13 +101,14 @@ template <typename T, typename Allocator = std::allocator<T>,
           bool skip_default_constructor_and_destructor = std::is_pod<T>::value>
 class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip_default_constructor_and_destructor>> {
     struct prefer_move {
+        // move nothrow move constructible resources and non-regular types
         static constexpr const bool value =
             (std::is_move_constructible<T>::value && !std::is_copy_constructible<T>::value) ||
             (std::is_nothrow_move_constructible<T>::value && !std::is_nothrow_copy_constructible<T>::value);
     };
 
   public:
-    static constexpr const bool trivial_semiregular = skip_default_constructor_and_destructor;
+    static constexpr const bool default_construct_data = skip_default_constructor_and_destructor;
 
     typedef array_base<T, Allocator> base_type;
     typedef typename base_type::value_type value_type;

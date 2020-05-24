@@ -6,7 +6,7 @@ namespace v1 {
 template<typename It>
 // requires(ForwardIterator(It))
 inline
-It lower_bound(It first, It last, const ValueType(It)& value) {
+It lower_bound(It first, It last, const SGLValueType(It)& value) {
     while (first != last) {
       It middle = first;
       sgl::v1::advance_to_middle(middle, last);

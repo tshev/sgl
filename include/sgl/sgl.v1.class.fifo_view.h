@@ -68,6 +68,22 @@ public:
         }
     }
 
+    size_type capacity() const {
+        return storage_capacity_;
+    }
+
+    size_type free_capacity() const {
+        size_type pfirst = position_first();
+        size_type plast = position_first();
+        if (plast < pfirst) {
+            return pfirst - plast;
+        } 
+        if (pfirst == plast && pfirst == size_type(2) * sizeof(size_type)) {
+            return capacity() - size_type(2) * sizeof(size_type);
+        }
+        return (capacity() - plast) + (pfirst - size_type(2) * sizeof(size_type));
+    }
+
     void init() {
         position_first() = size_type(2) * sizeof(size_type);
         position_last() = size_type(2) * sizeof(size_type);

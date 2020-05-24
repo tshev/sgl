@@ -60,7 +60,7 @@ class argparser {
     std::vector<key_value_type> key_value_ranges;
 
   public:
-    argparser(int argc, char* argv[]) {
+    argparser(int argc, const char* argv[]) {
         size_t n = sgl::v1::size_cmd(argc, argv);
         command_string.resize(n);
         sgl::v1::copy_cmd_args(argc, argv, std::begin(command_string));

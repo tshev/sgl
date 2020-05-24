@@ -18,7 +18,7 @@ inline
   @endcode
 */
 T gini(ForwardIterator first, ForwardIterator last, const T& val) {
-    return std::accumulate(first, last, val, [](T x, ValueType(ForwardIterator) y) { return x + (T(1) - y) * y; });
+    return std::accumulate(first, last, val, [](T x, SGLValueType(ForwardIterator) y) { return x + (T(1) - y) * y; });
 }
 
 

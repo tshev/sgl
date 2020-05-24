@@ -113,7 +113,6 @@
 #include "sgl.v1.function.copy.h"
 
 #include "sgl.v1.function.uninitialized_copy_construct.h"
-#include "sgl.v1.function.uninitialized_copy_trivial.h"
 #include "sgl.v1.function.uninitialized_copy.h"
 
 #include "sgl.v1.function.copy_elements.h"
@@ -315,8 +314,12 @@
 #include "sgl.v1.struct.greater_tuple_element.h"
 #include "sgl.v1.function.parse_storage_capacity.h"
 #include "sgl.v1.function.parse_timedelta_as_ns.h"
+#include "sgl.v1.function.decode_batches.h"
+#include "sgl.v1.function.log2.h"
 
 // data structures
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"
+
+#include "sgl.v1.class.rate_limiter.h"

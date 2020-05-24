@@ -21,9 +21,9 @@ T accumulate(ForwardIterator first, ForwardIterator last, T val, BinaryOperation
 }
 
 template<typename ForwardIterator_1, typename ForwardIterator_2, typename T, typename Op1, typename Op2>
-ValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, T value, Op1 op1, Op2 op2) {
-  typedef ValueType(ForwardIterator_1) value_type;
-  typedef ValueType(ForwardIterator_2) value_type_2;
+SGLValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, T value, Op1 op1, Op2 op2) {
+  typedef SGLValueType(ForwardIterator_1) value_type;
+  typedef SGLValueType(ForwardIterator_2) value_type_2;
   static_assert(std::is_same<value_type, value_type_2>::value, "Types should be the same");
 
   while (f1 != l1) {
@@ -35,9 +35,9 @@ ValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 
 }
 
 template<typename ForwardIterator_1, typename ForwardIterator_2, typename ForwardIterator_3, typename T, typename Op1, typename Op2>
-ValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, ForwardIterator_3 f3, ValueType(ForwardIterator_1) value, Op1 op1, Op2 op2) {
-  typedef ValueType(ForwardIterator_1) value_type;
-  typedef ValueType(ForwardIterator_2) value_type_2;
+SGLValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, ForwardIterator_3 f3, SGLValueType(ForwardIterator_1) value, Op1 op1, Op2 op2) {
+  typedef SGLValueType(ForwardIterator_1) value_type;
+  typedef SGLValueType(ForwardIterator_2) value_type_2;
   static_assert(std::is_same<value_type, value_type_2>::value, "Types should be the same");
 
   while (f1 != l1) {
@@ -50,9 +50,9 @@ ValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 
 }
 
 template<typename ForwardIterator_1, typename ForwardIterator_2, typename ForwardIterator_3, typename ForwardIterator_4, typename T, typename Op1, typename Op2>
-ValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, ForwardIterator_3 f3, ForwardIterator_4 f4, ValueType(ForwardIterator_1) value, Op1 op1, Op2 op2) {
-  typedef ValueType(ForwardIterator_1) value_type;
-  typedef ValueType(ForwardIterator_2) value_type_2;
+SGLValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, ForwardIterator_3 f3, ForwardIterator_4 f4, SGLValueType(ForwardIterator_1) value, Op1 op1, Op2 op2) {
+  typedef SGLValueType(ForwardIterator_1) value_type;
+  typedef SGLValueType(ForwardIterator_2) value_type_2;
   static_assert(std::is_same<value_type, value_type_2>::value, "Types should be the same");
 
   while (f1 != l1) {

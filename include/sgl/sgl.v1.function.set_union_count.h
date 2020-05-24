@@ -6,11 +6,11 @@ namespace v1 {
 template<typename ForwardIterator0, typename ForwardIterator1, typename T>
 // requires(
 //   ForwardIterator(ForwardIterator0) && ForwardIterator(ForwardIterator1) &&
-//   ValueType(ForwardIterator0) == ValueType(ForwardIterator1) && Integer(T)
+//   SGLValueType(ForwardIterator0) == SGLValueType(ForwardIterator1) && Integer(T)
 // )
 T set_union_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 f1, ForwardIterator1 l1, T count) {
-    // Precondition: $ValueType(ForwardIterator0) == ValueType(ForwardIterator1)$
-    // Precondition: $\func{weak\_ordering}(std::less<ValueType(ForwardIterator0)>())$
+    // Precondition: $SGLValueType(ForwardIterator0) == SGLValueType(ForwardIterator1)$
+    // Precondition: $\func{weak\_ordering}(std::less<SGLValueType(ForwardIterator0)>())$
     while (f0 != l0 && f1 != l1) {
         if (*f0 < *f1) {
             ++f0;

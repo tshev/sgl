@@ -4,8 +4,9 @@ namespace v1 {
 
 
 template<typename ForwardIterator>
+inline
 constexpr
-void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val) {
+void iota(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) val) {
   while (f != l) {
     *f = val;
     ++f;
@@ -15,7 +16,9 @@ void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val) 
 
 
 template<typename ForwardIterator>
-void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val, const ValueType(ForwardIterator) &step) {
+inline
+constexpr
+void iota(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) val, const SGLValueType(ForwardIterator) &step) {
   while (f != l) {
     *f = val;
     val += step;
@@ -24,7 +27,9 @@ void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val, 
 }
 
 template<typename ForwardIterator, typename Operation>
-void iota(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val, const ValueType(ForwardIterator) &step, Operation op) {
+inline
+constexpr
+void iota(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) val, const SGLValueType(ForwardIterator) &step, Operation op) {
   while (f != l) {
     *f = val;
     val = op(val, step);

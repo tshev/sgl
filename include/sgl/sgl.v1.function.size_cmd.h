@@ -3,7 +3,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename T>
-size_t size_cmd(T argc, char* argv[]) {
+size_t size_cmd(T argc, const char* argv[]) {
     size_t size = 0ul;
     for (T i = 0; i < argc; ++i) {
         auto first = argv[i];

@@ -80,7 +80,7 @@ __uninitialized_move_range_value_range(ForwardIterator0 first, ForwardIterator0 
 }
 
 template <typename ForwardIterator0, typename ForwardIterator1>
-// requires(pointer(ForwardIterator) && ValueType(ForwardIterator) == T)
+// requires(pointer(ForwardIterator) && SGLValueType(ForwardIterator) == T)
 inline ForwardIterator1 __uninitialized_move_range_value_range__nothrow_move_assignable__(
     ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
     typename std::iterator_traits<ForwardIterator0>::value_type&& x, ForwardIterator1 output) {
@@ -104,7 +104,7 @@ inline ForwardIterator1 __uninitialized_move_range_value_range__nothrow_move_ass
 }
 
 template <typename ForwardIterator>
-// requires(pointer(ForwardIterator) && ValueType(ForwardIterator) == T)
+// requires(pointer(ForwardIterator) && SGLValueType(ForwardIterator) == T)
 inline ForwardIterator __uninitialized_move_range_value_range__nothrow_move_assignable__(
     ForwardIterator first, ForwardIterator middle, ForwardIterator last,
     typename std::iterator_traits<ForwardIterator>::value_type&& x, size_t n, ForwardIterator output) {

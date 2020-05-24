@@ -18,10 +18,10 @@
 #pragma GCC warning "DifferenceType is already defined"
 #endif
 
-#ifndef ValueType
-#define ValueType(It) typename std::iterator_traits<It>::value_type
+#ifndef SGLValueType
+#define SGLValueType(It) typename std::iterator_traits<It>::value_type
 #else
-#pragma GCC warning "ValueType is already defined"
+#pragma GCC warning "SGLValueType is already defined"
 #endif
 
 #define FirstType(T) typename T::first_type

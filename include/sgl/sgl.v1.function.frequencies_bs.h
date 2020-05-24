@@ -21,7 +21,7 @@ template <typename ForwardIterator0, typename ForwardIterator1, typename OutputI
 inline
 OutputIterator frequencies_bs(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 f1, ForwardIterator1 l1,
                               OutputIterator out) {
-    return frequencies_bs(f0, l0, f1, l1, out, std::less<ValueType(ForwardIterator0)>{});
+    return frequencies_bs(f0, l0, f1, l1, out, std::less<SGLValueType(ForwardIterator0)>{});
 }
 
 } // namespace v1

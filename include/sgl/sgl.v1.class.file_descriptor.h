@@ -197,6 +197,21 @@ public:
 		return result;
   }
 
+  size_t read(std::string& x) {
+    size_t count = 0;
+    size_t size = 0;
+    do {
+        if (x.capacity() < size + 4096) {
+            x.reserve(std::max(size + 4096, x.capacity() * 2));
+        }
+        x.resize(size + 4096);
+        count = ::read(fd, &x[size], 4096);
+        size += count;
+    } while (count > 0);
+    x.resize(size);
+    return count; 
+  }
+
   template<typename T>
   size_t write(T data, size_t n) {
     ssize_t result = ::write(fd, data, n);

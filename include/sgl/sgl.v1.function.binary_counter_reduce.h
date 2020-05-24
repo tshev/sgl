@@ -5,10 +5,10 @@ namespace v1 {
 
 template<typename ForwardIterator, typename AssociativeOperation>
 inline
-ValueType(ForwardIterator) binary_counter_reduce(ForwardIterator first, ForwardIterator last, ValueType(ForwardIterator) zero, AssociativeOperation op) {
+SGLValueType(ForwardIterator) binary_counter_reduce(ForwardIterator first, ForwardIterator last, SGLValueType(ForwardIterator) zero, AssociativeOperation op) {
   while (first != last && *first == zero) { ++first; }
  
-  ValueType(ForwardIterator) result = *first;
+  SGLValueType(ForwardIterator) result = *first;
 
   ++first; 
   while (first != last) {

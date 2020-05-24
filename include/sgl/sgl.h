@@ -146,8 +146,8 @@ namespace functor {
 }
 
 template<typename ForwardIterator, typename Out, typename Predicate>
-Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) width, Out out, Predicate pred, floating_value_tag _) {
-  typedef ValueType(Out) pair_type;
+Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) width, Out out, Predicate pred, floating_value_tag _) {
+  typedef SGLValueType(Out) pair_type;
   typedef SecondType(pair_type) N;
   typedef FirstType(pair_type) T;
   if (f == l) return out; 
@@ -166,8 +166,8 @@ Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, ValueType(
 
 
 template<typename It, typename Out, typename Predicate>
-Out frequency_interval_pairs_bs(It f, It l, ValueType(It) width, Out out, Predicate pred, not_floating_value_tag _) {
-  typedef ValueType(Out) pair_type;
+Out frequency_interval_pairs_bs(It f, It l, SGLValueType(It) width, Out out, Predicate pred, not_floating_value_tag _) {
+  typedef SGLValueType(Out) pair_type;
   typedef SecondType(pair_type) N;
   //typedef FirstType(pair_type) T;
 
@@ -186,16 +186,16 @@ Out frequency_interval_pairs_bs(It f, It l, ValueType(It) width, Out out, Predic
 
 template<typename ForwardIterator, typename Out, typename Predicate>
 inline
-Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) width, Out out, Predicate pred) {
-  typedef typename floating_tag<ValueType(ForwardIterator)>::value_type tag_type;
+Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) width, Out out, Predicate pred) {
+  typedef typename floating_tag<SGLValueType(ForwardIterator)>::value_type tag_type;
   return interval_frequency_pairs_bs(f, l, width, out, pred, tag_type{});
 }
 
 template<typename It, typename Out, typename Predicate>
 // TODO think about projection instead of wring new version (It looks like a predicate which always returns true)
-Out frequency_intervals_bs(It f, It l, ValueType(It) width, Out out, Predicate pred, floating_value_tag _) {
-  typedef ValueType(Out) N;
-  //typedef ValueType(It) T;
+Out frequency_intervals_bs(It f, It l, SGLValueType(It) width, Out out, Predicate pred, floating_value_tag _) {
+  typedef SGLValueType(Out) N;
+  //typedef SGLValueType(It) T;
   const auto f_const = f;
   size_t i = 1;
   while (true) {
@@ -213,10 +213,10 @@ Out frequency_intervals_bs(It f, It l, ValueType(It) width, Out out, Predicate p
 
 template<typename It, typename Out, typename Predicate>
 // TODO think about projection instead of wring new version (It looks like a predicate which always returns true)
-Out frequency_intervals_bs(It f, It l, ValueType(It) width, Out out, Predicate pred, not_floating_value_tag _) {
+Out frequency_intervals_bs(It f, It l, SGLValueType(It) width, Out out, Predicate pred, not_floating_value_tag _) {
   // [ ] (], ..., (], (]
-  typedef ValueType(Out) N;
-  typedef ValueType(It) T;
+  typedef SGLValueType(Out) N;
+  typedef SGLValueType(It) T;
 
   if (f == l) return out;
   T val = *f;
@@ -233,15 +233,15 @@ Out frequency_intervals_bs(It f, It l, ValueType(It) width, Out out, Predicate p
 
 template<typename ForwardIterator, typename Out, typename Predicate>
 inline
-Out frequency_intervals_bs(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) width, Out out, Predicate pred) {
-  typedef typename floating_tag<ValueType(ForwardIterator)>::value_type tag_type;
+Out frequency_intervals_bs(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) width, Out out, Predicate pred) {
+  typedef typename floating_tag<SGLValueType(ForwardIterator)>::value_type tag_type;
   return frequency_intervals_bs(f, l, width, out, pred, tag_type{});
 }
 
 template<typename ForwardIterator>
-ValueType(ForwardIterator) mode(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) width) {
+SGLValueType(ForwardIterator) mode(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) width) {
   //std::nth_element(f, f + (l - f)/2, l, [](auto x, auto y) {});
-  typedef ValueType(ForwardIterator) T;
+  typedef SGLValueType(ForwardIterator) T;
   auto &left = *f;
   auto &right = *(l - 1);
   auto n = std::ceil(right - left) / width;
@@ -257,7 +257,7 @@ template<typename RandomAccessIterator, typename OutputIteratorFrequncies>
 // requires(is_sorted(f, l) && RandomAccessIterator(RandomAccessIterator) && OutputIterator(OutputIterator)
 OutputIteratorFrequncies
 frequencies_only_bs(RandomAccessIterator f, RandomAccessIterator l, OutputIteratorFrequncies out_freq) {
-  typedef ValueType(OutputIteratorFrequncies) N;
+  typedef SGLValueType(OutputIteratorFrequncies) N;
   while (f != l) { 
     RandomAccessIterator step_back = f; 
     f = std::upper_bound(f + 1, l, *step_back);

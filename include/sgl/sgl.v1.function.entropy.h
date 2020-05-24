@@ -18,19 +18,17 @@ inline
   @endcode
 */
 T entropy(ForwardIterator f, ForwardIterator l, T val) {
-  return accumulate(f, l, val, [](T x, ValueType(ForwardIterator) y) { return x + y * log2(y); });
+    return sgl::v1::accumulate(f, l, val, [](T x, SGLValueType(ForwardIterator) y) { return x + y * sgl::v1::log2(y); });
 }
 
-struct projection_tag {};
-struct homogeneous_functor_tag {};
 
 template<typename ForwardIterator, typename T, typename Projection>
 inline
-ValueType(ForwardIterator) entropy(ForwardIterator f, ForwardIterator l, ValueType(ForwardIterator) val, Projection projection) {
-  // , typename _ = std::is_same<typename std::argument_type<Projection>::type, T>::value 
-  return accumulate(f, l, [projection](T x, const auto &y) mutable {
-    const T py = projection(y);
-    return x + py * log2(py);
+SGLValueType(ForwardIterator) entropy(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) val, Projection projection) {
+  // , typename _ = std::is_same<typename std::argument_type<Projection>::type, T>::value
+  return sgl::v1::accumulate(f, l, [projection](T x, const auto& y) mutable {
+      const T py = projection(y);
+      return x + py * log2(py);
   });
 }
 } // namespace v1

@@ -6,8 +6,8 @@ namespace v1 {
 template<typename ForwardIterator0, typename ForwardIterator1, typename T>
 // requires(
 //   ForwardIterator(ForwardIterator0) && ForwardIterator(ForwardIterator1) &&
-//   ValueType(ForwardIterator0) == ValueType(ForwardIterator1) &&
-//   Integer(T) && WeakStrictOrdering(std::less<ValueType(ForwardIterator0)>)
+//   SGLValueType(ForwardIterator0) == SGLValueType(ForwardIterator1) &&
+//   Integer(T) && WeakStrictOrdering(std::less<SGLValueType(ForwardIterator0)>)
 // )
 T intersection_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 f1, ForwardIterator1 l1, T count) {
 
@@ -31,7 +31,7 @@ T intersection_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 
 template<typename ForwardIterator0, typename ForwardIterator1, typename T, typename Relation>
 // requires(
 //   ForwardIterator(ForwardIterator0) && ForwardIterator(ForwardIterator1) &&
-//   ValueType(ForwardIterator0) == ValueType(ForwardIterator1) &&
+//   SGLValueType(ForwardIterator0) == SGLValueType(ForwardIterator1) &&
 //   Integer(T) && WeakStrictOrdering(Relation)
 // )
 T intersection_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 f1, ForwardIterator1 l1, T count, Relation r) {
@@ -55,7 +55,7 @@ T intersection_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 
 template<typename ForwardIterator0, typename ForwardIterator1, typename T, typename Relation0, typename Relation1>
 // requires(
 //   ForwardIterator(ForwardIterator0) && ForwardIterator(ForwardIterator1) &&
-//   ValueType(ForwardIterator0) == ValueType(ForwardIterator1) &&
+//   SGLValueType(ForwardIterator0) == SGLValueType(ForwardIterator1) &&
 //   Integer(T) && WeakStrictOrdering(Relation)
 // )
 T intersection_count(ForwardIterator0 f0, ForwardIterator0 l0, ForwardIterator1 f1, ForwardIterator1 l1, T count, Relation0 r0, Relation1 r1) {
