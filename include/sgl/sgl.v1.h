@@ -101,9 +101,6 @@
 #include "sgl.v1.function.any.h"
 #include "sgl.v1.function.construct_ref.h"
 
-#include "sgl.v1.function.uninitialized_construct.h"
-#include "sgl.v1.function.uninitialized_construct_range.h"
-
 #include "sgl.v1.function.contains_all.h"
 #include "sgl.v1.function.contains.h"
 
@@ -111,9 +108,6 @@
 #include "sgl.v1.function.copy_cyclic.h"
 #include "sgl.v1.function.destruct.h"
 #include "sgl.v1.function.copy.h"
-
-#include "sgl.v1.function.uninitialized_copy_construct.h"
-#include "sgl.v1.function.uninitialized_copy.h"
 
 #include "sgl.v1.function.copy_elements.h"
 #include "sgl.v1.function.copy_n.h"
@@ -126,7 +120,6 @@
 #include "sgl.v1.function.cumulate.h"
 #include "sgl.v1.function.cumulate_one.h"
 #include "sgl.v1.function.default_construct.h"
-#include "sgl.v1.function.uninitialized_default_construct.h"
 #include "sgl.v1.function.equal_ranges.h"
 #include "sgl.v1.function.equal.h"
 
@@ -246,9 +239,6 @@
 #include "sgl.v1.function.unique_transform.h"
 #include "sgl.v1.function.soundex_squash.h"
 #include "sgl.v1.function.soundex.h"
-#include "sgl.v1.function.uninitialized_copy_range_value_range.h"
-#include "sgl.v1.function.uninitialized_move.h"
-#include "sgl.v1.function.uninitialized_move_range_value_range.h"
 
 // SECTION "type_traits"
 #include "sgl.v1.struct.enable_if_forward_iterator.h"
@@ -287,6 +277,18 @@
 #include "sgl.v1.struct.transformation_iterator.h"
 #include "sgl.v1.struct.stopwatch.h"
 //#include "numeric.h"
+
+// unitialized memory
+#include "sgl.v1.function.uninitialized_move.h"
+#include "sgl.v1.function.uninitialized_move_range_value_range.h"
+
+#include "sgl.v1.function.uninitialized_construct.h"
+#include "sgl.v1.function.uninitialized_construct_range.h"
+#include "sgl.v1.function.uninitialized_copy_construct.h"
+#include "sgl.v1.function.uninitialized_copy.h"
+#include "sgl.v1.function.uninitialized_transform.h"
+#include "sgl.v1.function.uninitialized_default_construct.h"
+#include "sgl.v1.function.uninitialized_copy_range_value_range.h"
 
 // data structures
 #include "sgl.v1.class.array.h"

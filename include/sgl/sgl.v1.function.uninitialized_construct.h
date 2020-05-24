@@ -8,6 +8,7 @@ T* uninitialized_construct(T& ptr) {
     return sgl::v1::construct_at(std::addressof(ptr));
 }
 
+
 template<typename T, typename A, typename... Args>
 inline
 T* uninitialized_construct(T& ptr, A&& x0, Args&& ...xi) {

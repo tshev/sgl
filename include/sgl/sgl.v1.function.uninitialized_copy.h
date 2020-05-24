@@ -7,12 +7,13 @@ inline
 ForwardIterator uninitialized_copy_(InputIterator first, InputIterator last, ForwardIterator out) {
     ForwardIterator current = out;
     try {
-        for (; first != last; ++current, ++first) {
+        while (first != last) {
             sgl::v1::uninitialized_construct(std::addressof(*current), *first);
+            ++current; ++first;
         }
         return current;
     } catch (...) {
-        sgl::v1::destruct(current, current);
+        sgl::v1::destruct(out, current);
         throw;
     }
 }
