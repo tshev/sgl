@@ -19,7 +19,7 @@ T count_if(ForwardIterator0 first0, ForwardIterator0 last0, T count, UnaryPredic
 template<typename ForwardIterator0, typename UnaryPredicate>
 inline
 auto count_if(ForwardIterator0 first0, ForwardIterator0 last0, UnaryPredicate pred) {
-    DifferenceType(ForwardIterator0) count{0};
+    SGLDifferenceType(ForwardIterator0) count{0};
     while (first0 != last0) {
         if (pred(*first0)) {
             ++count;

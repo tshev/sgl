@@ -12,10 +12,10 @@
 #pragma GCC warning "requires is already defined"
 #endif
 
-#ifndef DifferenceType
-#define DifferenceType(It) typename std::iterator_traits<It>::difference_type
+#ifndef SGLDifferenceType
+#define SGLDifferenceType(It) typename std::iterator_traits<It>::difference_type
 #else
-#pragma GCC warning "DifferenceType is already defined"
+#pragma GCC warning "SGLDifferenceType is already defined"
 #endif
 
 #ifndef SGLValueType
