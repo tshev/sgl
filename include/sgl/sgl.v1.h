@@ -104,7 +104,6 @@
 #include "sgl.v1.function.contains_all.h"
 #include "sgl.v1.function.contains.h"
 
-#include "sgl.v1.function.copy_construct.h"
 #include "sgl.v1.function.copy_cyclic.h"
 #include "sgl.v1.function.destruct.h"
 #include "sgl.v1.function.copy.h"
@@ -285,6 +284,7 @@
 #include "sgl.v1.function.uninitialized_construct.h"
 #include "sgl.v1.function.uninitialized_construct_range.h"
 #include "sgl.v1.function.uninitialized_copy_construct.h"
+#include "sgl.v1.function.uninitialized_fill.h"
 #include "sgl.v1.function.uninitialized_copy.h"
 #include "sgl.v1.function.uninitialized_transform.h"
 #include "sgl.v1.function.uninitialized_default_construct.h"
