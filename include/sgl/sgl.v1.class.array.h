@@ -354,7 +354,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void insert_unguarded(iterator position, value_type&& x) {
         if (end() == position) {
-            sgl::v1::uninitialized_construct(*base_type::last_, std::move(x));
+            sgl::v1::construct_at(base_type::last_, std::move(x));
         } else {
             if constexpr (prefer_move::value) {
                 std::uninitialized_move(end() - 1ul, end(), end());
@@ -384,7 +384,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void insert_unguarded(iterator position, const value_type& x) {
         if (end() == position) {
-            sgl::v1::uninitialized_construct(*base_type::last_, x);
+            sgl::v1::construct_at(base_type::last_, x);
         } else {
             std::uninitialized_copy(end() - 1ul, end(), end());
             std::copy_backward(position, end() - 1ul, end());
@@ -428,7 +428,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void push_back_unguarded(const value_type& x) {
-        sgl::v1::uninitialized_construct(*base_type::last_, x);
+        sgl::v1::construct_at(base_type::last_, x);
         ++base_type::last_;
     }
 
@@ -440,7 +440,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void push_back_unguarded(value_type&& x) {
-        sgl::v1::uninitialized_construct(*base_type::last_, std::move(x));
+        sgl::v1::construct_at(base_type::last_, std::move(x));
         ++base_type::last_;
     }
 
@@ -452,7 +452,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void emplace_back_unguarded(const value_type& x) {
-        sgl::v1::uninitialized_construct(*base_type::last_, x);
+        sgl::v1::construct_at(base_type::last_, x);
         ++base_type::last_;
     }
 
@@ -464,7 +464,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void emplace_back_unguarded(value_type&& x) {
-        sgl::v1::uninitialized_construct(*base_type::last_, std::move(x));
+        sgl::v1::construct_at(base_type::last_, std::move(x));
         ++base_type::last_;
     }
 

@@ -168,7 +168,7 @@ Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, SGLValueTy
 template<typename It, typename Out, typename Predicate>
 Out frequency_interval_pairs_bs(It f, It l, SGLValueType(It) width, Out out, Predicate pred, not_floating_value_tag _) {
   typedef SGLValueType(Out) pair_type;
-  typedef SecondType(pair_type) N;
+  typedef SGLSecondType(pair_type) N;
 
   if (f == l) return out;
   auto val = *f;

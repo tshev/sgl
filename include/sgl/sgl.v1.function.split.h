@@ -4,6 +4,7 @@ namespace sgl {
 namespace v1 {
 
 
+/*
 template<typename ForwardIterator, typename Predicate, typename Function>
 void split_if(ForwardIterator first, ForwardIterator last, Predicate predicate, Function function)  {
     auto start = std::find_if(first, last, predicate);
@@ -29,13 +30,14 @@ OutputIterator split_copy(ForwardIterator first, ForwardIterator last, OutputIte
   return output_iterator;
 
 }
+*/
 
 
 template<typename ForwardIterator, typename OutputIterator, typename T>
 inline
 OutputIterator split(ForwardIterator first, ForwardIterator last, OutputIterator out, T sep) {
     while (first != last) {
-        auto next = sgl::v1::find(first, last, sep);
+        ForwardIterator next = sgl::v1::find(first, last, sep);
         *out = {first, next};
         ++out;
         first = next;
