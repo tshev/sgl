@@ -148,8 +148,8 @@ namespace functor {
 template<typename ForwardIterator, typename Out, typename Predicate>
 Out interval_frequency_pairs_bs(ForwardIterator f, ForwardIterator l, SGLValueType(ForwardIterator) width, Out out, Predicate pred, floating_value_tag _) {
   typedef SGLValueType(Out) pair_type;
-  typedef SecondType(pair_type) N;
-  typedef FirstType(pair_type) T;
+  typedef SGLSecondType(pair_type) N;
+  typedef SGLFirstType(pair_type) T;
   if (f == l) return out; 
   const auto val = *f;
   size_t pos = 1;
@@ -169,7 +169,6 @@ template<typename It, typename Out, typename Predicate>
 Out frequency_interval_pairs_bs(It f, It l, SGLValueType(It) width, Out out, Predicate pred, not_floating_value_tag _) {
   typedef SGLValueType(Out) pair_type;
   typedef SecondType(pair_type) N;
-  //typedef FirstType(pair_type) T;
 
   if (f == l) return out;
   auto val = *f;

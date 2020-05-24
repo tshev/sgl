@@ -24,9 +24,9 @@
 #pragma GCC warning "SGLValueType is already defined"
 #endif
 
-#define FirstType(T) typename T::first_type
-#define SecondType(T) typename T::second_type
-#define ElementType(T) typename T::value_type
+#define SGLFirstType(T) typename T::first_type
+#define SGLSecondType(T) typename T::second_type
+#define SGLElementType(T) typename T::value_type
 
 #ifndef __FUNCTION_NAME__
     #ifdef WIN32   //WINDOWS
