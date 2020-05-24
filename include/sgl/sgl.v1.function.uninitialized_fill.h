@@ -3,10 +3,10 @@
 namespace sgl {
 namespace v1 {
 
-template<typename ForwardIterator, typename T>
-requires(sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::readable(ForwardIterator))
-void uninitialized_fill(ForwardIterator first, ForwardIterator last, const T& value) {
-    if constexpr (std::is_nothrow_copy_constructible<T>::value) {
+template<typename ForwardIterator>
+requires(sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::writable(ForwardIterator))
+void uninitialized_fill(ForwardIterator first, ForwardIterator last, const SGLValueType(ForwardIterator)& value) {
+    if constexpr (std::is_nothrow_copy_constructible<SGLValueType(ForwardIterator)>::value) {
         while (first != last) {
             sgl::v1::uninitialized_copy_construct(*first, value);
             ++first;
