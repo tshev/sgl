@@ -113,6 +113,7 @@
 #include "sgl.v1.function.copy_if.h"
 #include "sgl.v1.function.copy_n_while.h"
 #include "sgl.v1.function.copy_bounded.h"
+#include "sgl.v1.function.copy_backward.h"
 #include "sgl.v1.function.copy_while.h"
 #include "sgl.v1.function.copy_while_not.h"
 #include "sgl.v1.function.copy_range_value_range.h"
@@ -121,6 +122,8 @@
 #include "sgl.v1.function.default_construct.h"
 #include "sgl.v1.function.equal_ranges.h"
 #include "sgl.v1.function.equal.h"
+#include "sgl.v1.function.move_backward.h"
+#include "sgl.v1.function.transform_while.h"
 
 
 #include "sgl.v1.function.find_adjacent.h"
