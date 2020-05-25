@@ -3,50 +3,58 @@
 namespace sgl {
 namespace v1 {
 
-template <typename ForwardIterator0, typename ForwardIterator1>
-inline ForwardIterator1
-__uninitialized_move_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
-                                       typename std::iterator_traits<ForwardIterator0>::value_type&& x,
-                                       ForwardIterator1 output) {
-    typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
+template <typename It10, typename It11>
+requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
+inline It11
+__uninitialized_move_range_value_range(It10 first, It10 middle, It10 last,
+                                       typename std::iterator_traits<It10>::value_type&& x,
+                                       It11 output) {
+    typedef typename std::iterator_traits<It10>::value_type value_type;
     if constexpr (std::is_trivial<value_type>::value) {
         return sgl::v1::copy_range_value_range(first, middle, last, x, output);
     } else {
-        ForwardIterator1 current = output;
+        It11 current = output;
         try {
             while (first != middle) {
                 ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
                 ++first;
                 ++current;
             }
-            new (std::addressof(*current)) value_type(std::move(x));
-            ++current;
+        } catch (...) {
+            sgl::v1::destruct(output, current);
+            throw;
+        }
+        auto position_x = current;
+        ++current;
+        auto output1 = current;
+        try {
             while (first != last) {
                 ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
                 ++first;
                 ++current;
             }
-            return current;
+            ::new (static_cast<void*>(std::addressof(*position_x))) value_type(std::move(x));
         } catch (...) {
-            while (output != current) {
-                output->~value_type();
-                ++output;
-            }
+            sgl::v1::destruct(output, position_x);
+            sgl::v1::destruct(output1, current);
             throw;
         }
+        return current;
+
     }
 }
 
-template <typename ForwardIterator0, typename ForwardIterator1>
-inline ForwardIterator1
-__uninitialized_move_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
-                                       typename std::iterator_traits<ForwardIterator0>::value_type&& x, size_t n,
-                                       ForwardIterator1 output) {
-    typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
+template <typename It10, typename It11>
+requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
+inline It11
+__uninitialized_move_range_value_range(It10 first, It10 middle, It10 last,
+                                       typename std::iterator_traits<It10>::value_type&& x, size_t n,
+                                       It11 output) {
+    typedef typename std::iterator_traits<It10>::value_type value_type;
     if constexpr (std::is_trivial<value_type>::value) {
         return sgl::v1::copy_range_value_range(first, middle, last, x, n, output);
     } else {
-        ForwardIterator0 current = output;
+        It10 current = output;
         try {
             while (first != middle) {
                 ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
@@ -79,20 +87,18 @@ __uninitialized_move_range_value_range(ForwardIterator0 first, ForwardIterator0 
     }
 }
 
-template <typename ForwardIterator0, typename ForwardIterator1>
-// requires(pointer(ForwardIterator) && SGLValueType(ForwardIterator) == T)
-inline ForwardIterator1 __uninitialized_move_range_value_range__nothrow_move_assignable__(
-    ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
-    typename std::iterator_traits<ForwardIterator0>::value_type&& x, ForwardIterator1 output) {
+template <typename It10, typename It11>
+// requires(pointer(It1) && SGLValueType(It1) == T)
+inline It11 __uninitialized_move_range_value_range__nothrow_move_assignable__(It10 first, It10 middle, It10 last, SGLValueType(It10)&& value, It11 output) {
 
-    typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
+    typedef typename std::iterator_traits<It10>::value_type value_type;
     while (first != middle) {
         ::new (static_cast<void*>(std::addressof(*output))) value_type(std::move(*first));
         ++first;
         ++output;
     }
 
-    new (std::addressof(*output)) value_type(std::move(x));
+    new (std::addressof(*output)) value_type(std::move(value));
     ++output;
 
     while (first != last) {
@@ -103,12 +109,12 @@ inline ForwardIterator1 __uninitialized_move_range_value_range__nothrow_move_ass
     return output;
 }
 
-template <typename ForwardIterator>
-// requires(pointer(ForwardIterator) && SGLValueType(ForwardIterator) == T)
-inline ForwardIterator __uninitialized_move_range_value_range__nothrow_move_assignable__(
-    ForwardIterator first, ForwardIterator middle, ForwardIterator last,
-    typename std::iterator_traits<ForwardIterator>::value_type&& x, size_t n, ForwardIterator output) {
-    typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
+template <typename It1>
+// requires(pointer(It1) && SGLValueType(It1) == T)
+inline It1 __uninitialized_move_range_value_range__nothrow_move_assignable__(
+    It1 first, It1 middle, It1 last,
+    typename std::iterator_traits<It1>::value_type&& x, size_t n, It1 output) {
+    typedef typename std::iterator_traits<It1>::value_type value_type;
     while (first != middle) {
         ::new (static_cast<void*>(std::addressof(*output))) value_type(std::move(*first));
         ++first;
@@ -133,12 +139,12 @@ inline ForwardIterator __uninitialized_move_range_value_range__nothrow_move_assi
     return output;
 }
 
-template <typename ForwardIterator>
-ForwardIterator
-__uninitialized_move_range_value_range__trivial__(ForwardIterator first, ForwardIterator middle, ForwardIterator last,
-                                                  typename std::iterator_traits<ForwardIterator>::value_type&& x,
-                                                  ForwardIterator output) {
-    typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
+template <typename It1>
+It1
+__uninitialized_move_range_value_range__trivial__(It1 first, It1 middle, It1 last,
+                                                  typename std::iterator_traits<It1>::value_type&& x,
+                                                  It1 output) {
+    typedef typename std::iterator_traits<It1>::value_type value_type;
     static_assert(std::is_trivial<value_type>::value, "Should be trivial");
     static_assert(std::is_nothrow_move_assignable<value_type>::value, "Trivial types a can't throw");
     output = std::move(first, middle, output);
@@ -147,11 +153,11 @@ __uninitialized_move_range_value_range__trivial__(ForwardIterator first, Forward
     return std::move(middle, last, output);
 }
 
-template <typename ForwardIterator>
-ForwardIterator uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator middle, ForwardIterator last,
-                                                     typename std::iterator_traits<ForwardIterator>::value_type&& x,
-                                                     ForwardIterator output) {
-    typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
+template <typename It1>
+It1 uninitialized_move_range_value_range(It1 first, It1 middle, It1 last,
+                                                     typename std::iterator_traits<It1>::value_type&& x,
+                                                     It1 output) {
+    typedef typename std::iterator_traits<It1>::value_type value_type;
     if constexpr (std::is_trivial<value_type>::value) {
         return __uninitialized_move_range_value_range__trivial__(first, middle, last, std::move(x), output);
     } else if constexpr (std::is_nothrow_move_assignable<value_type>::value) {
@@ -161,16 +167,15 @@ ForwardIterator uninitialized_move_range_value_range(ForwardIterator first, Forw
     return __uninitialized_move_range_value_range(first, middle, last, std::move(x), output);
 }
 
-template <typename ForwardIterator>
-inline ForwardIterator
-uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator middle, ForwardIterator last,
-                                     const typename std::iterator_traits<ForwardIterator>::value_type& x,
-                                     ForwardIterator output) {
-    typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
-    if (std::is_trivial<value_type>::value) {
-        return uninitialized_move_range_value_range(first, middle, last, x, output);
+template <typename It1>
+requires(sgl::v1::forward_iterator(It1))
+inline
+It1 uninitialized_move_range_value_range(It1 first, It1 middle, It1 last, const SGLValueType(It1)& value, It1 output) {
+    typedef typename std::iterator_traits<It1>::value_type value_type;
+    if constexpr (std::is_trivial<value_type>::value) {
+        return sgl::v1::move_range_value_range(first, middle, last, value, output);
     } else {
-        ForwardIterator current = output;
+        It1 current = output;
         try {
             while (first != middle) {
                 ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
@@ -178,7 +183,7 @@ uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator midd
                 ++current;
             }
 
-            new (std::addressof(*current)) value_type(x);
+            new (std::addressof(*current)) value_type(value);
             ++current;
 
             while (first != last) {
@@ -188,25 +193,21 @@ uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator midd
             }
             return current;
         } catch (...) {
-            while (output != current) {
-                output->~value_type();
-                ++output;
-            }
+            sgl::v1::destruct(output, current);
             throw;
         }
     }
 }
 
-template <typename ForwardIterator>
-inline ForwardIterator
-uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator middle, ForwardIterator last,
-                                     const typename std::iterator_traits<ForwardIterator>::value_type& x, size_t n,
-                                     ForwardIterator output) {
-    typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
+template <typename It0, typename It1>
+requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
+inline 
+It1 uninitialized_move_range_value_range(It0 first, It0 middle, It0 last, const SGLValueType(It1)& x, size_t n, It1 output) {
+    typedef typename std::iterator_traits<It1>::value_type value_type;
     if (std::is_trivial<value_type>::value) {
-        return uninitialized_move_range_value_range(first, middle, last, x, n, output);
+        return sgl::v1::uninitialized_move_range_value_range(first, middle, last, x, n, output);
     } else {
-        ForwardIterator current = output;
+        It1 current = output;
         try {
             while (first != middle) {
                 ::new (static_cast<void*>(std::addressof(*current))) value_type(std::move(*first));
@@ -214,9 +215,15 @@ uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator midd
                 ++current;
             }
 
-            for (size_t i = 0; i != n; ++i) {
-                new (std::addressof(*current)) value_type(x);
-                ++current;
+            if constexpr (std::is_base_of<std::random_access_iterator_tag, It1>::value) {
+                for (It1 current_last = current + n; current != current_last; ++current) {
+                    new (std::addressof(*current)) value_type(x);
+                }
+            } else {
+                while (n-- > 0) {
+                    new (std::addressof(*current)) value_type(x);
+                    ++current;
+                }
             }
 
             while (first != last) {
@@ -226,14 +233,11 @@ uninitialized_move_range_value_range(ForwardIterator first, ForwardIterator midd
             }
             return current;
         } catch (...) {
-            while (output != current) {
-                output->~value_type();
-                ++output;
-            }
+            sgl::v1::destruct(output, current);
             throw;
         }
     }
-}
+} // uninitialized_move_range_value_range
 
 } // namespace v1
 } // namespace sgl

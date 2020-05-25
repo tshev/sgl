@@ -184,6 +184,8 @@
 #include "sgl.v1.function.is_space.h"
 #include "sgl.v1.function.intersection_count.h"
 #include "sgl.v1.function.set_intersection_count.h"
+#include "sgl.v1.function.fill.h"
+#include "sgl.v1.function.fill_n.h"
 
 #include "sgl.v1.function.set_union_count.h"
 //#include "sgl.v1.function.union_count.h"
@@ -281,6 +283,7 @@
 //#include "numeric.h"
 
 // unitialized memory
+#include "sgl.v1.function.move_range_value_range.h"
 #include "sgl.v1.function.uninitialized_move.h"
 #include "sgl.v1.function.uninitialized_move_range_value_range.h"
 
