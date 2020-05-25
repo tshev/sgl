@@ -39,7 +39,7 @@ class array_base {
     }
 
     void destructor_array_base() {
-        if (first_ != finish_) {
+        if (first_ != nullptr) {
             deallocate(first_);
         }
     }
@@ -140,6 +140,31 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
     array(It first, It last) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last) {}
 
+    template<typename It>
+    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
+    array(It first, It last, Allocator a) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, a) {}
+
+
+    template<typename It, typename UnaryFunction>
+    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, UnaryFunction unary_function) : base_type(std::distance(first, last)) {
+        sgl::v1::uninitialized_transform(first, last, begin(), unary_function);
+    }
+
+    template<typename It, typename UnaryFunction>
+    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, UnaryFunction unary_function, Allocator a) : base_type(std::distance(first, last), a) {
+        sgl::v1::uninitialized_copy(first, last, begin(), unary_function);
+    }
+
+    template<typename It, typename UnaryFunction>
+    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    array(It first, It last, UnaryFunction unary_function) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, unary_function) {}
+
+    template<typename It, typename UnaryFunction>
+    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    array(It first, It last, UnaryFunction unary_function, Allocator allocator) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, unary_function, allocator) {}
+
     array(size_type n) : base_type(n) {
         if constexpr (!skip_default_constructor_and_destructor) {
             sgl::v1::uninitialized_default_construct(begin(), end());
@@ -147,7 +172,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array(size_type n, const value_type& value) : base_type(n) {
-        sgl::v1::uninitialized_copy_construct(begin(), end(), value);
+        sgl::v1::uninitialized_fill(begin(), end(), value);
     }
 
     array(size_type n, Allocator a) : base_type(n, a) {
@@ -157,7 +182,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array(size_type n, const value_type& value, Allocator a) : base_type(n, a) {
-        sgl::v1::uninitialized_copy_construct(begin(), end(), value);
+        sgl::v1::uninitialized_fill(begin(), end(), value);
     }
 
     array(std::initializer_list<value_type> x) : base_type(x.size()) {
@@ -272,12 +297,8 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void reserve(size_type n) {
         if (capacity() < n) {
-            reserve_unguarded(n, size());
+            reserve_unguarded(n);
         }
-    }
-
-    void reserve_unguarded(size_type n) {
-        reserve_unguarded(n, size());
     }
 
     void shrink_to_fit() {
@@ -286,60 +307,57 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
             this->~array();
             base_type::detach();
         } else {
-            reserve_unguarded(s, s);
+            reserve_unguarded(s);
         }
     }
 
-    void resize_to_larger(size_type n, size_type previous_size) {
-        const size_type initial_capacity = capacity();
-        if (initial_capacity < n) {
-            reserve_unguarded(n, n);
+    void resize_to_larger(size_type n) {
+        if (capacity() < n) {
+            reserve_unguarded(n);
         }
         if constexpr (!skip_default_constructor_and_destructor) {
-            sgl::v1::uninitialized_default_construct(base_type::first_ + previous_size, base_type::last_);
+            base_type::last_ = sgl::v1::uninitialized_default_construct(base_type::last_, base_type::first_ + n);
+        } else {
+            base_type::last_ = base_type::first_ + n;
         }
     }
 
-    void resize_to_larger(size_type n, size_type s, const value_type& x) {
-        const size_type initial_capacity = capacity();
-        if (initial_capacity < n) {
-            reserve_unguarded(n, n);
+    void resize_to_larger(size_type n, const value_type& x) {
+        if (capacity() < n) {
+            reserve_unguarded(n);
         }
-        sgl::v1::uninitialized_copy_construct(base_type::first_ + s, base_type::last_, x);
+        base_type::last_ = sgl::v1::uninitialized_fill(base_type::last_, base_type::first_ + n, x);
     }
 
     void resize_to_smaller(size_type n) {
         if constexpr (!skip_default_constructor_and_destructor) {
-            destruct(begin() + n, end());
+            sgl::v1::destruct(begin() + n, end());
         }
         base_type::last_ = base_type::first_ + n;
     }
 
     void resize(size_type n) {
-        const size_type s = size();
-        if (s < n) {
-            resize_to_larger(n, s);
+        if (size() < n) {
+            resize_to_larger(n);
         } else {
             resize_to_smaller(n);
         }
     }
 
     void resize(size_type n, const value_type& x) {
-        const size_type s = size();
-        if (s < n) {
-            resize_to_larger(n, s, x);
+        if (size() < n) {
+            resize_to_larger(n, x);
         } else {
             resize_to_smaller(n);
         }
     }
 
     void reserve() {
-        const size_type initial_size = size();
-        const size_type initial_capacity = capacity();
-        if (initial_capacity == 0) {
-            reserve_unguarded(array::initial_capacity, initial_size);
+        const size_type current_capacity = capacity();
+        if (current_capacity == 0) {
+            reserve_unguarded(array::initial_capacity);
         } else {
-            reserve_unguarded(initial_capacity * 2ul, initial_size);
+            reserve_unguarded(current_capacity * 2ull);
         }
     }
 
@@ -349,8 +367,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         if (base_type::last_ == base_type::finish_) {
             const size_type initial_size = size();
             const size_type initial_capacity = capacity();
-            allocate_copy_range_value_range(multiplicative_resize(initial_capacity, array::initial_capacity),
-                                            initial_size, position, std::move(x));
+            allocate_copy_range_value_range(multiplicative_resize(initial_capacity, array::initial_capacity), position, std::move(x));
         } else {
             insert_unguarded(position, std::move(x));
         }
@@ -380,8 +397,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         if (base_type::last_ == base_type::finish_) {
             const size_type initial_size = size();
             const size_type initial_capacity = capacity();
-            allocate_copy_range_value_range(multiplicative_resize(initial_capacity, array::initial_capacity),
-                                            initial_size, position, x);
+            allocate_copy_range_value_range(multiplicative_resize(initial_capacity, array::initial_capacity), position, x);
         } else {
             insert_unguarded(position, x);
         }
@@ -404,9 +420,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         if (capacity_unused() < n) {
             const size_type initial_size = size();
             const size_type initial_capacity = capacity();
-            allocate_copy_range_value_range(
-                std::max(n + initial_size, multiplicative_resize(initial_capacity, array::initial_capacity)),
-                initial_size, position, x, n);
+            allocate_copy_range_value_range(std::max(n + initial_size, multiplicative_resize(initial_capacity, array::initial_capacity)), position, x, n);
         } else {
             insert_unguarded(position, x, n);
         }
@@ -414,7 +428,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     void insert_unguarded(iterator position, const value_type& x, size_type n) {
-        if (size_type(end() - position) > n) {
+        if (n < size_type(end() - position)) {
             std::uninitialized_copy(end() - n, end(), end());
             std::copy_backward(position, end() - n, end());
             std::fill(position, position + n, x);
@@ -484,7 +498,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     template <typename... Args>
     void emplace_back_unguarded(Args&&... x) {
-        new (base_type::last_) value_type(std::forward<Args>(x)...);
+        sgl::v1::construct_at(base_type::last_, std::forward<Argsl>(x)...);
         ++base_type::last_;
     }
 
@@ -502,24 +516,21 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void reallocate_assign(size_type n, const value_type& x) {
         T* data = base_type::allocate(n);
-        T* finish;
         if constexpr (std::is_nothrow_copy_constructible<T>::value) {
-            finish = sgl::v1::uninitialized_copy_construct(data, data + n, x);
+            base_type::last_ = sgl::v1::uninitialized_fill(data, data + n, x);
         } else {
             try {
-                finish = sgl::v1::uninitialized_copy_construct(data, data + n, x);
+                base_type::last_ = sgl::v1::uninitialized_fill(data, data + n, x);
             } catch (...) {
                 base_type::deallocate(data);
                 throw;
             }
         }
 
-        // destructor_array();
         ~array();
 
         base_type::first_ = data;
-        base_type::last_ = finish;
-        base_type::finish_ = finish;
+        base_type::finish_ = base_type::last_;
     }
 
     void assign(size_type n, const value_type& x) {
@@ -527,11 +538,15 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         if (s < n) {
             reallocate_assign(n, x);
         } else {
-            if constexpr (!skip_default_constructor_and_destructor) {
-                sgl::v1::destruct(begin() + n, end());
+            if constexpr (std::is_nothrow_copy_assignable<T>::value) {
+                if constexpr (!skip_default_constructor_and_destructor) {
+                    sgl::v1::destruct(begin() + n, end());
+                }
+                base_type::last_ = base_type::first_ + n;
+                std::fill(begin(), begin() + n, x);
+            } else {
+                reallocate_assign(n, x);
             }
-            std::fill(begin(), begin() + n, x);
-            base_type::last_ = base_type::first_ + n;
         }
     }
 
@@ -613,50 +628,47 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
   private:
 
-    void reserve_unguarded(size_type new_capacity, size_type size) {
+    void reserve_unguarded(size_type new_capacity) {
         T* data = base_type::allocate(new_capacity);
 
         if constexpr (prefer_move::value) {
-            if (std::is_nothrow_move_constructible<T>::value) {
-                // std::uninitialized_move would call std::move
-                std::uninitialized_move(begin(), end(), data);
+            if constexpr (std::is_nothrow_move_constructible<T>::value) {
+                base_type::last_ = std::uninitialized_move(begin(), end(), data);
             } else {
                 try {
-                    std::uninitialized_move(begin(), end(), data);
+                    base_type::last_ = std::uninitialized_move(begin(), end(), data);
                 } catch (...) {
+                    // leaves array objects in a partially formed state
                     base_type::deallocate(data);
                     throw;
                 }
             }
         } else {
-            if (std::is_nothrow_copy_constructible<T>::value) {
-                std::uninitialized_copy(begin(), end(), data);
+            if constexpr (std::is_nothrow_copy_constructible<T>::value) {
+                base_type::last_ = std::uninitialized_copy(begin(), end(), data);
             } else {
                 try {
-                    std::uninitialized_copy(begin(), end(), data);
+                    base_type::last_ = std::uninitialized_copy(begin(), end(), data);
                 } catch (...) {
                     base_type::deallocate(data);
                     throw;
                 }
             }
         }
-
         this->~array();
 
         base_type::first_ = data;
-        base_type::last_ = data + size;
         base_type::finish_ = data + new_capacity;
     }
 
     template<typename It>
     void allocate_copy_swap(size_type new_capacity, It first, It last) {
         T* data = base_type::allocate(new_capacity);
-        T* new_last;
         if constexpr (std::is_nothrow_copy_constructible<T>::value) {
-            new_last = std::uninitialized_copy(first, last, data);
+            base_type::last_ = std::uninitialized_copy(first, last, data);
         } else {
             try {
-                new_last = base_type::last_ = std::uninitialized_copy(first, last, data);
+                base_type::last_ = base_type::last_ = std::uninitialized_copy(first, last, data);
             } catch (...) {
                 base_type::deallocate(data);
                 throw;
@@ -665,19 +677,17 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         this->~array();
 
         base_type::first_ = data;
-        base_type::last_ = new_last;
         base_type::finish_ = data + new_capacity;
     }
 
     template<typename It>
     void allocate_move_swap(size_type new_capacity, It first, It last) {
         T* data = base_type::allocate(new_capacity);
-        T* new_last;
         if constexpr (std::is_nothrow_move_constructible<T>::value) {
-             new_last = std::uninitialized_move(first, last, data);
+             base_type::last_ = std::uninitialized_move(first, last, data);
         } else {
             try {
-                new_last = std::uninitialized_move(first, last, data);
+                base_type::last_ = std::uninitialized_move(first, last, data);
             } catch (...) {
                 base_type::deallocate(data);
                 throw;
@@ -686,76 +696,102 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         this->~array();
 
         base_type::first_ = data;
-        base_type::last_ = new_last;
         base_type::finish_ = data + new_capacity;
     }
 
-    void allocate_copy_range_value_range(size_type new_capacity, size_type initial_size, iterator position,
-                                         const value_type& x) {
+    void allocate_copy_range_value_range(size_type new_capacity, iterator position, const value_type& x) {
         T* data = base_type::allocate(new_capacity);
         //size_type offset = position - begin();
 
-        if constexpr (std::is_nothrow_move_assignable<T>::value) {
-            sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, x, data);
-            this->~array();
+        if constexpr (prefer_move<T>::value) {
+            if constexpr (std::is_nothrow_move_constructible<T>::value) {
+                base_type::last_ = sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, x, data);
+            } else {
+                try {
+                    base_type::last_ = sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, x, data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
+            }
         } else {
-            try {
-                sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, x, data);
-                this->~array();
-            } catch (...) {
-                base_type::deallocate(data);
-                throw;
+            if constexpr (std::is_nothrow_copy_constructible<T>::value) {
+                base_type::last_ = sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, x, data);
+            } else {
+                try {
+                    base_type::last_ = sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, x, data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
             }
         }
+        this->~array();
         base_type::first_ = data;
-        base_type::last_ = data + initial_size + 1ul;
         base_type::finish_ = data + new_capacity;
     }
 
-    void allocate_copy_range_value_range(size_type new_capacity, size_type initial_size, iterator position,
-                                         value_type&& value) {
-        T* data = base_type::allocate(new_capacity);
-        //size_type offset = position - begin();
-
-        if constexpr (prefer_move::value) {
-            sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_,
-                                                          std::move(value), data);
-            this->~array();
-        } else {
-            try {
-                sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_,
-                                                              std::move(value), data);
-                this->~array();
-            } catch (...) {
-                base_type::deallocate(data);
-                throw;
-            }
-        }
-        base_type::first_ = data;
-        base_type::last_ = data + initial_size + 1ul;
-        base_type::finish_ = data + new_capacity;
-    }
-
-    void allocate_copy_range_value_range(size_type new_capacity, size_type initial_size, iterator position,
-                                         const value_type& value, size_type n) {
+    void allocate_copy_range_value_range(size_type new_capacity, iterator position, value_type&& value) {
         T* data = base_type::allocate(new_capacity);
         //size_type offset = position - begin();
 
         if constexpr (prefer_move::value) {
-            sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, value, n, data);
-            this->~array();
+            if constexpr (std::is_nothrow_move_constructible<T>::value) {
+                base_type::last_ = sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, std::move(value), data);
+            } else {
+                try {
+                    base_type::last_ = sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, std::move(value), data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
+            }
         } else {
-            try {
-                sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, value, n,
-                                                              data);
-                this->~array();
-            } catch (...) {
-                base_type::deallocate(data);
-                throw;
+            if constexpr (std::is_nothrow_copy_constructible<T>::value) {
+                base_type::last_ = sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, std::move(value), data);
+            } else {
+                try {
+                    base_type::last_ = sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, std::move(value), data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
             }
         }
+        this->~array();
         base_type::first_ = data;
-        base_type::last_ = data + initial_size + n;
+        base_type::finish_ = data + new_capacity;
+    }
+
+    void allocate_copy_range_value_range(size_type new_capacity, iterator position, const value_type& value, size_type n) {
+        T* data = base_type::allocate(new_capacity);
+        //size_type offset = position - begin();
+
+        if constexpr (prefer_move::value) {
+            if constexpr (std::is_nothrow_move_constructible<T>::value) {
+                base_type::last_ = sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, value, n, data);
+            } else {
+                try {
+                    base_type::last_ = sgl::v1::uninitialized_move_range_value_range(base_type::first_, position, base_type::last_, value, n, data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
+            }
+        } else {
+            if constexpr (std::is_nothrow_move_constructible<T>::value) {
+                base_type::last_ = sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, value, n, data);
+            } else {
+                try {
+                    base_type::last_ = sgl::v1::uninitialized_copy_range_value_range(base_type::first_, position, base_type::last_, value, n, data);
+                } catch (...) {
+                    base_type::deallocate(data);
+                    throw;
+                }
+            }
+        }
+        this->~array();
+        base_type::first_ = data;
         base_type::finish_ = data + new_capacity;
     }
 };

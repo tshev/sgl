@@ -16,14 +16,14 @@ uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 mi
         ForwardIterator1 current = output;
         try {
             while (first != middle) {
-                sgl::v1::uninitialized_construct(*current, *first);
+                sgl::v1::uninitialized_copy_construct(*current, *first);
                 ++first;
                 ++current;
             }
-            sgl::v1::uninitialized_construct(*current, x);
+            sgl::v1::uninitialized_copy_construct(*current, x);
             ++current;
             while (first != last) {
-                sgl::v1::uninitialized_construct(*current, *first);
+                sgl::v1::uninitialized_copy_construct(*current, *first);
                 ++first;
                 ++current;
             }
@@ -52,11 +52,11 @@ uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 mi
                 ++current;
             }
             while (n-- > 0) {
-                sgl::v1::uninitialized_construct(*current, x);
+                sgl::v1::uninitialized_copy_construct(*current, x);
                 ++current;
             }
             while (first != last) {
-                sgl::v1::uninitialized_construct(*current, *first);
+                sgl::v1::uninitialized_copy_construct(*current, *first);
                 ++first;
                 ++current;
             }
