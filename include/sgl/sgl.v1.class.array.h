@@ -365,9 +365,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         const size_type offset = position - begin();
 
         if (base_type::last_ == base_type::finish_) {
-            const size_type initial_size = size();
-            const size_type initial_capacity = capacity();
-            allocate_copy_range_value_range(multiplicative_resize(initial_capacity, array::initial_capacity), position, std::move(x));
+            allocate_copy_range_value_range(multiplicative_resize(capacity(), array::initial_capacity), position, std::move(x));
         } else {
             insert_unguarded(position, std::move(x));
         }
