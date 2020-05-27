@@ -1,26 +1,10 @@
 #pragma once
 namespace sgl {
 namespace v1 {
-template<typename ForwardIterator, typename T>
+template<typename T, typename U>
 inline
-void uninitialized_copy_construct(ForwardIterator first, ForwardIterator last, const T& x) {
-    if constexpr (std::is_nothrow_copy_constructible<typename std::iterator_traits<ForwardIterator>::value_type>::value) {
-        while (first != last) {
-            sgl::v1::uninitialized_construct(*first, x);
-            ++first;
-        }
-    } else {
-        ForwardIterator start = first;
-        try {
-            while (first != last) {
-                sgl::v1::uninitialized_construct(*first, x);
-                ++first;
-            }
-        } catch(...) {
-             sgl::v1::destruct(start, first);
-             throw;
-        }
-    }
+void uninitialized_copy_construct(T& p, const U& x) {
+    ::new (const_cast<void*>(static_cast<const volatile void*>(&p)))T(x);
 }
 } // namespace v1
 } // namespace sgl
