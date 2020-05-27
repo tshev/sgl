@@ -283,17 +283,19 @@
 //#include "numeric.h"
 
 // unitialized memory
-#include "sgl.v1.function.move_range_value_range.h"
-#include "sgl.v1.function.uninitialized_move.h"
-#include "sgl.v1.function.uninitialized_move_range_value_range.h"
-
 #include "sgl.v1.function.uninitialized_construct.h"
 #include "sgl.v1.function.uninitialized_construct_range.h"
 #include "sgl.v1.function.uninitialized_copy_construct.h"
+#include "sgl.v1.function.uninitialized_default_construct.h"
+
+#include "sgl.v1.function.move_range_value_range.h"
+#include "sgl.v1.function.uninitialized_move.h"
 #include "sgl.v1.function.uninitialized_fill.h"
+#include "sgl.v1.function.uninitialized_fill_n.h"
+#include "sgl.v1.function.uninitialized_move_range_value_range.h"
+
 #include "sgl.v1.function.uninitialized_copy.h"
 #include "sgl.v1.function.uninitialized_transform.h"
-#include "sgl.v1.function.uninitialized_default_construct.h"
 #include "sgl.v1.function.uninitialized_copy_range_value_range.h"
 
 // data structures

@@ -89,7 +89,8 @@ __uninitialized_move_range_value_range(It10 first, It10 middle, It10 last,
 
 template <typename It10, typename It11>
 // requires(pointer(It1) && SGLValueType(It1) == T)
-inline It11 __uninitialized_move_range_value_range__nothrow_move_assignable__(It10 first, It10 middle, It10 last, SGLValueType(It10)&& value, It11 output) {
+inline
+It11 __uninitialized_move_range_value_range__nothrow_move_assignable__(It10 first, It10 middle, It10 last, SGLValueType(It10)&& value, It11 output) {
 
     typedef typename std::iterator_traits<It10>::value_type value_type;
     while (first != middle) {
@@ -111,9 +112,8 @@ inline It11 __uninitialized_move_range_value_range__nothrow_move_assignable__(It
 
 template <typename It1>
 // requires(pointer(It1) && SGLValueType(It1) == T)
-inline It1 __uninitialized_move_range_value_range__nothrow_move_assignable__(
-    It1 first, It1 middle, It1 last,
-    typename std::iterator_traits<It1>::value_type&& x, size_t n, It1 output) {
+inline
+It1 __uninitialized_move_range_value_range__nothrow_move_assignable__( It1 first, It1 middle, It1 last, SGLValueType(It1)&& x, size_t n, It1 output) {
     typedef typename std::iterator_traits<It1>::value_type value_type;
     while (first != middle) {
         ::new (static_cast<void*>(std::addressof(*output))) value_type(std::move(*first));
@@ -121,14 +121,9 @@ inline It1 __uninitialized_move_range_value_range__nothrow_move_assignable__(
         ++output;
     }
 
-    for (size_t i = 1; i < n; ++i) {
+    if (n != 0) {
+        output = sgl::v1::uninitialized_fill_n(output, n - 1, x);
         new (std::addressof(*output)) value_type(std::move(x));
-        ++output;
-    }
-
-    if (n >= 1) {
-        new (std::addressof(*output)) value_type(std::move(x));
-        ++output;
     }
 
     while (first != last) {
@@ -201,11 +196,11 @@ It1 uninitialized_move_range_value_range(It1 first, It1 middle, It1 last, const 
 
 template <typename It0, typename It1>
 requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
-inline 
+inline
 It1 uninitialized_move_range_value_range(It0 first, It0 middle, It0 last, const SGLValueType(It1)& x, size_t n, It1 output) {
     typedef typename std::iterator_traits<It1>::value_type value_type;
     if (std::is_trivial<value_type>::value) {
-        return sgl::v1::uninitialized_move_range_value_range(first, middle, last, x, n, output);
+        return sgl::v1::move_range_value_range(first, middle, last, x, n, output);
     } else {
         It1 current = output;
         try {
