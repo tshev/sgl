@@ -76,7 +76,9 @@ class array_base<T, std::allocator<T>> {
     array_base(size_type n, std::allocator<T> a)
         : first_(std::allocator<T>().allocate(n)), last_(first_ + n), finish_(last_) {}
 
-    pointer allocate(size_type n) { return std::allocator<T>().allocate(n); }
+    pointer allocate(size_type n) {
+        return std::allocator<T>().allocate(n);
+    }
 
     void deallocate(pointer data) { std::allocator<T>().deallocate(data, finish_ - first_); }
 
@@ -301,6 +303,13 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         }
     }
 
+    const_pointer data() const {
+        return base_type::first_;
+    }
+    pointer data() {
+        return base_type::first_;
+    }
+
     void shrink_to_fit() {
         const size_type s = size();
         if (s == 0ul) {
@@ -514,6 +523,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void reallocate_assign(size_type n, const value_type& x) {
         T* data = base_type::allocate(n);
+        if (data == nullptr) { throw std::bad_alloc(); }
         if constexpr (std::is_nothrow_copy_constructible<T>::value) {
             base_type::last_ = sgl::v1::uninitialized_fill(data, data + n, x);
         } else {
@@ -628,6 +638,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void reserve_unguarded(size_type new_capacity) {
         T* data = base_type::allocate(new_capacity);
+        if (data == nullptr) { throw std::bad_alloc(); }
 
         if constexpr (prefer_move::value) {
             if constexpr (std::is_nothrow_move_constructible<T>::value) {
@@ -662,6 +673,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     template<typename It>
     void allocate_copy_swap(size_type new_capacity, It first, It last) {
         T* data = base_type::allocate(new_capacity);
+        if (data == nullptr) { throw std::bad_alloc(); }
         if constexpr (std::is_nothrow_copy_constructible<T>::value) {
             base_type::last_ = std::uninitialized_copy(first, last, data);
         } else {
@@ -681,6 +693,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     template<typename It>
     void allocate_move_swap(size_type new_capacity, It first, It last) {
         T* data = base_type::allocate(new_capacity);
+        if (data == nullptr) { throw std::bad_alloc(); }
         if constexpr (std::is_nothrow_move_constructible<T>::value) {
              base_type::last_ = std::uninitialized_move(first, last, data);
         } else {
@@ -699,6 +712,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void allocate_copy_range_value_range(size_type new_capacity, iterator position, const value_type& x) {
         T* data = base_type::allocate(new_capacity);
+        if (data == nullptr) { throw std::bad_alloc(); }
         //size_type offset = position - begin();
 
         if constexpr (prefer_move::value) {
@@ -731,6 +745,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void allocate_copy_range_value_range(size_type new_capacity, iterator position, value_type&& value) {
         T* data = base_type::allocate(new_capacity);
+        if (data == nullptr) { throw std::bad_alloc(); }
         //size_type offset = position - begin();
 
         if constexpr (prefer_move::value) {
@@ -763,6 +778,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     void allocate_copy_range_value_range(size_type new_capacity, iterator position, const value_type& value, size_type n) {
         T* data = base_type::allocate(new_capacity);
+        if (data == nullptr) { throw std::bad_alloc(); }
         //size_type offset = position - begin();
 
         if constexpr (prefer_move::value) {
