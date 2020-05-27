@@ -24,7 +24,8 @@ iterators invalidated are those referring to the deleted node.
 namespace sgl {
 namespace v1 {
 template<typename T, typename S>
-size_t rb_tree_mem_nodes(size_t n) {
+constexpr
+size_t rb_tree_mem_nodes(size_t n) noexcept {
   struct node {
     uint8_t color;
     S root;
@@ -42,12 +43,14 @@ size_t vector_unsafe_mem(size_t n) {
 
 struct reference_forward {
   template<typename T>
-  T& operator()(T& x) {
+  constexpr
+  T& operator()(T& x) const noexcept {
     return x;
   }
 
   template<typename T>
-  const T& operator()(const T& x) {
+  constexpr
+  const T& operator()(const T& x) const noexcept {
     return x;
   }
 
@@ -55,15 +58,15 @@ struct reference_forward {
 
 template<typename T, typename S>
 std::pair<S, S> rb_tree_mem(size_t n){
-  std::pair<S, S> result;
-  result.first = sgl::v1::rb_tree_mem_nodes<T, S>(n);
-  result.second = sgl::v1::array_view<T, S>(n); 
-  return result;
+    std::pair<S, S> result;
+    result.first = sgl::v1::rb_tree_mem_nodes<T, S>(n);
+    result.second = sgl::v1::array_view<T, S>(n);
+    return result;
 }
 
 template<typename T, typename S, typename C>
 struct rb_tree_node {
-    typedef C color_type; 
+    typedef C color_type;
     typedef S size_type;
     typedef T value_type;
 
@@ -97,93 +100,91 @@ struct rb_tree {
     size_type node_id;
 
     iterator() = default;
-    iterator(rb_tree *tree, size_type node_id) : tree(tree), node_id(node_id) { }
-    iterator(const iterator& x) : tree(x.tree), node_id(x.node_id) { }
+    iterator(rb_tree *tree, size_type node_id) : tree(tree), node_id(node_id) noexcept { }
+    iterator(const iterator& x) : tree(x.tree), node_id(x.node_id) noexcept { }
 
-    iterator& operator=(const iterator& x) {
-      tree = x.tree;
-      node_id = x.node_id;
+    iterator& operator=(const iterator& x) noexcept {
+        tree = x.tree;
+        node_id = x.node_id;
+        return *this;
     }
 
     friend
     inline
-    bool operator==(const iterator& x, const iterator& y) {
+    bool operator==(const iterator& x, const iterator& y) noexcept {
       return x.node_id == y.node_id;
     }
 
     friend
     inline
-    bool operator!=(const iterator& x, const iterator& y) {
+    bool operator!=(const iterator& x, const iterator& y) noexcept {
       return !(x == y);
     }
 
     friend
     inline
-    bool operator<(const iterator& x, const iterator& y) {
+    bool operator<(const iterator& x, const iterator& y) noexcept {
       return x.node_id < y.node_id;
     }
 
-    value_type& operator*() {
-      return tree->get_node(node_id).value_field;
+    value_type& operator*() /* noexcept */ { return tree->get_node(node_id).value_field; }
+
+    const value_type& operator*() const { return tree->get_node(node_id).value_field; }
+
+    iterator& operator++() noexcept {
+        size_type right_node_id = tree->right(node_id);
+
+        if (right_node_id != tree->NIL()) {
+            node_id = right_node_id;
+            for (size_type left_node_id = tree->left(node_id); left_node_id != tree->NIL();
+                 left_node_id = tree->left(node_id)) {
+                node_id = left_node_id;
+            }
+        } else {
+            size_type y = tree->parent(node_id);
+            while (node_id == tree->right(y)) {
+                node_id = y;
+                y = tree->parent(y);
+            }
+            if (tree->right(node_id) != y) { // necessary because of rightmost
+                node_id = y;
+            }
+        }
+        return *this;
     }
 
-    const value_type& operator*() const {
-      return tree->get_node(node_id).value_field;
+    iterator operator++(int) noexcept {
+        iterator tmp = *this;
+        ++(*this);
+        return tmp;
     }
 
-    iterator& operator++() {
-      size_type right_node_id = tree->right(node_id);
-
-      if (right_node_id != tree->NIL()) {
-        node_id = right_node_id;
-        for (size_type left_node_id = tree->left(node_id); left_node_id != tree->NIL(); left_node_id = tree->left(node_id)) {
-          node_id = left_node_id;
+    iterator& operator--() noexcept {
+        // check for header
+        if (tree->color(node_id) == red && tree->parent(tree->parent(node_id)) == node_id) {
+            // return rightmost
+            node_id = tree->right(node_id);
+        } else if (tree->left(node_id) != tree->NIL()) {
+            size_type y = tree->left(node_id);
+            while (tree->right(y) != tree->NIL()) {
+                y = tree->right(y);
+            }
+            node_id = y;
+        } else {
+            size_type y = tree->parent(node_id);
+            while (node_id == tree->left(y)) {
+                node_id = y;
+                y = tree->parent(y);
+            }
+            node_id = y;
         }
-      } else {
-        size_type y = tree->parent(node_id);
-        while (node_id == tree->right(y)) {
-          node_id = y;
-          y = tree->parent(y);
-        }
-        if (tree->right(node_id) != y) { // necessary because of rightmost
-          node_id = y;
-        }
-      }
-      return *this;
+        return *this;
     }
 
-    iterator operator++(int) {
-      iterator tmp = *this;
-      ++(*this);
-      return tmp;
-    }
-
-    iterator& operator--() {
-      // check for header
-      if (tree->color(node_id) == red && tree->parent(tree->parent(node_id)) == node_id) {
-        // return rightmost
-        node_id = tree->right(node_id); 
-      } else if (tree->left(node_id) != tree->NIL()) {
-        size_type y = tree->left(node_id);
-        while (tree->right(y) != tree->NIL()) {
-          y = tree->right(y);
-        }
-        node_id = y;
-      } else {
-        size_type y = tree->parent(node_id);
-        while (node_id == tree->left(y)) {
-          node_id = y;
-          y = tree->parent(y);
-        }
-        node_id = y;
-      }
-      return *this;
-    }
-
-    iterator operator--(int) {
-      iterator tmp = *this;
-      --*this;
-      return tmp;
+    iterator operator--(int) noexcept {
+        iterator tmp = *this;
+        --*this;
+        return tmp;
     }
   };
 
