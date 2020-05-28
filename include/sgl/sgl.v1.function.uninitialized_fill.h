@@ -6,7 +6,9 @@ namespace v1 {
 template<typename ForwardIterator>
 requires(sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::writable(ForwardIterator))
 void uninitialized_fill(ForwardIterator first, ForwardIterator last, const SGLValueType(ForwardIterator)& value) {
-    if constexpr (std::is_nothrow_copy_constructible<SGLValueType(ForwardIterator)>::value) {
+    if constexpr (std::is_trivial<SGLValueType(ForwardIterator)>::value && std::is_pointer<SGLValueType(ForwardIterator)>::value) {
+        return sgl::v1::fill(first, last, value);
+    } else if constexpr (std::is_nothrow_copy_constructible<SGLValueType(ForwardIterator)>::value) {
         while (first != last) {
             sgl::v1::uninitialized_copy_construct(*first, value);
             ++first;

@@ -1,8 +1,10 @@
 #pragma once
+#include <immintrin.h>
 
 namespace sgl {
 namespace v1 {
 
+/*
 #ifdef __AVX2__
 inline
 __attribute__((__always_inline__))
@@ -113,31 +115,29 @@ struct memory_block {
 };
 
 
-char* copy(sgl::v1::simd_tag<false>, char const* first0, char const* last0, char* out0)  {
-    typedef memory_block<__m256i> memory_block_t;
-    const char* last1 = first0 + memory_block_t::shrink(last0 - first0);
-    auto out1 = copy_elements(memory_block_t(first0), memory_block_t(last1), memory_block_t(out0));
-    return sgl::v1::copy_elements(last1, last0, static_cast<char*>(out1));
-}
+*/
 
-
-
-inline
-char* copy(sgl::v1::simd_tag<true>, char const* first0, char const* last0, char* out0)  {
-    return copy(sgl::v1::simd_tag<false>(), first0, last0, out0);
+/*
+#ifdef __AVX2__
+char* copy(sgl::v1::simd_tag<false>, char const* first, char const* last, char* out)  {
+    return (char*)sgl::v1::memcpy_fast(out, first, last - first);
 }
 #endif
+*/
+
+
+/*
+char* copy(sgl::v1::simd_tag<true>, char const* first, char const* last0, char* out0)  {
+    return copy(sgl::v1::simd_tag<false>(), first, last0, out0);
+}
+*/
 
 template<typename It, typename O>
 inline
 requires(ForwardIterator(It) && OutputIterator(O))
 O copy(It first, It last, O out) {
-    while (first != last) {
-        *out = *first;
-        ++out;
-        ++first;
-    }
-    return out;
+    
+    /*
     #ifdef __AVX2__
     typedef typename std::iterator_traits<It>::value_type T;
     if constexpr (std::is_pointer<It>() && std::is_pointer<O>() && std::is_pod<T>()) {
@@ -145,8 +145,21 @@ O copy(It first, It last, O out) {
             return (O)sgl::v1::copy(sgl::v1::simd_tag<false>(), (char const*)first, (char const *)last, (char*)out);
         }
     }
+    while (first != last) {
+        *out = *first;
+        ++out;
+        ++first;
+    }
+    return out;
     #endif
-    return sgl::v1::copy_elements(first, last, out);
+    */
+
+    while (first != last) {
+        *out = *first;
+        ++out;
+        ++first;
+    }
+    return out;
 }
 
 } // namespace v1

@@ -541,19 +541,19 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         base_type::finish_ = base_type::last_;
     }
 
-    void assign(size_type n, const value_type& x) {
-        const size_type s = size();
-        if (s < n) {
-            reallocate_assign(n, x);
+    void assign(size_type n, const value_type& value) {
+        const size_type size_current = size();
+        if (size_current < n) {
+            reallocate_assign(n, value);
         } else {
             if constexpr (std::is_nothrow_copy_assignable<T>::value) {
                 if constexpr (!skip_default_constructor_and_destructor) {
                     sgl::v1::destruct(begin() + n, end());
                 }
                 base_type::last_ = base_type::first_ + n;
-                std::fill(begin(), begin() + n, x);
+                std::fill(begin(), end(), value);
             } else {
-                reallocate_assign(n, x);
+                reallocate_assign(n, value);
             }
         }
     }
