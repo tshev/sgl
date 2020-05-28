@@ -15,7 +15,10 @@
 #include <thread>
 #include <atomic>
 #include "macros.h"
+
 #include "sgl.v1.struct.totally_ordered.h"
+#include "sgl.v1.function.min.h"
+#include "sgl.v1.function.max.h"
 #include "sgl.v1.function.heaps_law.h"
 #include "sgl.v1.function.dcg.h"
 #include "sgl.v1.function.transform_positions.h"
@@ -194,12 +197,10 @@
 #include "sgl.v1.function.ilog10.h"
 #include "sgl.v1.function.iota.h"
 #include "sgl.v1.function.half_non_negative.h"
-#include "sgl.v1.function.max.h"
 #include "sgl.v1.function.max_iterator.h"
 #include "sgl.v1.function.median_element.h"
 #include "sgl.v1.gcp.h"
 #include "sgl.v1.function.startswith.h"
-#include "sgl.v1.function.min.h"
 #include "sgl.v1.function.min_iterator.h"
 #include "sgl.v1.function.multiplicative_resize.h"
 #include "sgl.v1.function.nth_predecessor_unguarded.h"
@@ -247,7 +248,9 @@
 // SECTION "type_traits"
 #include "sgl.v1.struct.enable_if_forward_iterator.h"
 #include "sgl.v1.struct.is_nothrow_movable.h"
+#include "sgl.v1.struct.is_nothrow_copyable.h"
 #include "sgl.v1.struct.is_nothrow_semiregular.h"
+#include "sgl.v1.struct.is_nothrow_algorithm.h"
 #include "sgl.v1.class.pimpl.h"
 #include "sgl.v1.class.enumeration.h"
 //#include "sgl.v1.class.function.partition_semistable_position.h"
