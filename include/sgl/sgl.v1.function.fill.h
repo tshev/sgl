@@ -40,7 +40,7 @@ void fill(sgl::v1::simd_tag<false> _, T* first, T* last, const T& value) {
     char* last1 = first1 + ((char*)last - first1) / step * step;
     const auto value_packed = _mm256_loadu_si256((const __m256i*)(buffer + padding));
     while (first1 != last1) {
-        // 8 blocks
+        // 8 blocks with 256 bits per block
         _mm256_stream_si256((__m256i*)first1,     value_packed);
         _mm256_stream_si256((__m256i*)first1 + 1, value_packed);
         _mm256_stream_si256((__m256i*)first1 + 2, value_packed);
@@ -54,6 +54,13 @@ void fill(sgl::v1::simd_tag<false> _, T* first, T* last, const T& value) {
 	_mm_sfence();
     first += ((char*)last1 - (char*)first) / sizeof(T);
     sgl::v1::fill(first, last, value);
+}
+
+template<typename T>
+requires(sgl::v1::builtin_type(T))
+inline
+void fill(sgl::v1::simd_tag<true> _, T* first, T* last, const T& value) {
+    return sgl::v1::fill(sgl::v1::simd_tag<false>(), first, last, value);
 }
 
 } // namespace v1
