@@ -16,6 +16,7 @@
 #include <atomic>
 #include "macros.h"
 
+#include "sgl.v1.function.alignment_padding.h"
 #include "sgl.v1.struct.totally_ordered.h"
 #include "sgl.v1.function.min.h"
 #include "sgl.v1.function.max.h"
@@ -249,8 +250,8 @@
 #include "sgl.v1.struct.enable_if_forward_iterator.h"
 #include "sgl.v1.struct.is_nothrow_movable.h"
 #include "sgl.v1.struct.is_nothrow_copyable.h"
-#include "sgl.v1.struct.is_nothrow_semiregular.h"
 #include "sgl.v1.struct.is_nothrow_algorithm.h"
+#include "sgl.v1.struct.is_nothrow_semiregular.h"
 #include "sgl.v1.class.pimpl.h"
 #include "sgl.v1.class.enumeration.h"
 //#include "sgl.v1.class.function.partition_semistable_position.h"

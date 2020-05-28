@@ -32,13 +32,12 @@ void fill(sgl::v1::simd_tag<false> _, T* first, T* last, const T& value) {
     char buffer[buffer_size];
 
     sgl::v1::fill((T*)&buffer[0], (T*)&buffer[buffer_size], value);
-    sgl::v1::fill(first, first + sgl::v1::min(size_t(last - first), buffer_size / sizeof(T)), value);
-    const size_t addr = (size_t)first;
-	const size_t padding = (32ul - (addr & 31ul)) & 31ul;
+    sgl::v1::fill(first, first + sgl::v1::min<size_t>(last - first, buffer_size / sizeof(T)), value);
+	const size_t padding = sgl::v1::alignment_padding<size_t>(size_t(first), 32ul);
 
     char* first1 = (char*)first + padding;
     char* last1 = first1 + ((char*)last - first1) / step * step;
-    const auto value_packed = _mm256_loadu_si256((const __m256i*)(buffer + padding));
+    const auto value_packed = _mm256_loadu_si256((const __m256i*)(&buffer[padding]));
     while (first1 != last1) {
         // 8 blocks with 256 bits per block
         _mm256_stream_si256((__m256i*)first1,     value_packed);
