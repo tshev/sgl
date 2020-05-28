@@ -4,6 +4,7 @@ namespace sgl {
 namespace v1 {
 template<typename T>
 inline
+constexpr
 T& min(T& x, T& y) {
   if (y < x) {
     return y;
@@ -14,6 +15,7 @@ T& min(T& x, T& y) {
 
 template<typename T>
 inline
+constexpr
 const T& min(const T& x, const T& y) {
   if (y < x) {
     return y;
