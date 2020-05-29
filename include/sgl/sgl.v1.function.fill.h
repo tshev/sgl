@@ -31,7 +31,7 @@ void fill(sgl::v1::simd_tag<false, V>, T* first, T* last, const T& value) noexce
     constexpr const size_t blocks_count = 8ul;
     constexpr const size_t step = block_size * blocks_count;
     static_assert(sizeof(T) <= block_size, "Type should be smaller than block size");
-    static_assert(buffer_size % sizeof(value) == 0ul);
+    static_assert(block_size % sizeof(value) == 0ul);
 
     char buffer[buffer_size];
     

@@ -31,7 +31,6 @@
 #include "sgl.v1.class.enumeration.h"
 
 
-#include "sgl.v1.struct.avx2_tag.h"
 #include "sgl.v1.struct.default_tag.h"
 #include "sgl.v1.struct.simd_tag.h"
 #include "sgl.v1.struct.simd_vector.h"
