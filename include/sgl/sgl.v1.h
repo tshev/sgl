@@ -14,8 +14,29 @@
 #include <shared_mutex>
 #include <thread>
 #include <atomic>
+#include <immintrin.h>
 #include "macros.h"
 
+// SECTION "tags"
+#include "sgl.v1.function.load_unaligned.h"
+#include "sgl.v1.function.stream_aligned.h"
+
+// SECTION "type_traits"
+#include "sgl.v1.struct.enable_if_forward_iterator.h"
+#include "sgl.v1.struct.is_nothrow_movable.h"
+#include "sgl.v1.struct.is_nothrow_copyable.h"
+#include "sgl.v1.struct.is_nothrow_algorithm.h"
+#include "sgl.v1.struct.is_nothrow_semiregular.h"
+#include "sgl.v1.class.pimpl.h"
+#include "sgl.v1.class.enumeration.h"
+
+
+#include "sgl.v1.struct.avx2_tag.h"
+#include "sgl.v1.struct.default_tag.h"
+#include "sgl.v1.struct.simd_tag.h"
+#include "sgl.v1.struct.simd_vector.h"
+
+// pure algorithms
 #include "sgl.v1.function.alignment_padding.h"
 #include "sgl.v1.struct.totally_ordered.h"
 #include "sgl.v1.function.min.h"
@@ -41,7 +62,6 @@
 #include "sgl.v1.function.squash_subgroups.h"
 #include "sgl.v1.function.is_pod.h"
 #include "sgl.v1.function.is_pointer.h"
-#include "sgl.v1.struct.simd_tag.h"
 #include "sgl.v1.function.volume_bars.h"
 
 #include "sgl.v1.function.fill_if.h"
@@ -246,14 +266,6 @@
 #include "sgl.v1.function.soundex_squash.h"
 #include "sgl.v1.function.soundex.h"
 
-// SECTION "type_traits"
-#include "sgl.v1.struct.enable_if_forward_iterator.h"
-#include "sgl.v1.struct.is_nothrow_movable.h"
-#include "sgl.v1.struct.is_nothrow_copyable.h"
-#include "sgl.v1.struct.is_nothrow_algorithm.h"
-#include "sgl.v1.struct.is_nothrow_semiregular.h"
-#include "sgl.v1.class.pimpl.h"
-#include "sgl.v1.class.enumeration.h"
 //#include "sgl.v1.class.function.partition_semistable_position.h"
 
 #include "macro_expressions.h"

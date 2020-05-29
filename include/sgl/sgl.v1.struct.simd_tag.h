@@ -2,9 +2,13 @@
 
 namespace sgl {
 namespace v1 {
-template<bool x>
+
+
+template<bool x, typename T>
 struct simd_tag {
-    static constexpr const bool aligned = true;
+    typedef typename T::block_type block_type;
+    static constexpr const bool aligned = x;
 };
+
 } // namespace v1
 } // namespace sgl
