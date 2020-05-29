@@ -19,7 +19,7 @@ void fill(sgl::v1::default_tag, It first, It last, const SGLValueType(It)& value
     while (first != last) {
         *first = value;
         ++first;
-    
+    }
 }
 
 template<typename V, typename T>
