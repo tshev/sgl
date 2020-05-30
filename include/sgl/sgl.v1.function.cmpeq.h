@@ -4,6 +4,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename T>
+inline
 __m128i cmpeq(const __m128i x, const __m128i y) {
     if constexpr (std::is_same<T, int>::value || std::is_same<T, unsigned int>::value || std::is_same<T, signed int>::value || std::is_same<T, int32_t>::value || std::is_same<T, int32_t>::value) {
         return _mm_cmpeq_epi32(x, y);
@@ -19,6 +20,7 @@ __m128i cmpeq(const __m128i x, const __m128i y) {
 
 #ifdef __AVX2__
 template<typename T>
+inline
 __m256i cmpeq(const __m256i x, const __m256i y) {
     if constexpr (std::is_same<T, int>::value || std::is_same<T, unsigned int>::value || std::is_same<T, signed int>::value || std::is_same<T, int32_t>::value || std::is_same<T, int32_t>::value) {
         return _mm256_cmpeq_epi32(x, y);
