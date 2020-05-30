@@ -1,3 +1,5 @@
+#pragma once
+
 namespace sgl {
 namespace v1 {
 
@@ -16,7 +18,5 @@ const char* from_string(const char* first, const char* last, T* value) {
     }
 }
 
-
-
-}
-}
+} // namespace v1
+} // namespace sgl

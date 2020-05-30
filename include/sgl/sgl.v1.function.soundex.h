@@ -1,9 +1,11 @@
+#pragma once
+
 namespace sgl {
 namespace v1 {
 
 template<typename It>
 int64_t soundex(It first, It last) {
-    last = soundex_squash(first, last);
+    last = sgl::v1::soundex_squash(first, last);
     if (last - first > 7) {
         int64_t x;
         char* px = (char*)&x;
