@@ -3,7 +3,7 @@
 namespace sgl {
 namespace v1 {
 
-template<typename T, size_t>
+template<typename T, size_t Capacity>
 struct simd_vector;
 
 template<typename T>
