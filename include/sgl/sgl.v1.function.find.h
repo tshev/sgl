@@ -29,16 +29,15 @@ find(sgl::v1::simd_tag<false, V>, T const* first, T const* last, const T& value)
 
     while (first != last0) {
         const V current_value_packed = sgl::v1::load_unaligned<V>(first);
-        const auto r = current_value_packed == value_packed;
-        const int b = _mm_movemask_epi8(r.value);
-        if (b != 0) {
-            if ((0x0000000F & b) != 0) {
+        const int cmp_result = sgl::v1::movemask(current_value_packed == value_packed);
+        if (cmp_result != 0) {
+            if ((0x0000000F & cmp_result) != 0) {
                 return first;
             }
-            if ((0x000000F0 & b) != 0) {
+            if ((0x000000F0 & cmp_result) != 0) {
                 return first + 1;
             }
-            if ((0x00000F00 & b) != 0) {
+            if ((0x00000F00 & cmp_result) != 0) {
                 return first + 2;
             }
             return first + 3;

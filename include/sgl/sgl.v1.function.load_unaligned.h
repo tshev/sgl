@@ -12,7 +12,7 @@ __m256i load_unaligned(__m256i const * first) noexcept {
 
 inline
 __m128i load_unaligned(__m128i const * first) noexcept {
-   return  _mm_load_si128(first);
+   return  _mm_loadu_si128(first);
 }
 
 

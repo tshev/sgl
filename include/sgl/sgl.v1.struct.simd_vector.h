@@ -22,7 +22,7 @@ struct simd_vector<T, 128> {
     friend
     inline
     simd_vector operator==(const simd_vector x,  const simd_vector y) noexcept {
-        return sgl::v1::cmpeq<T >(x, y);
+        return sgl::v1::cmpeq<T>(x, y);
     }
 
     friend

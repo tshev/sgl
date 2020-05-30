@@ -16,8 +16,15 @@ void stream_aligned(__m128i* first, __m128i value) noexcept {
 template<typename V>
 inline
 void stream_aligned(V* first, V value) noexcept {
-    stream_aligned(&(first->value), value.value);
+    sgl::v1::stream_aligned(&(first->value), value.value);
 }
+
+template<typename T, typename V>
+inline
+void stream_aligned(T* first, V value) noexcept {
+    sgl::v1::stream_aligned((typename V::block_type*)first, value.value);
+}
+
 
 } // namespace v1
 } // namespace sgl
