@@ -17,9 +17,10 @@
 #include <immintrin.h>
 #include "macros.h"
 
-// SECTION "tags"
+// SECTION "simd"
 #include "sgl.v1.function.load_unaligned.h"
 #include "sgl.v1.function.stream_aligned.h"
+#include "sgl.v1.function.movemask.h"
 
 // SECTION "type_traits"
 #include "sgl.v1.struct.enable_if_forward_iterator.h"
@@ -158,6 +159,8 @@
 #include "sgl.v1.function.find_adjacent_not_equivalent.h"
 
 
+#include "sgl.v1.function.fill.h"
+#include "sgl.v1.function.fill_n.h"
 #include "sgl.v1.function.find.h"
 #include "sgl.v1.function.for_each_split.h"
 #include "sgl.v1.function.zip.h"
@@ -207,8 +210,6 @@
 #include "sgl.v1.function.is_space.h"
 #include "sgl.v1.function.intersection_count.h"
 #include "sgl.v1.function.set_intersection_count.h"
-#include "sgl.v1.function.fill.h"
-#include "sgl.v1.function.fill_n.h"
 
 #include "sgl.v1.function.set_union_count.h"
 //#include "sgl.v1.function.union_count.h"
