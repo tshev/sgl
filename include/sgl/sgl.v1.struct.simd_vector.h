@@ -10,13 +10,13 @@ template<typename T>
 struct simd_vector<T, 128> {
     typedef typename std::enable_if<std::numeric_limits<T>::is_integer, T>::type value_type;
     typedef __m128i block_type;
-    typedef __m128i register_type;
+    typedef block_type register_type;
 
-    __m128i value;
+    block_type value;
 
     simd_vector() = default;
-    simd_vector(__m128i value) noexcept : value{value} {}
-    simd_vector(T value) noexcept : value{_mm_set1_epi32(value)} {}
+    simd_vector(block_type value) noexcept : value{value} {}
+    simd_vector(T value) noexcept : value{sgl::v1::broadcast<block_type>(value)} {}
     simd_vector(const simd_vector&) = default;
 
     friend
@@ -31,6 +31,22 @@ struct simd_vector<T, 128> {
         return sgl::v1::xor_op(x == y, simd_vector(0xFFFFFFFF));
     }
 };
+
+template<>
+struct simd_vector<float, 128> {
+    typedef float value_type;
+    typedef __m128 block_type;
+    typedef __m128 register_type;
+
+    __m128 value;
+
+    simd_vector() = default;
+    simd_vector(__m128 value) noexcept : value{value} {}
+    simd_vector(value_type value) noexcept : value{sgl::v1::broadcast<block_type>(value)} {}
+    simd_vector(const simd_vector&) = default;
+
+};
+
 
 #ifdef __AVX2__
 template<typename T>

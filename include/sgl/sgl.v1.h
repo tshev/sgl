@@ -23,6 +23,7 @@
 #include "sgl.v1.function.movemask.h"
 #include "sgl.v1.function.cmpeq.h"
 #include "sgl.v1.function.xor_op.h"
+#include "sgl.v1.function.broadcast.h"
 
 // SECTION "type_traits"
 #include "sgl.v1.struct.enable_if_forward_iterator.h"
