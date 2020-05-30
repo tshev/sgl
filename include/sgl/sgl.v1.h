@@ -21,6 +21,8 @@
 #include "sgl.v1.function.load_unaligned.h"
 #include "sgl.v1.function.stream_aligned.h"
 #include "sgl.v1.function.movemask.h"
+#include "sgl.v1.function.cmpeq.h"
+#include "sgl.v1.function.xor_op.h"
 
 // SECTION "type_traits"
 #include "sgl.v1.struct.enable_if_forward_iterator.h"
