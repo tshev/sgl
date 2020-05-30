@@ -44,7 +44,6 @@ struct simd_vector<float, 128> {
     simd_vector(__m128 value) noexcept : value{value} {}
     simd_vector(value_type value) noexcept : value{sgl::v1::broadcast<block_type>(value)} {}
     simd_vector(const simd_vector&) = default;
-
 };
 
 
