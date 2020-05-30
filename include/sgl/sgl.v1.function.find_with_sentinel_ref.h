@@ -9,6 +9,7 @@ namespace v1 {
 
 
 template<typename BidirectionalIterator, typename T>
+inline
 BidirectionalIterator find_with_sentinel_ref(BidirectionalIterator first, BidirectionalIterator last, T &value) {
   if (first == last) return first;
   auto last_minus_one = last;
@@ -39,6 +40,7 @@ BidirectionalIterator find_with_sentinel_ref(BidirectionalIterator first, Bidire
 
 
 template<typename BidirectionalIterator, typename T>
+inline
 BidirectionalIterator find_with_sentinel(BidirectionalIterator first, BidirectionalIterator last, const T &value) {
   if (first == last) return first;
   auto last_minus_one = last;

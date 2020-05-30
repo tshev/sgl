@@ -4,7 +4,7 @@
 #include <sgl/sgl.h>
 #include <benchmark/benchmark.h>
 
-// constexpr const size_t medium_size_array = 1024ull * 1024ull * 8ull;
+// constexpr const size_t medium_size_array = 1024ull * 1024ull * 80ull;
 constexpr const size_t medium_size_array = 1024ull;
 constexpr const size_t extected_needle_position = medium_size_array - 1;
 constexpr const int needle = 0;
@@ -28,6 +28,16 @@ static void BM_std__find(benchmark::State& state) {
     }
 }
 
+static void BM_sgl__v1__find_with_sentinel(benchmark::State& state) {
+    sgl::v1::array<int> values(medium_size_array, 0xffff);
+    values[extected_needle_position] = needle;
+    for (auto _ : state) {
+        auto position = sgl::v1::find_with_sentinel(values.begin(), values.end(), needle) - values.begin();
+        assert(position == extected_needle_position);
+    }
+}
+
+
 static void BM_std__lower_bound(benchmark::State& state) {
     sgl::v1::array<int> values(medium_size_array, 0xffff);
     values[extected_needle_position] = needle;
@@ -46,6 +56,7 @@ int main() {
 */
 
 BENCHMARK(BM_sgl__v1__find);
+BENCHMARK(BM_sgl__v1__find_with_sentinel);
 BENCHMARK(BM_std__find);
 BENCHMARK(BM_std__lower_bound);
 BENCHMARK_MAIN();
