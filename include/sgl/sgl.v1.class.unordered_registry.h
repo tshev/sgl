@@ -18,7 +18,7 @@ public:
     size_t size() const {
         return mapping_.size();
     }
-   
+
     S push(const T& key) {
         auto pos = mapping_.insert({key, max_index_});
         if (pos.second) {
@@ -41,6 +41,11 @@ public:
 
     auto end() const {
         return mapping_.end();
+    }
+
+    template<typename It>
+    std::pair<S, bool> operator()(It first, It last) const {
+        return get(T(first, last));
     }
 };
 
