@@ -27,6 +27,7 @@ class array_base {
     array_base() = default;
 
     array_base(size_type n) : first_(allocate(n)), last_(first_ + n), finish_(last_) {}
+    array_base(T* first, T* last, T* finish) : first_(first), last_(last), finish_(finish) {}
 
     array_base(size_type n, Allocator a) : allocator(a), first_(allocate(n)), last_(first_ + n), finish_(last_) {}
 
@@ -75,6 +76,8 @@ class array_base<T, std::allocator<T>> {
 
     array_base(size_type n, std::allocator<T> a)
         : first_(std::allocator<T>().allocate(n)), last_(first_ + n), finish_(last_) {}
+
+    array_base(T* first, T* last, T* finish) : first_(first), last_(last), finish_(finish) {}
 
     pointer allocate(size_type n) {
         return std::allocator<T>().allocate(n);
@@ -195,7 +198,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         sgl::v1::uninitialized_copy(x.begin(), x.end(), begin());
     }
 
-    array(array&& x) : base_type::first_(x.first_), base_type::last_(x.last_), base_type::finish_(x.finish_) {
+    array(array&& x) : base_type(x.first_, x.last_, x.finish_) {
         x.detach();
     }
 
