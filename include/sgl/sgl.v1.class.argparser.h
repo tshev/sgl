@@ -176,16 +176,16 @@ class argparser {
     std::pair<T, bool> get(const char* str) const {
         T result;
         auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
-        if (count == 0) { return {result, true}; }
+        if (count == 0) { return {T(), true}; }
         return {result, error};
     }
 
     template <typename T>
-    std::pair<T, bool> get(const char* str, const T& default_value) const {
+    std::pair<T, bool> get(const char* str, T&& default_value) const {
         T result;
         auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
         if (count == 0) {
-            return {default_value, true};
+            return {std::forward<T>(default_value), true};
         }
         return {result, error};
     }
