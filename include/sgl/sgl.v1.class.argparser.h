@@ -41,7 +41,6 @@ struct __value_parser__ {
         *x= std::string(f, l - f);
         return false;
     }
-
 };
 
 
