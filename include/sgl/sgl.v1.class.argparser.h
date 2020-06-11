@@ -176,6 +176,7 @@ class argparser {
     std::pair<T, bool> get(const char* str) const {
         T result;
         auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
+        if (count == 0) { return {result, true}; }
         return {result, error};
     }
 
@@ -184,7 +185,7 @@ class argparser {
         T result;
         auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
         if (count == 0) {
-            return {default_value, false};
+            return {default_value, true};
         }
         return {result, error};
     }
