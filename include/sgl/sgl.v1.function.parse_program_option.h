@@ -20,6 +20,7 @@ sgl::v1::triple<ForwardIterator, std::pair<ForwardIterator, ForwardIterator>, st
     ++first1;
 
     if (first1 == last) {
+        key.second = first1;
         return {first, key, value};
     }
 
@@ -45,19 +46,19 @@ sgl::v1::triple<ForwardIterator, std::pair<ForwardIterator, ForwardIterator>, st
     }
 
     if (*fast == '\'' || *fast == '"') {
-        ++first;
-        separator = *first;
+        separator = *fast;
+        ++fast;
     } else {
         separator = ' ';
     }
     //}
+    if (fast == last || *fast == separator) { return {first, key, value}; }
 
-    ++first;
-    first1 = std::adjacent_find(first, last, [separator](auto x, auto y) { return x != '\\' && y == separator; });
+    first1 = std::adjacent_find(fast, last, [separator](auto x, auto y) { return x != '\\' && y == separator; });
 
     if (first1 != last)
         ++first1;
-    value.first = first;
+    value.first = fast;
     value.second = first1;
 
     if (first1 == last) {
