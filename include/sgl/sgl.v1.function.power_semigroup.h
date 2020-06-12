@@ -52,5 +52,6 @@ T power_semigroup(T x, N n, Operation op) {
   --n;
   return power_accumulate_semigroup(x, op(x, x), half(n), op);
 }
+
 } // namespace v1
 } // namespace sgl
