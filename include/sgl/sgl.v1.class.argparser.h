@@ -41,6 +41,18 @@ struct __value_parser__ {
         *x= std::string(f, l - f);
         return false;
     }
+
+    template <typename It>
+    bool operator()(It f, It l, float* x) {
+        auto position = sgl::v1::parse_float(f, l, x);
+        return position != l;
+    }
+
+    template <typename It>
+    bool operator()(It f, It l, double* x) {
+        auto position = sgl::v1::parse_float(f, l, x);
+        return position != l;
+    }
 };
 
 

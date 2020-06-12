@@ -242,6 +242,7 @@
 #include "sgl.v1.function.partition.h"
 #include "sgl.v1.function.parse_int.h"
 #include "sgl.v1.function.parse_uint.h"
+#include "sgl.v1.function.parse_float.h"
 #include "sgl.v1.function.power_semigroup.h"
 #include "sgl.v1.function.reduce2ops.h"
 #include "sgl.v1.function.replace.h"
