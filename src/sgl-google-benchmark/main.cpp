@@ -1,5 +1,5 @@
-#include <benchmark/benchmark.h>
 #include <sgl/sgl.h>
+#include <benchmark/benchmark.h>
 
 constexpr const size_t medium_size_array = 1000ull * 1000ull * 10ull;
 
