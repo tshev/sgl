@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "macros.h"
 #include "common.h"
 #include <sstream>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <numeric>
+#include <unordered_map>
 #include <unistd.h>
 #include <cassert>
 #include <algorithm>
