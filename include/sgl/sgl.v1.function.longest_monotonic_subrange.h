@@ -1,14 +1,13 @@
-#pragma onace
+#pragma once
 
 namespace sgl {
 namespace v1 {
 
-template <typename It>
-inline
+template<typename It>
 std::pair<It, It> longest_monotonic_subrange(It first, It last) {
-    if (first == last) {
-        return {first, last};
-    }
+  if (first == last) {
+    return {first, last};
+  }
     auto fast = first;
     ++fast;
     auto r_first = first;
@@ -21,6 +20,7 @@ std::pair<It, It> longest_monotonic_subrange(It first, It last) {
 
     while (fast != last) {
         if (*first < *fast) {
+            ++fast;
             c_last = fast;
             ++c_n;
         } else {
@@ -32,19 +32,24 @@ std::pair<It, It> longest_monotonic_subrange(It first, It last) {
             c_first = fast;
             c_last = fast;
             c_n = 0;
+            ++fast;
         }
         ++first;
-        ++fast;
     }
+
+    if (r_n < c_n) {
+        return {c_first, c_last};
+    }
+
     return {r_first, r_last};
 }
 
-template <typename It, typename R>
-inline
-std::pair<It, It> longest_monotonic_subrange(It first, It last, R r) {
-    if (first == last) {
-        return {first, last};
-    }
+
+template<typename It, typename Relation>
+std::pair<It, It> longest_monotonic_subrange(It first, It last, Relation r) {
+  if (first == last) {
+    return {first, last};
+  }
     auto fast = first;
     ++fast;
     auto r_first = first;
@@ -57,6 +62,7 @@ std::pair<It, It> longest_monotonic_subrange(It first, It last, R r) {
 
     while (fast != last) {
         if (r(*first, *fast)) {
+            ++fast;
             c_last = fast;
             ++c_n;
         } else {
@@ -68,12 +74,17 @@ std::pair<It, It> longest_monotonic_subrange(It first, It last, R r) {
             c_first = fast;
             c_last = fast;
             c_n = 0;
+            ++fast;
         }
         ++first;
-        ++fast;
     }
+
+    if (r_n < c_n) {
+        return {c_first, c_last};
+    }
+
     return {r_first, r_last};
 }
 
-} // namespace v1
-} // namespace sgl
+}
+}
