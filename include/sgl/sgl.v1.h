@@ -41,6 +41,7 @@
 #include "sgl.v1.struct.simd_vector.h"
 
 // pure algorithms
+#include "sgl.v1.function.longest_monotonic_subrange.h"
 #include "sgl.v1.function.find_expression_end.h"
 #include "sgl.v1.function.alignment_padding.h"
 #include "sgl.v1.struct.totally_ordered.h"
@@ -291,7 +292,6 @@
 // #include "sgl.v1.class.shared_mutex.h"
 #include "sgl.v1.reducer.struct.square_deviation.h"
 #include "sgl.v1.struct.input_type.h"
-
 
 #include "sgl.v1.struct.equivalent_types.h"
 #include "sgl.v1.struct.pair.h"
