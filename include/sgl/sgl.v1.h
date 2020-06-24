@@ -363,3 +363,5 @@
 #include "sgl.v1.function.gauss_method_forward.h"
 
 #include "sgl.v1.class.rate_limiter.h"
+#include "sgl.v1.function.rand.h"
+#include "sgl.v1.function.seed.h"
