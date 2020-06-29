@@ -201,6 +201,17 @@ class argparser {
         return {result, error};
     }
 
+    template <typename T>
+    std::pair<T, bool> get(const char* str, const T& default_value) const {
+        T result;
+        auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
+        if (count == 0) {
+            return {default_value, false};
+        }
+        return {result, error};
+    }
+
+
     auto values() const {
         return std::make_pair(std::begin(raw_value_ranges), std::end(raw_value_ranges));
     }

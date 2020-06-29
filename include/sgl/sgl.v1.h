@@ -34,6 +34,7 @@
 #include "sgl.v1.struct.is_nothrow_semiregular.h"
 #include "sgl.v1.class.pimpl.h"
 #include "sgl.v1.class.enumeration.h"
+#include "sgl.v1.struct.fa.h"
 
 
 #include "sgl.v1.struct.default_tag.h"
