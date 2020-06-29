@@ -196,7 +196,7 @@ class argparser {
         T result;
         auto [count, error] = parse_key_value(str, __value_parser__<T>(), &result); 
         if (count == 0) {
-            return {std::forward<T>(default_value), true};
+            return {std::forward<T>(default_value), false};
         }
         return {result, error};
     }
