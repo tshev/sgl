@@ -2,12 +2,18 @@
 namespace sgl {
 namespace v1 {
 
-template<typename T, typename S>
+template<typename T, typename value_type>
 class unordered_registry {
-    std::unordered_map<T, S> mapping_;
-    S max_index_ = 0;
 public:
-    S max_index() const {
+    typedef T key_type;
+    typedef N value_type;
+
+private:
+    std::unordered_map<key_type, value_type> mapping_;
+    value_type max_index_ = 0;
+
+public:
+    value_type max_index() const {
         return max_index_;
     }
 
@@ -19,7 +25,7 @@ public:
         return mapping_.size();
     }
 
-    S push(const T& key) {
+    value_type push(const T& key) {
         auto pos = mapping_.insert({key, max_index_});
         if (pos.second) {
             ++max_index_;
@@ -27,10 +33,10 @@ public:
         return pos.first->second;
     }
 
-    std::pair<S, bool> get(const T& key) const {
+    std::pair<value_type, bool> get(const T& key) const {
         auto pos = mapping_.find(key);
         if (pos == std::end(mapping_)) {
-            return {S(), false};
+            return {value_type(), false};
         }
         return {pos->second, true};
     }
@@ -44,8 +50,35 @@ public:
     }
 
     template<typename It>
-    std::pair<S, bool> operator()(It first, It last) const {
-        return get(T(first, last));
+    std::pair<value_type, bool> operator()(It first, It last) const {
+        return this->get(T(first, last));
+    }
+
+    template<typename Istream, typename N>
+    friend
+    inline
+    Istream& operator>>(Istream& istream, unordered_registry& registry) {
+        unordered_registry::key_type tmp;
+        while (istream) {
+            std::getline(istream, tmp);
+            if (!tmp.empty())
+            registry.push(tmp);
+            tmp.clear();
+        }
+        return istream;
+    }
+
+    template<typename Ostream, typename N>
+    friend
+    inline
+    Ostream& operator<<(Ostream& ostream, const unordered_registry& registry) {
+        std::vector<std::pair<unordered_registry::key_type, N>> pairs;
+        std::copy(registry.begin(), registry.end(), std::back_inserter(pairs));
+        std::sort(pairs.begin(), pairs.end(), [](const auto& x, const auto& y) { return x.second < y.second; });
+        for (const auto& x : pairs) {
+            ostream << x.first << '\n';
+        }
+        return ostream;
     }
 };
 
