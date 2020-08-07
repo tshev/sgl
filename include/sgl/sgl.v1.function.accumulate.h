@@ -21,10 +21,10 @@ T accumulate(ForwardIterator first, ForwardIterator last, T val, BinaryOperation
 }
 
 template<typename ForwardIterator_1, typename ForwardIterator_2, typename T, typename Op1, typename Op2>
-SGLValueType(ForwardIterator_1) accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, T value, Op1 op1, Op2 op2) {
-  typedef SGLValueType(ForwardIterator_1) value_type;
-  typedef SGLValueType(ForwardIterator_2) value_type_2;
-  static_assert(std::is_same<value_type, value_type_2>::value, "Types should be the same");
+T accumulate(ForwardIterator_1 f1, ForwardIterator_1 l1, ForwardIterator_2 f2, T value, Op1 op1, Op2 op2) {
+  //typedef SGLValueType(ForwardIterator_1) value_type;
+  //typedef SGLValueType(ForwardIterator_2) value_type_2;
+  //static_assert(std::is_same<value_type, value_type_2>::value, "Types should be the same");
 
   while (f1 != l1) {
     value = op2(value, op1(*f1, *f2));

@@ -41,15 +41,16 @@
 #include "sgl.v1.struct.simd_tag.h"
 #include "sgl.v1.struct.simd_vector.h"
 
+#include "sgl.v1.struct.totally_ordered.h"
+#include "sgl.v1.class.position.h"
+
 // pure algorithms
 #include "sgl.v1.function.longest_monotonic_subrange.h"
 #include "sgl.v1.function.find_expression_end.h"
 #include "sgl.v1.function.alignment_padding.h"
-#include "sgl.v1.struct.totally_ordered.h"
 #include "sgl.v1.function.min.h"
 #include "sgl.v1.function.max.h"
 #include "sgl.v1.function.heaps_law.h"
-#include "sgl.v1.function.dcg.h"
 #include "sgl.v1.function.transform_positions.h"
 #include "sgl.v1.function.copy_elements.h"
 #include "sgl.v1.class.lru_cache.h"
@@ -70,11 +71,9 @@
 #include "sgl.v1.function.is_pod.h"
 #include "sgl.v1.function.is_pointer.h"
 #include "sgl.v1.function.volume_bars.h"
-
 #include "sgl.v1.function.fill_if.h"
 #include "sgl.v1.function.for_subgroups.h"
 #include "sgl.v1.function.for_subgroups_back.h"
-
 #include "sgl.v1.function.distance.h"
 #include "sgl.v1.function.advance_to_middle.h"
 #include "sgl.v1.function.find_middle.h"
@@ -83,7 +82,6 @@
 #include "sgl.v1.function.partition_semistable_by_mask.h"
 #include "sgl.v1.class.label_enumerator.h"
 #include "sgl.v1.struct.delta_square.h"
-#include "sgl.v1.struct.plus.h"
 #include "sgl.v1.struct.minus.h"
 #include "sgl.v1.struct.triple.h"
 #include "sgl.v1.struct.if_else.h"
@@ -328,6 +326,15 @@
 #include "sgl.v1.function.uninitialized_transform.h"
 #include "sgl.v1.function.uninitialized_copy_range_value_range.h"
 
+#include "sgl.v1.function.log2.h"
+
+// functors
+#include "sgl.v1.f.struct.plus.h"
+#include "sgl.v1.f.struct.greater.h"
+#include "sgl.v1.f.struct.dcg.h"
+#include "sgl.v1.f.struct.dcg_exp.h"
+
+
 // data structures
 #include "sgl.v1.class.array.h"
 #include "sgl.v1.class.array_k.h"
@@ -356,9 +363,17 @@
 #include "sgl.v1.function.parse_storage_capacity.h"
 #include "sgl.v1.function.parse_timedelta_as_ns.h"
 #include "sgl.v1.function.decode_batches.h"
-#include "sgl.v1.function.log2.h"
 
-// data structures
+
+
+// domain-specific-algorithms
+//#include "sgl.v1.function.f.dcg.h"
+#include "sgl.v1.function.dcg.h"
+#include "sgl.v1.function.dcg_exp.h"
+#include "sgl.v1.function.ndcg.h"
+#include "sgl.v1.function.ndcgs.h"
+#include "sgl.v1.function.ndcg_exp.h"
+
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"

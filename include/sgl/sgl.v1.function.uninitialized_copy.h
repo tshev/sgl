@@ -8,7 +8,7 @@ ForwardIterator uninitialized_copy_(InputIterator first, InputIterator last, For
     ForwardIterator current = out;
     try {
         while (first != last) {
-            sgl::v1::uninitialized_construct(std::addressof(*current), *first);
+            sgl::v1::uninitialized_construct(*current, *first);
             ++current; ++first;
         }
         return current;
