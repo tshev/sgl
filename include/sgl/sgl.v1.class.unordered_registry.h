@@ -2,7 +2,7 @@
 namespace sgl {
 namespace v1 {
 
-template<typename T, typename value_type>
+template<typename T, typename N>
 class unordered_registry {
 public:
     typedef T key_type;
@@ -54,7 +54,7 @@ public:
         return this->get(T(first, last));
     }
 
-    template<typename Istream, typename N>
+    template<typename Istream>
     friend
     inline
     Istream& operator>>(Istream& istream, unordered_registry& registry) {
@@ -68,12 +68,12 @@ public:
         return istream;
     }
 
-    template<typename Ostream, typename N>
+    template<typename Ostream>
     friend
     inline
     Ostream& operator<<(Ostream& ostream, const unordered_registry& registry) {
         std::vector<std::pair<unordered_registry::key_type, N>> pairs;
-        std::copy(registry.begin(), registry.end(), std::back_inserter(pairs));
+        sgl::v1::copy(registry.begin(), registry.end(), std::back_inserter(pairs));
         std::sort(pairs.begin(), pairs.end(), [](const auto& x, const auto& y) { return x.second < y.second; });
         for (const auto& x : pairs) {
             ostream << x.first << '\n';

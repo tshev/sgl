@@ -4,7 +4,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename F>
-    requires(Transformation(F))
+   // requires(Transformation(F))
 struct distance_type;
 
 // If all transformations on a type T have the same distance type,

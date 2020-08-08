@@ -6,7 +6,7 @@ namespace v1 {
 template<typename T>
 constexpr
 bool is_pod() {
-    return std::is_pod<T>::value;
+    return std::is_trivial<T>::value;
 }
 
 } // namespace v1

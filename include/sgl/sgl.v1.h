@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <cassert>
 #include <algorithm>
+#include <string>
 #include <cmath>
 #include <type_traits>
 #include <iterator>
@@ -17,7 +18,7 @@
 #include <atomic>
 #include <immintrin.h>
 #include "macros.h"
-
+#include "sgl.v1.concept.hpp"
 // SECTION "simd"
 #include "sgl.v1.function.load_unaligned.h"
 #include "sgl.v1.function.stream_aligned.h"

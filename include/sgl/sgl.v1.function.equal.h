@@ -86,6 +86,7 @@ template<typename ForwardIterator0, typename ForwardIterator1>
 // requires(ForwardIterator(ForwardIterator0) && ForwardIterator(ForwardIterator1))
 bool equal(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator1 last1) {
 
+/*
 #if __cplusplus >= 201703L
   if constexpr(std::is_same<typename std::iterator_traits<ForwardIterator0>::iterator_category, std::random_access_iterator_tag>::value &&
                std::is_same<typename std::iterator_traits<ForwardIterator0>::iterator_category, typename std::iterator_traits<ForwardIterator1>::iterator_category>::value) {
@@ -93,8 +94,9 @@ bool equal(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 fir
   }
   return sgl::v1::equal(first0, last0, first1, last1, std::input_iterator_tag{});
 #else
+*/
   return sgl::v1::equal(first0, last0, first1, last1, std::input_iterator_tag{});
-#endif
+//#endif
 }
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename R>

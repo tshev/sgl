@@ -3,7 +3,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename It>
-requires(sgl::v1::forward_iterator(It) && sgl::v1::writable(It))
+//requires(sgl::v1::forward_iterator(It) && sgl::v1::writable(It))
 inline
 void fill(It first, It last, const SGLValueType(It)& value) noexcept(sgl::v1::is_nothrow_algorithm<SGLValueType(It), It>::value) {
     while (first != last) {
@@ -13,7 +13,7 @@ void fill(It first, It last, const SGLValueType(It)& value) noexcept(sgl::v1::is
 }
 
 template<typename It>
-requires(sgl::v1::forward_iterator(It) && sgl::v1::writable(It))
+//requires(sgl::v1::forward_iterator(It) && sgl::v1::writable(It))
 inline
 void fill(sgl::v1::default_tag, It first, It last, const SGLValueType(It)& value) noexcept(sgl::v1::is_nothrow_algorithm<SGLValueType(It), It>::value) {
     while (first != last) {
@@ -23,7 +23,7 @@ void fill(sgl::v1::default_tag, It first, It last, const SGLValueType(It)& value
 }
 
 template<typename V, typename T>
-requires(sgl::v1::builtin_type(T))
+//requires(sgl::v1::builtin_type(T))
 void fill(sgl::v1::simd_tag<false, V>, T* first, T* last, const T& value) noexcept {
     constexpr const size_t block_size = sizeof(V);
     constexpr const size_t tail_size = sgl::v1::max(block_size, sizeof(T));

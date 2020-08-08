@@ -403,6 +403,14 @@ public:
         return !(x == y);
     }
 
+    T& operator[](size_t i) {
+        return data_[i];
+    }
+
+    const T& operator[](size_t i) const {
+        return data_[i];
+    }
+
     void reserve(size_type n) {
         data_.reserve(n);
     }

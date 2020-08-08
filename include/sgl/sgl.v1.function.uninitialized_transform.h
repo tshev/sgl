@@ -3,11 +3,13 @@ namespace sgl {
 namespace v1 {
 
 template<typename InputIterator, typename ForwardIterator, typename UnaryFunction>
+/*
 requires(
     sgl::v1::input_iterator(InputIterator) && sgl::v1::readable(InputIterator) &&
     sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::writable(ForwardIterator) &&
     sgl::v1::unary_function::unary_function(UnaryFunction)
 )
+*/
 inline
 ForwardIterator uninitialized_transform_(InputIterator first, InputIterator last, ForwardIterator out, UnaryFunction function) {
     ForwardIterator current = out;
@@ -26,11 +28,13 @@ ForwardIterator uninitialized_transform_(InputIterator first, InputIterator last
 }
 
 template<typename InputIterator, typename ForwardIterator, typename UnaryFunction>
+/*
 requires(
     sgl::v1::input_iterator(InputIterator) && sgl::v1::readable(InputIterator) &&
     sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::writable(ForwardIterator) &&
     sgl::v1::unary_function::unary_function(UnaryFunction)
 )
+*/
 inline
 ForwardIterator uninitialized_transform(InputIterator first, InputIterator last, ForwardIterator out, UnaryFunction function) {
     // ranges don't intersect

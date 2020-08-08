@@ -1,7 +1,8 @@
 #pragma once
 
-#include <unordered_map>
 #include "macros.h"
+#include <unordered_map>
+#include <algorithm>
 #include "common.h"
 #include <sstream>
 #include <cassert>
@@ -14,7 +15,6 @@
 #include <vector>
 #include <numeric>
 #include <set>
-#include <algorithm>
 #include <tuple>
 
 #include <exception>

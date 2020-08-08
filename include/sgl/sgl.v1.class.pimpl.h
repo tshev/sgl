@@ -11,7 +11,7 @@ Ostream& log(Ostream &out, Tag tag, const char *file_name) {
  * @brief pimpl - pointer to implementation interface
 */
 template<typename T>
-requires(FunctionalProcedure(T))
+//requires(FunctionalProcedure(T))
 struct pimpl {
   typedef T value_type;
   typedef T* pointer;

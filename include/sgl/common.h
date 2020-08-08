@@ -3,6 +3,7 @@
 #include <iterator>
 
 namespace sgl {
+
 template<typename Iterator>
 struct iterator_traits {
   typedef typename std::iterator_traits<Iterator>::value_type value_type;
@@ -35,4 +36,5 @@ template<>
 struct floating_tag<float> {
   typedef floating_value_tag value_type;
 };
+
 } // namespace sgl

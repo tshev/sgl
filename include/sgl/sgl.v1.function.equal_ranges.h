@@ -82,6 +82,7 @@ template<typename ForwardIterator0, typename ForwardIterator1>
 // requires(ForwardIterator(ForwardIterator0) && ForwardIterator(ForwardIterator1))
 std::pair<ForwardIterator0, ForwardIterator1> equal_ranges(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator1 last1) {
 
+/*
 #if __cplusplus == 201703L
   if constexpr(std::is_same<typename std::iterator_traits<ForwardIterator0>::iterator_category, std::random_access_iterator_tag>::value &&
                std::is_same<typename std::iterator_traits<ForwardIterator0>::iterator_category, typename std::iterator_traits<ForwardIterator1>::iterator_category>::value) {
@@ -89,8 +90,9 @@ std::pair<ForwardIterator0, ForwardIterator1> equal_ranges(ForwardIterator0 firs
   }
   return equal_ranges(first0, last0, first1, last1, std::input_iterator_tag{});
 #else
+*/
   return equal_ranges(first0, last0, first1, last1, std::input_iterator_tag{});
-#endif
+//#endif
 }
 } // namespace v1
 } // namespace sgl

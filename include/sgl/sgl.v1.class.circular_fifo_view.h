@@ -140,7 +140,7 @@ public:
 
     template<typename T>
     bool push_back(const T& value) {
-        static_assert(std::is_pod<T>::value, "Supports only pods"); // not enough
+        static_assert(std::is_trivial<T>::value, "Supports only pods"); // not enough
         return push_back((const char*)&value, sizeof(T));
     }
 

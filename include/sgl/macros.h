@@ -6,10 +6,19 @@
 #define CPP17 201703L
 
 /************************************ Concepts START *********************************/
+
+#if __cplusplus <= CPP17
 #ifndef requires
 #define requires(...)
 #else
 #pragma GCC warning "requires is already defined"
+#endif
+#endif
+
+#if __cplusplus <= CPP17
+#define SGLConcept(...)
+#else
+#define SGLConcept(...) __VA_ARGS__
 #endif
 
 #ifndef SGLDifferenceType

@@ -4,7 +4,7 @@ namespace sgl {
 namespace v1 {
 
 template <typename It10, typename It11>
-requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
+//requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
 inline It11
 __uninitialized_move_range_value_range(It10 first, It10 middle, It10 last,
                                        typename std::iterator_traits<It10>::value_type&& x,
@@ -45,7 +45,7 @@ __uninitialized_move_range_value_range(It10 first, It10 middle, It10 last,
 }
 
 template <typename It10, typename It11>
-requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
+//requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
 inline It11
 __uninitialized_move_range_value_range(It10 first, It10 middle, It10 last,
                                        typename std::iterator_traits<It10>::value_type&& x, size_t n,
@@ -163,7 +163,7 @@ It1 uninitialized_move_range_value_range(It1 first, It1 middle, It1 last,
 }
 
 template <typename It1>
-requires(sgl::v1::forward_iterator(It1))
+//requires(sgl::v1::forward_iterator(It1))
 inline
 It1 uninitialized_move_range_value_range(It1 first, It1 middle, It1 last, const SGLValueType(It1)& value, It1 output) {
     typedef typename std::iterator_traits<It1>::value_type value_type;
@@ -195,7 +195,7 @@ It1 uninitialized_move_range_value_range(It1 first, It1 middle, It1 last, const 
 }
 
 template <typename It0, typename It1>
-requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
+//requires(sgl::v1::input_iterator(It0) && sgl::v1::forward_iterator(It1))
 inline
 It1 uninitialized_move_range_value_range(It0 first, It0 middle, It0 last, const SGLValueType(It1)& x, size_t n, It1 output) {
     typedef typename std::iterator_traits<It1>::value_type value_type;

@@ -103,7 +103,7 @@ class array_base<T, std::allocator<T>> {
 };
 
 template <typename T, typename Allocator = std::allocator<T>,
-          bool skip_default_constructor_and_destructor = std::is_pod<T>::value>
+          bool skip_default_constructor_and_destructor = std::is_trivial<T>::value>
 class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip_default_constructor_and_destructor>> {
     struct prefer_move {
         // move nothrow move constructible resources and non-regular types
@@ -130,44 +130,44 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     array() : base_type() {}
 
     template<typename It>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last) : base_type(std::distance(first, last)) {
         sgl::v1::uninitialized_copy(first, last, begin());
     }
 
     template<typename It>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, Allocator a) : base_type(std::distance(first, last), a) {
         sgl::v1::uninitialized_copy(first, last, begin());
     }
 
     template<typename It>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
     array(It first, It last) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last) {}
 
     template<typename It>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It))
     array(It first, It last, Allocator a) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, a) {}
 
 
     template<typename It, typename UnaryFunction>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, UnaryFunction unary_function) : base_type(std::distance(first, last)) {
         sgl::v1::uninitialized_transform(first, last, begin(), unary_function);
     }
 
     template<typename It, typename UnaryFunction>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
     array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, UnaryFunction unary_function, Allocator a) : base_type(std::distance(first, last), a) {
         sgl::v1::uninitialized_copy(first, last, begin(), unary_function);
     }
 
     template<typename It, typename UnaryFunction>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
     array(It first, It last, UnaryFunction unary_function) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, unary_function) {}
 
     template<typename It, typename UnaryFunction>
-    requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
+    //requires(sgl::v1::input_iterator(It) && sgl::v1::readable(It) && sgl::v1::unary_function(UnaryFunction))
     array(It first, It last, UnaryFunction unary_function, Allocator allocator) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, unary_function, allocator) {}
 
     array(size_type n) : base_type(n) {

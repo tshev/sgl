@@ -10,7 +10,7 @@ struct sprase_adjency_matrix {
 
     sprase_adjency_matrix() = default;
 
-    sprase_adjency_matrix(size_t n_rows) {
+    sprase_adjency_matrix(size_t n_rows) : posting_list {
         posting_list.reserve(n_rows);
     }
 

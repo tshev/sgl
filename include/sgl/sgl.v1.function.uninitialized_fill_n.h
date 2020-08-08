@@ -4,7 +4,7 @@ namespace sgl {
 namespace v1 {
 
 template<typename ForwardIterator>
-requires(sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::writable(ForwardIterator))
+//requires(sgl::v1::forward_iterator(ForwardIterator) && sgl::v1::writable(ForwardIterator))
 void uninitialized_fill_n(ForwardIterator first, size_t n, const SGLValueType(ForwardIterator)& value) {
     if constexpr (std::is_base_of<std::random_access_iterator_tag, ForwardIterator>::value) {
         return sgl::v1::uninitialized_fill(first, first + n, value);

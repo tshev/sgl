@@ -134,7 +134,7 @@ char* copy(sgl::v1::simd_tag<true>, char const* first, char const* last0, char* 
 
 template<typename It, typename O>
 inline
-requires(ForwardIterator(It) && OutputIterator(O))
+//requires(ForwardIterator(It) && OutputIterator(O))
 O copy(It first, It last, O out) {
     
     /*
