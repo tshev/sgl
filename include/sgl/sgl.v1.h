@@ -170,6 +170,8 @@
 #include "sgl.v1.function.fill.h"
 #include "sgl.v1.function.fill_n.h"
 #include "sgl.v1.function.find.h"
+#include "sgl.v1.function.find_unbounded.h"
+#include "sgl.v1.function.find_if_unbounded.h"
 #include "sgl.v1.function.for_each_split.h"
 #include "sgl.v1.function.for_each_split2.h"
 #include "sgl.v1.function.for_each_split3.h"

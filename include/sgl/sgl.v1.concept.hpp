@@ -5,6 +5,7 @@
 #include "sgl.v1.concept.semiregular.h"
 #include "sgl.v1.concept.regular.h"
 #include "sgl.v1.concept.functional_procedure.h"
+#include "sgl.v1.concept.predicate.h"
 
 #include "sgl.v1.concept.iterator.h"
 #include "sgl.v1.concept.input_iterator.h"
