@@ -348,7 +348,37 @@ struct sgl::v1::array<std::string>::unittest {
             assert(array.front() == "value");
         }
 
-        
+        {
+            bool throws_bad_alloc = false;
+            try {
+                sgl::v1::array<int> array(~sgl::v1::array<int>::size_type(0));
+            } catch (const std::bad_alloc&) {
+                throws_bad_alloc = true;
+            }
+            assert(thows_bad_alloc);
+        }
+
+        {
+            bool throws_bad_alloc = false;
+            sgl::v1::array<int> array;
+            try {
+                array.resize(~sgl::v1::array<int>::size_type(0));
+            } catch (const std::bad_alloc&) {
+                throws_bad_alloc = true;
+            }
+            assert(throws_bad_alloc);
+        }
+
+        {
+            bool throws_bad_alloc = false;
+            sgl::v1::array<int> array;
+            try {
+                array.reserve(~sgl::v1::array<int>::size_type(0));
+            } catch (const std::bad_alloc&) {
+                throws_bad_alloc = true;
+            }
+            assert(throws_bad_alloc);
+        }
     }
 };
 
