@@ -14,3 +14,13 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
 # TODO: think about
 - functors for SIMD instructions
 - SIMD and 2D iterators
+- Word hashing without collisions (also, save as many operations as possible) 
+  - Obtain a vocabulary of all the words
+  - ensure we can encode all the words and character-level ngrams without collisions
+
+
+TODO:
+- `sgl.v1.class.adaptive_hash.h`
+- `sgl.v1.class.cuckoo_hash.h`
+- `sgl.v1.class.lri_cache.h`
+- `sgl.v1.class.lru_cache.h`
