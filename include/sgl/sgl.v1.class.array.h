@@ -278,31 +278,31 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         }
     }
 
-    size_type capacity() const {
+    size_type capacity() const noexcept {
         return base_type::finish_ - base_type::first_;
     }
 
-    size_type size() const {
+    size_type size() const noexcept {
         return base_type::last_ - base_type::first_;
     }
 
-    size_type capacity_unused() {
+    size_type capacity_unused() noexcept {
         return base_type::finish_ - base_type::last_;
     }
 
-    iterator begin() {
+    iterator begin() noexcept {
         return base_type::first_;
     }
 
-    const_iterator begin() const {
+    const_iterator begin() const noexcept {
         return base_type::first_;
     }
 
-    iterator end() {
+    iterator end() noexcept {
         return base_type::last_;
     }
 
-    const_iterator end() const {
+    const_iterator end() const noexcept {
         return base_type::last_;
     }
 
@@ -312,7 +312,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         }
     }
 
-    const_pointer data() const {
+    const_pointer data() const noexcept {
         return base_type::first_;
     }
     pointer data() {
@@ -397,10 +397,10 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         } else {
             if constexpr (prefer_move::value) {
                 sgl::v1::uninitialized_move(end() - 1ul, end(), end());
-                std::move_backward(position, end() - 1ul, end()); // move_backward
+                std::move_backward(position, end() - 1ul, end());
             } else {
                 std::uninitialized_copy(end() - 1ul, end(), end());
-                std::copy_backward(position, end() - 1ul, end()); // move_backward
+                std::copy_backward(position, end() - 1ul, end());
             }
             *position = std::move(x);
         }
@@ -518,15 +518,15 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         ++base_type::last_;
     }
 
-    bool empty() const {
+    bool empty() const noexcept {
         return base_type::first_ == base_type::last_;
     }
 
-    value_type& operator[](size_type i) {
+    value_type& operator[](size_type i) noexcept {
         return base_type::first_[i];
     }
 
-    const value_type& operator[](size_type i) const {
+    const value_type& operator[](size_type i) const noexcept {
         return base_type::first_[i];
     }
 
@@ -621,13 +621,13 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     friend
     inline
-    void swap(array& x, array& y) {
+    void swap(array& x, array& y) noexcept {
         std::swap(x.first_, y.first_);
         std::swap(x.last_, y.last_);
         std::swap(x.finish_, y.finish_);
     }
 
-    void swap(array& y) {
+    void swap(array& y) noexcept {
         std::swap(base_type::first_, y.first_);
         std::swap(base_type::last_, y.last_);
         std::swap(base_type::finish_, y.finish_);
