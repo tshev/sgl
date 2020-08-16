@@ -24,7 +24,6 @@ protected:
         sgl::v1::uninitialized_construct_range(first_, last_, val);
     }
 
-
     T* allocate(size_t n) {
         return allocator.allocate(n);
     }
@@ -130,7 +129,7 @@ public:
         }
     }
     
-    bool push_back(const T& value) {
+    bool try_push_back(const T& value) {
         if (base_type::first_ < base_type::last_) {
             if (base_type::last_ < base_type::data_last_) {
                 sgl::v1::uninitialized_construct(*base_type::last_, value);
