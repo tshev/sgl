@@ -377,6 +377,9 @@
 #include "sgl.v1.function.ndcgs.h"
 #include "sgl.v1.function.ndcg_exp.h"
 
+#include "sgl.v1.function.delta_encode.h"
+#include "sgl.v1.function.delta_decode.h"
+
 
 // numerics
 #include "sgl.v1.function.gauss_method_forward.h"
