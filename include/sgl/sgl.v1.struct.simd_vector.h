@@ -40,21 +40,10 @@ struct simd_vector<T, 128> {
     simd_vector(const simd_vector&) = default;
 
 
-    void operator()(int32_t* mem) const noexcept {
+    template<typename U>
+    void operator()(U* mem) const noexcept {
         _mm_storeu_si128((__m128i*)mem, value);
     }
-
-    /*
-    void operator()(int16_t* x) const noexcept {
-        // dum Intel
-        _mm_storeu_si16(x, value); // _mm_storeu_epi8  (wait for avx512) WHAT??
-    }
-
-    void operator()(int8_t* x) const noexcept {
-        // dum Intel
-        _mm_storeu_si8(x, value);
-    }
-    */
 
     friend
     inline
@@ -344,6 +333,8 @@ struct max_simd_vector_size {
 };
 
 
+
+
 template<typename T, size_t  N>
 class simd_vector_iterator {
     typedef sgl::v1::simd_vector<T, N> vector_type;
@@ -395,9 +386,6 @@ public:
         return x.data_ - y.data_;
     }
 
-    const vector_type operator*() const {
-        return vector_type(data_); }
-
     simd_vector_iterator& operator++() {
         ++data_;
         return *this;
@@ -408,10 +396,16 @@ public:
         return *this;
     }
 
-
-
     auto sink() {
         return simd_vector_iterator_sink{data_};
+    }
+
+    const vector_type source() const {
+        return vector_type(data_);
+    }
+
+    const vector_type operator*() const {
+        return vector_type(data_);
     }
 
     /*

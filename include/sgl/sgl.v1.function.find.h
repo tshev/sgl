@@ -13,10 +13,11 @@ ForwardIterator find(sgl::v1::default_tag, ForwardIterator first, ForwardIterato
 }
 
 
-template <typename T, typename V>
+template <typename T, size_t N>
 inline
-typename std::enable_if<(std::numeric_limits<T>::is_integer && sizeof(T) == 4) && sizeof(typename V::block_type) == 16, T const*>::type
-find(sgl::v1::simd_tag<false, V>, T const* first, T const* last, const T& value) noexcept {
+typename std::enable_if<(std::numeric_limits<T>::is_integer && sizeof(T) == 4) && sizeof(typename sgl::v1::simd_vector<T, N>::block_type) == 16, T const*>::type
+find(sgl::v1::simd_tag<false, N>, T const* first, T const* last, const T& value) noexcept {
+    typedef sgl::v1::simd_vector<T, N> V;
     constexpr const size_t block_size = sizeof(typename V::block_type);
     constexpr const size_t step = block_size / sizeof(T);
     const size_t n = (last - first) / step * step;

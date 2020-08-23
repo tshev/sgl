@@ -42,11 +42,13 @@
 
 
 #include "sgl.v1.struct.default_tag.h"
-#include "sgl.v1.struct.simd_tag.h"
 #include "sgl.v1.struct.simd_vector.h"
+#include "sgl.v1.struct.simd_tag.h"
 
 #include "sgl.v1.struct.totally_ordered.h"
+#include "sgl.v1.struct.aptr.h"
 #include "sgl.v1.class.position.h"
+#include "sgl.v1.struct.alignment.h"
 
 // pure algorithms
 #include "sgl.v1.function.longest_monotonic_subrange.h"

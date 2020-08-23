@@ -17,13 +17,17 @@ public:
 
 // TODO: think about value-semantics vs ref-ref and about decay presence
 template<typename It>
-auto source(It&& it) -> typename std::enable_if<sgl::v1::_has_source<It>::value, typename std::decay<decltype(it.source())>::type>::type {
+auto source(const It& it) -> const typename std::enable_if<sgl::v1::_has_source<It>::value, typename std::decay<decltype(it.source())>::type>::type {
     return it.source();
 }
 
+template<typename T>
+const auto& source(T* it) {
+    return *it;
+}
 
 template<typename It>
-auto source(It&& it) -> typename std::enable_if<!sgl::v1::_has_source<It>::value, typename std::decay<decltype(*it)>::type>::type& {
+auto source(const It& it) -> const typename std::enable_if<!sgl::v1::_has_source<It>::value, typename std::decay<decltype(*it)>::type>::type& {
     return *it;
 }
 

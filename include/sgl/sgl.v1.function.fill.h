@@ -22,9 +22,9 @@ void fill(sgl::v1::default_tag, It first, It last, const SGLValueType(It)& value
     }
 }
 
-template<typename V, typename T>
-//requires(sgl::v1::builtin_type(T))
-void fill(sgl::v1::simd_tag<false, V>, T* first, T* last, const T& value) noexcept {
+template<size_t N, typename T>
+void fill(sgl::v1::simd_tag<false, N> simd_tag, T* first, T* last, const T& value) noexcept {
+    typedef typename sgl::v1::simd_vector<T, N> V;
     constexpr const size_t block_size = sizeof(V);
     constexpr const size_t tail_size = sgl::v1::max(block_size, sizeof(T));
     constexpr const size_t buffer_size = block_size + tail_size;
