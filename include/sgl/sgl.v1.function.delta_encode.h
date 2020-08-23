@@ -31,6 +31,8 @@ void delta_encode(It first, It last, T value) {
 template<typename V, typename T>
 inline
 void delta_encode(sgl::v1::simd_tag<false, V>, T* first, T* last) {
+    using sgl::v1::sink;
+
     constexpr const size_t N = sgl::v1::max_simd_vector_size<T>::value * 8 * sizeof(T);
     typedef typename sgl::v1::simd_vector<T, N> vector_type;
     typedef sgl::v1::simd_vector_iterator<T, N> iterator_type;
@@ -50,12 +52,12 @@ void delta_encode(sgl::v1::simd_tag<false, V>, T* first, T* last) {
     while (first1 != last1) {
         vector_type delta = *first1 - prev_value;
         prev_value = *(first1 + step);
-        first1.sink() = delta; 
+        sink(first1) = delta; 
         first1 += vector_type::size;
     }
     T buffer[vector_type::size];
-    iterator_type{buffer}.sink() = prev_value;
-    sgl::v1::delta_encode(first, last, buffer[0]);
+    sink(iterator_type{buffer}) = prev_value;
+    sgl::v1::delta_encode(first, last, *buffer);
 }
 
 /*

@@ -17,6 +17,9 @@
 #include <thread>
 #include <atomic>
 #include <immintrin.h>
+
+#include "sgl.v1.function.sink.h"
+#include "sgl.v1.function.source.h"
 #include "macros.h"
 #include "sgl.v1.concept.hpp"
 // SECTION "simd"
