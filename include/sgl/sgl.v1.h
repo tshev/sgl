@@ -52,6 +52,7 @@
 
 #include "sgl.v1.struct.totally_ordered.h"
 #include "sgl.v1.struct.aptr.h"
+#include "sgl.v1.struct.uptr.h"
 #include "sgl.v1.class.position.h"
 #include "sgl.v1.struct.alignment.h"
 

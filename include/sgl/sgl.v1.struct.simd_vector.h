@@ -35,7 +35,7 @@ struct simd_vector<T, 128> {
 
     simd_vector() = default;
     simd_vector(block_type value) noexcept : value{value} {}
-    simd_vector(T value) noexcept : value{sgl::v1::broadcast<block_type>(value)} {}
+    simd_vector(T value) noexcept : value{sgl::v1::broadcast<simd_mode::unaligned, 128>(value)} {}
     simd_vector(T* value) noexcept : value{sgl::v1::load_unaligned<block_type>(value)} {}
     simd_vector(const simd_vector&) = default;
 
@@ -200,7 +200,7 @@ struct simd_vector<float, 128> {
 
     simd_vector() = default;
     simd_vector(__m128 value) noexcept : value{value} {}
-    simd_vector(value_type value) noexcept : value{sgl::v1::broadcast<block_type>(value)} {}
+    simd_vector(value_type value) noexcept : value{sgl::v1::broadcast<simd_mode::unaligned, 128>(value)} {}
     simd_vector(const simd_vector&) = default;
 
     void operator()(float* x) const noexcept {
@@ -233,7 +233,7 @@ struct simd_vector<double, 128> {
 
     simd_vector() = default;
     simd_vector(__m128d value) noexcept : value{value} {}
-    simd_vector(value_type value) noexcept : value{sgl::v1::broadcast<block_type>(value)} {}
+    simd_vector(value_type value) noexcept : value{sgl::v1::broadcast<simd_mode::unaligned, 128>(value)} {}
     simd_vector(const simd_vector&) = default;
 
     void operator()(double* x) const noexcept {
