@@ -60,7 +60,6 @@ struct _load<double, 256, sgl::v1::simd_mode::unaligned> {
 };
 #endif
 
-
 // ## 512
 #ifdef __AVX512F__
 template<typename T>

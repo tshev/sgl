@@ -336,29 +336,20 @@ struct max_simd_vector_size {
 };
 
 
-
-
 template<typename T, size_t  N>
 class simd_vector_iterator {
     typedef sgl::v1::simd_vector<T, N> vector_type;
+    typedef vector_type value_type;
 
 public:
-    struct simd_vector_iterator_sink {
+    struct sink_type {
         T* data_;
 
-        /*
-        simd_vector_iterator_sink& operator=(simd_vector_iterator_source x) {
-            x.value(data_);
-            return *this;
-        }
-        */
-
-        simd_vector_iterator_sink& operator=(sgl::v1::simd_vector<T, N> x) {
+        sink_type& operator=(sgl::v1::simd_vector<T, N> x) {
             x(data_);
             return *this;
         }
     };
-
 
     T* data_;
 
@@ -390,8 +381,16 @@ public:
     }
 
     simd_vector_iterator& operator++() {
+        // TODO: not sure it's the right think to do
         ++data_;
         return *this;
+    }
+
+    simd_vector_iterator operator++(int) {
+        // TODO: not sure it's the right think to do
+        simd_vector_iterator tmp(*this);
+        ++data_;
+        return tmp;
     }
 
     simd_vector_iterator& operator+=(size_t n) {
@@ -400,7 +399,7 @@ public:
     }
 
     auto sink() {
-        return simd_vector_iterator_sink{data_};
+        return sink_type{data_};
     }
 
     const vector_type source() const {
