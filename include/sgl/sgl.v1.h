@@ -29,7 +29,7 @@
 #include "sgl.v1.function.stream_aligned.h"
 #include "sgl.v1.function.load.h"
 #include "sgl.v1.function.store.h"
-#include "sgl.v1.function.set.h"
+#include "sgl.v1.function.supply_register.h"
 #include "sgl.v1.function.movemask.h"
 #include "sgl.v1.function.cmpeq.h"
 #include "sgl.v1.function.xor_op.h"
@@ -51,8 +51,9 @@
 #include "sgl.v1.struct.simd_tag.h"
 
 #include "sgl.v1.struct.totally_ordered.h"
-#include "sgl.v1.struct.aptr.h"
-#include "sgl.v1.struct.uptr.h"
+#include "sgl.v1.struct.aligned_ptr.h"
+#include "sgl.v1.struct.unaligned_ptr.h"
+#include "sgl.v1.struct.non_temporal_ptr.h"
 #include "sgl.v1.class.position.h"
 #include "sgl.v1.struct.alignment.h"
 

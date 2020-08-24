@@ -10,7 +10,7 @@ struct aligment {
 private:
     template<typename U, size_t N>
     constexpr
-    size_t _aligment(sgl::v1::aptr<U, N>) {
+    size_t _aligment(sgl::v1::aligned_ptr<U, N>) {
         return N;
     }
 

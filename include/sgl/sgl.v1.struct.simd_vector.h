@@ -25,6 +25,7 @@ simd_vector<T0, N0> operator/(simd_vector<T0, N0> x, simd_vector<T0, N0> y) noex
 
 template<typename T>
 struct simd_vector<T, 128> {
+    static constexpr const size_t digit_capacity = 128;
     static constexpr const size_t size = 16 / sizeof(T);
 
     typedef typename std::enable_if<std::numeric_limits<T>::is_integer, T>::type value_type;
@@ -35,10 +36,9 @@ struct simd_vector<T, 128> {
 
     simd_vector() = default;
     simd_vector(block_type value) noexcept : value{value} {}
-    simd_vector(T value) noexcept : value{sgl::v1::broadcast<simd_mode::unaligned, 128>(value)} {}
+    simd_vector(T value) noexcept : value{sgl::v1::broadcast<128>(value)} {}
     simd_vector(T* value) noexcept : value{sgl::v1::load_unaligned<block_type>(value)} {}
     simd_vector(const simd_vector&) = default;
-
 
     template<typename U>
     void operator()(U* mem) const noexcept {
@@ -190,6 +190,7 @@ simd_vector<int64_t, 128> operator/(simd_vector<int64_t, 128> x, simd_vector<int
 
 template<>
 struct simd_vector<float, 128> {
+    static constexpr const size_t digit_capacity = 128;
     static constexpr const size_t size = 16 / sizeof(float);
 
     typedef float value_type;
@@ -223,6 +224,7 @@ struct simd_vector<float, 128> {
 
 template<>
 struct simd_vector<double, 128> {
+    static constexpr const size_t digit_capacity = 128;
     static constexpr const size_t size = 16 / sizeof(double);
 
     typedef double value_type;
@@ -295,6 +297,7 @@ simd_vector<double, 128> operator/(simd_vector<double, 128> x, simd_vector<doubl
 #ifdef __AVX2__
 template<typename T>
 struct simd_vector<T, 256> {
+    static constexpr const size_t digit_capacity = 256;
     static constexpr const size_t size = 32 / sizeof(T);
 
     typedef typename std::enable_if<std::numeric_limits<T>::is_integer, T>::type value_type;
@@ -407,17 +410,6 @@ public:
     const vector_type operator*() const {
         return vector_type(data_);
     }
-
-    /*
-        int32_t a[] = {1, 2, 3, 4};
-        int32_t b[] = {4, 3, 2, 1};
-
-        sgl::v1::simd_vector_iterator<int32_t> first0(&a[0]);
-        sgl::v1::simd_vector_iterator<int32_t> first1(&b[0]);
-
-        sink(first1) = source(first1);
-    */
-
 };
 
 
