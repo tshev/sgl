@@ -357,11 +357,13 @@
 #include "sgl.v1.class.unordered_registry.h"
 #include "sgl.v1.class.linked_list.h"
 #include "sgl.v1.class.queue.h"
+#include "sgl.v1.class.atomic_mutex_ptr.h"
 #include "sgl.v1.class.fifo_view.h"
 #include "sgl.v1.class.lifo_view.h"
 #include "sgl.v1.class.circular_fifo_view.h"
 #include "sgl.v1.class.batch.h"
 #include "sgl.v1.class.concurrent_circular_fifo.h"
+#include "sgl.v1.function._init_spinlock.h"
 #include "sgl.v1.class.fifo_storage.h"
 
 #include "sgl.v1.struct.expression_separator.h"
@@ -378,8 +380,6 @@
 #include "sgl.v1.function.parse_storage_capacity.h"
 #include "sgl.v1.function.parse_timedelta_as_ns.h"
 #include "sgl.v1.function.decode_batches.h"
-
-
 
 // domain-specific-algorithms
 //#include "sgl.v1.function.f.dcg.h"

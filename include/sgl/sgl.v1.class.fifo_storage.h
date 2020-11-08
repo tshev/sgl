@@ -3,51 +3,68 @@
 namespace sgl {
 namespace v1 {
 
-struct fifo_storage {
-    sgl::v1::mmap<char> data_;
-    spinlock* shared_mutex_;
-    std::atomic<uint8_t>* state_;
-    std::atomic<uint8_t>* count_;
-    sgl::v1::concurrent_circular_fifo<sgl::v1::circular_fifo_view<uint64_t>> fifo_;
-
+class state_lock {
+    sgl::v1::atomic_mutex_ptr<bool> shared_mutex_;
+    std::atomic<int8_t>* state_ = nullptr;
+    std::atomic<int8_t>* count_ = nullptr;
 public:
+    static constexpr const size_t size = 3;
 
-    fifo_storage(const char* path, uint64_t size) : data_(sgl::v1::fmmap<char>(path, size)),
-                                                    shared_mutex_((spinlock*)data_.begin()), 
-                                                    state_((std::atomic<uint8_t>*)(data_.begin() + sizeof(spinlock))),
-                                                    count_((std::atomic<uint8_t>*)(data_.begin() + sizeof(spinlock) + 1)),
-                                                    fifo_(sgl::v1::circular_fifo_view(data_.begin() + sizeof(spinlock) + 2ul, size - sizeof(spinlock) - 2ul), shared_mutex_) {
-        init();
-    }
-    fifo_storage(const char* path) : data_(sgl::v1::fmmap<char>(path)),
-                                     shared_mutex_((spinlock*)data_.begin()), 
-                                     state_((std::atomic<uint8_t>*)(data_.begin() + sizeof(spinlock))),
-                                     count_((std::atomic<uint8_t>*)(data_.begin() + sizeof(spinlock) + 1)),
-                                     fifo_(sgl::v1::circular_fifo_view(data_.begin() + sizeof(spinlock) + 2ul, data_.size() - sizeof(spinlock) - 2ul), shared_mutex_) {
-        init();
-    }
+    state_lock() = default;
 
-    fifo_storage(const std::string& path, uint64_t size) : fifo_storage(path.data(), size) {}
-
-    fifo_storage(const std::string& path) : fifo_storage(path.data()) {}
-    fifo_storage(fifo_storage&&) = default;
-
-    void init() {
-        auto count = count_->fetch_add(1u);
-        if (count == 0u) {
-            if (state_->load() == 1ul) {
-                std::cerr << "Waiting for destruction\n";
-                while (state_->load() == 1ul); // wait for destructuction before the recreation
-            }
-            sgl::v1::construct_at(shared_mutex_);
-            state_->store(1ul);
-        } else {
-            if (state_->load() == 0) {
-                std::cerr << "Waiting for construction\n";
-                while (state_->load() == 0);  // can't the object use before it was initialized
+    template<typename Ostream>
+    state_lock(char* data, Ostream& cerr) : shared_mutex_((std::atomic<bool>*)data),
+                                            state_((std::atomic<int8_t>*)data + 1),
+                                            count_((std::atomic<int8_t>*)data + 2) { 
+        if (data != nullptr) {
+            auto count = count_->fetch_add(1u);
+            if (count == 0u) {
+                if (state_->load() == 1ul) {
+                    cerr << "Waiting for destruction\n";
+                    while (state_->load() == 1ul) __builtin_ia32_pause(); // wait for destructuction before the recreation
+                }
+                state_->store(1ul);
+            } else {
+                if (state_->load() == 0) {
+                    cerr << "Waiting for construction\n";
+                    while (state_->load() == 0) __builtin_ia32_pause();  // can't the object use before it was initialized
+                }
             }
         }
     }
+
+    auto shared_mutex() {
+        return shared_mutex_;
+    }
+
+    ~state_lock() {
+        if (count_ != nullptr) {
+            if (--(*count_) == 0u) {
+                //std::destroy_at(shared_mutex_);
+                state_->store(0u);
+            }
+        }
+    }
+};
+
+struct fifo_storage {
+    sgl::v1::mmap<char> data_;
+    sgl::v1::state_lock state_lock_;
+    sgl::v1::concurrent_circular_fifo<sgl::v1::circular_fifo_view<uint64_t>> fifo_;
+
+public:
+    fifo_storage(const char* path) : data_(sgl::v1::fmmap<char>(path)),
+                                     state_lock_(data_.begin(), std::cerr),
+                                     fifo_(sgl::v1::circular_fifo_view(data_.begin() + state_lock::size, data_.size() - state_lock::size), state_lock_.shared_mutex()) {}
+
+
+    fifo_storage(const char* path, uint64_t size) : data_(sgl::v1::fmmap<char>(path, size)),
+                                                    state_lock_(data_.begin(), std::cerr),
+                                                    fifo_(sgl::v1::circular_fifo_view(data_.begin() + state_lock::size, size - state_lock::size), state_lock_.shared_mutex()) {}
+
+    fifo_storage(const std::string& path) : fifo_storage(path.data()) {}
+
+    fifo_storage(fifo_storage&&) = default;
 
     template<typename T>
     bool push_back(T x) {
@@ -87,14 +104,7 @@ public:
     bool empty() const {
         return fifo_.empty();
     }
-
-    ~fifo_storage() {
-        if (!data_.partially_formed() && --(*count_) == 0u) {
-            std::destroy_at(shared_mutex_);
-            state_->store(0u);
-        }
-    }
 };
 
-}
-}
+}  // namespace v1
+}  // namespace sgl
