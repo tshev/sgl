@@ -72,7 +72,7 @@ T* delta_encode(sgl::v1::simd_tag<false, N>, T* first, T* last, T* output) {
     ++fast;
 
     constexpr const size_t step = N / 8 / sizeof(T);
-    typedef sgl::v1::simd_vector<T, N> vector_type;
+    //typedef sgl::v1::simd_vector<T, N> vector_type;
     typedef sgl::v1::simd_vector_iterator<T, N> iterator_type;
 
     iterator_type first1(first);
