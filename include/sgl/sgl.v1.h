@@ -59,6 +59,9 @@
 
 // pure algorithms
 #include "sgl.v1.function.longest_monotonic_subrange.h"
+#include "sgl.v1.function.compare_count_if.h"
+#include "sgl.v1.function.find_nth.h"
+#include "sgl.v1.function.find_if_nth.h"
 #include "sgl.v1.function.find_expression_end.h"
 #include "sgl.v1.function.alignment_padding.h"
 #include "sgl.v1.function.min.h"
@@ -261,6 +264,8 @@
 #include "sgl.v1.function.parse_uint.h"
 #include "sgl.v1.function.power_semigroup.h"
 #include "sgl.v1.f.struct.multiply.h"
+#include "sgl.v1.f.struct.greater_than.h"
+#include "sgl.v1.f.struct.less_than.h"
 #include "sgl.v1.struct.multiply.h"
 #include "sgl.v1.function.pow.h"
 #include "sgl.v1.function.parse_float.h"
