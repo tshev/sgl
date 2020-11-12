@@ -3,9 +3,9 @@
 namespace sgl {
 namespace v1 {
 
-template<typename It, typename Predicate>
+template<typename It, typename Predicate, typename N>
 inline
-It find_if_nth(It first, It last, Predicate pred, size_t n) {
+It find_if_nth(It first, It last, Predicate pred, N n) {
     size_t i = 0;
     while (first != last) {
         if (pred(*first)) {
