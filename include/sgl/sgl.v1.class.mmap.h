@@ -45,15 +45,35 @@ private:
 
 public:
     mmap() : addr_(nullptr), length_(0) {}
-    mmap(void* addr,
-        size_type length,
-        int prot,
-        int flags,
-        int fd,
-        off_t offset) : addr_(reinterpret_cast<T*>(::mmap(addr, length, prot, flags, fd, offset))), length_(length) {
+
+    mmap(void* addr, size_type length, int prot, int flags, int fd, off_t offset) : addr_(reinterpret_cast<T*>(::mmap(addr, length, prot, flags, fd, offset))), length_(length) {
         if (addr_ == MAP_FAILED) {
             throw sgl::v1::error_code(errno);
         }
+    }
+
+    mmap(const char* path, size_t length) {
+        sgl::v1::file_descriptor fd(path, sgl::v1::io::read_write | sgl::v1::io::creat, 0600);
+        fd.truncate(length);
+        *this = sgl::v1::mmap<T>(length, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, fd.value());
+    }
+
+    mmap(const char* path, size_t length, int permissions) {
+        sgl::v1::file_descriptor fd(path, sgl::v1::io::read_write | sgl::v1::io::creat, 0600);
+        fd.truncate(length);
+        *this = sgl::v1::mmap<T>(length, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, fd.value());
+    }
+
+    mmap(const char* path) {
+        sgl::v1::file_descriptor fd(path, sgl::v1::io::read_write, 0600); // does not fill with zeros
+
+        struct stat file_stats;
+        auto return_code = ::fstat(fd.raw(), &file_stats);
+        if (return_code < 0) {
+            throw sgl::v1::error_code(return_code);
+        }
+        size_t length = file_stats.st_size;
+        *this = sgl::v1::mmap<T>(length, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, fd.raw());
     }
 
     bool partially_formed() const {
@@ -61,6 +81,7 @@ public:
     }
 
     mmap(size_type length, int prot, int flags, int fd, off_t offset) : mmap(nullptr, length, prot, flags, fd, offset) {}
+
     mmap(size_type length, int prot, int flags, int fd) : mmap(nullptr, length, prot, flags, fd, 0) {}
 
     mmap(map_anonymous flags,
@@ -73,6 +94,13 @@ public:
         x.addr_ = NULL;
     }
 
+    mmap& operator=(mmap&& x) {
+        addr_ = x.addr_;
+        length_ = x.length_;
+        x.addr_ = NULL;
+        return *this;
+    }
+
     ~mmap() {
         if (addr_ != nullptr && addr_ != MAP_FAILED) {
             if (sync) {
@@ -80,13 +108,6 @@ public:
             }
             ::munmap(addr_, length_);
         }
-    }
-
-    mmap& operator=(mmap&& x) {
-        addr_ = x.addr_;
-        length_ = x.length_;
-        x.addr_ = NULL;
-        return *this;
     }
 
     void msync(int flags) {
