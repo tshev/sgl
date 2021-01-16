@@ -37,7 +37,7 @@ T power_accumulate_semigroup(T r, T x, N n, Operation op) {
       r = op(r, x);
       if (n == 1) return r;
     }
-    half_inplace(n);
+    sgl::v1::half_inplace(n);
     x = op(x, x);
   }
 }
@@ -50,7 +50,7 @@ T power_semigroup(T x, N n, Operation op) {
   }
   if (n == 1) return x;
   --n;
-  return power_accumulate_semigroup(x, op(x, x), half(n), op);
+  return sgl::v1::power_accumulate_semigroup(x, op(x, x), half(n), op);
 }
 
 } // namespace v1

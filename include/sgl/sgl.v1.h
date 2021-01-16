@@ -9,6 +9,7 @@
 #include <cmath>
 #include <type_traits>
 #include <iterator>
+#include <functional>
 #include <string>
 #include <random>
 #include <cstdint>

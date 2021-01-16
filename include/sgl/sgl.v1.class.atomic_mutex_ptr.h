@@ -16,6 +16,16 @@ public:
     atomic_mutex_ptr(std::atomic<T>& lock, size_t spin) : atomic_mutex_ptr(&lock, spin) {}
     atomic_mutex_ptr(std::atomic<T>& lock) : atomic_mutex_ptr(&lock) {}
 
+    atomic_mutex_ptr(const atomic_mutex_ptr&) = default;
+
+    std::atomic<T>* data() {
+        return lock_;
+    }
+    const std::atomic<T>* data() const {
+        return lock_;
+    }
+
+
     size_t default_spin() const noexcept {
         if (1u < std::thread::hardware_concurrency()) {
             return 2048ul;
@@ -28,7 +38,11 @@ public:
     }
 
     void _lock_n() const {
-        while (!try_lock()) {
+        while (true) {
+            if (try_lock()) {
+                return;
+            }
+
             for (size_t current_spin = 1ul; current_spin < spin; current_spin <<= 1ul) {
                 for (size_t j = 0; j < current_spin; ++j) {
                     __builtin_ia32_pause();

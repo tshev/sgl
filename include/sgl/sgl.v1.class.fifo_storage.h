@@ -33,7 +33,15 @@ public:
         }
     }
 
-    auto shared_mutex() {
+    char* begin() {
+        return (char*)shared_mutex_.data();
+    }
+
+    char* end() {
+        return (char*)count_ + sizeof(count_);
+    }
+
+    auto& shared_mutex() {
         return shared_mutex_;
     }
 
@@ -54,13 +62,17 @@ struct fifo_storage {
 
 public:
     fifo_storage(const char* path) : data_(sgl::v1::fmmap<char>(path)),
-                                     state_lock_(data_.begin(), std::cerr),
-                                     fifo_(sgl::v1::circular_fifo_view(data_.begin() + state_lock::size, data_.size() - state_lock::size), state_lock_.shared_mutex()) {}
+                                     state_lock_(data_.begin(), std::cerr)
+                                     {
+        //std::lock_guard lock(state_lock_.shared_mutex());
+        fifo_ = sgl::v1::concurrent_circular_fifo<sgl::v1::circular_fifo_view<uint64_t>>(sgl::v1::circular_fifo_view(data_.begin() + state_lock::size, data_.size() - state_lock::size), state_lock_.shared_mutex());
+    }
 
 
-    fifo_storage(const char* path, uint64_t size) : data_(sgl::v1::fmmap<char>(path, size)),
-                                                    state_lock_(data_.begin(), std::cerr),
-                                                    fifo_(sgl::v1::circular_fifo_view(data_.begin() + state_lock::size, size - state_lock::size), state_lock_.shared_mutex()) {}
+    fifo_storage(const char* path, uint64_t size) : data_(sgl::v1::fmmap<char>(path, size)), state_lock_(data_.begin(), std::cerr) {
+        //std::lock_guard lock(state_lock_.shared_mutex());
+        fifo_ = sgl::v1::concurrent_circular_fifo<sgl::v1::circular_fifo_view<uint64_t>>(sgl::v1::circular_fifo_view(data_.begin() + state_lock::size, data_.size() - state_lock::size), state_lock_.shared_mutex());
+    }
 
     fifo_storage(const std::string& path) : fifo_storage(path.data()) {}
 
