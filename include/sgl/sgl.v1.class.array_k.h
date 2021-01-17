@@ -100,7 +100,7 @@ public:
   }
 
   constexpr array_k(const array_k& x) {
-    std::copy(x.begin(), x.end(), begin());
+    sgl::v1::copy(x.begin(), x.end(), begin());
   }
 
   template<typename U>

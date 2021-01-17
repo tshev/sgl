@@ -3,8 +3,8 @@
 namespace sgl {
 namespace v1 {
 
-template<typename T, typename Reducer, bool parallel> 
-class array_reduced {};
+template<typename T, typename Reducer, bool parallel = false> 
+class array_reduced;
 
 template<typename T, typename Reducer> 
 class array_reduced<T, Reducer, false> {
@@ -12,6 +12,8 @@ class array_reduced<T, Reducer, false> {
     Reducer reduce_;
 
 public:
+    array_reduced() = default;
+
     template<typename It>
     array_reduced(It first, It last) {
         insert(first, last);
@@ -29,6 +31,30 @@ public:
 
     array_reduced(Reducer reduce) : reduce_(reduce) {}
 
+    friend
+    inline
+    auto operator==(const array_reduced& x, const array_reduced& y) -> typename std::enable_if<true, decltype(std::declval<Reducer>() == std::declval<Reducer>())>::type {
+        return x.values_ == y.values_ && x.reduce_ == y.reduce_;
+    }
+
+    friend
+    inline
+    bool operator==(const array_reduced& x, const array_reduced& y) {
+        return x.values_ == y.values_;
+    }
+
+    friend
+    inline
+    bool operator==(const array_reduced& x, const array_reduced& y) {
+        return x.values_ == y.values_ && x.reduce_ == y.reduce_;
+    }
+
+    friend
+    inline
+    bool operator!=(const array_reduced& x, const array_reduced& y) {
+        return !(x == y);
+    }
+
     void reserve(size_t n) {
         values_.reserve(n);
     }
@@ -37,7 +63,7 @@ public:
         if (values_.empty()) {
             values_.emplace_back(value, value);
         } else {
-            values_.emplace_back(value, reduce(values_.back().second, value));
+            values_.emplace_back(value, reduce_(values_.back().second, value));
         }
     }
 

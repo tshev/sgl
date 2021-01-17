@@ -267,6 +267,8 @@
 #include "sgl.v1.f.struct.multiply.h"
 #include "sgl.v1.f.struct.greater_than.h"
 #include "sgl.v1.f.struct.less_than.h"
+#include "sgl.v1.f.struct.min.h"
+#include "sgl.v1.f.struct.max.h"
 #include "sgl.v1.struct.multiply.h"
 #include "sgl.v1.function.pow.h"
 #include "sgl.v1.function.parse_float.h"
@@ -358,6 +360,7 @@
 
 // data structures
 #include "sgl.v1.class.array.h"
+#include "sgl.v1.class.array_reduced.h"
 #include "sgl.v1.class.array_k.h"
 #include "sgl.v1.class.array_static.h"
 #include "sgl.v1.class.unordered_registry.h"
