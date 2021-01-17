@@ -35,9 +35,9 @@ public:
 
     void push_back(const T& value) {
         if (values_.empty()) {
-            values.emplace_back(value, value);
+            values_.emplace_back(value, value);
         } else {
-            values.emplace_back(value, reduce(values.back().second, value));
+            values_.emplace_back(value, reduce(values_.back().second, value));
         }
     }
 
