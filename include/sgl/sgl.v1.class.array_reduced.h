@@ -33,7 +33,7 @@ public:
 
     friend
     inline
-    auto operator==(const array_reduced& x, const array_reduced& y) -> typename std::enable_if<true, decltype(std::declval<Reducer>() == std::declval<Reducer>())>::type {
+    auto operator==(const array_reduced& x, const array_reduced& y) {
         return x.values_ == y.values_ && x.reduce_ == y.reduce_;
     }
 
