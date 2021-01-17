@@ -6,7 +6,7 @@ namespace v1 {
 template<typename T, typename Reducer, bool parallel> 
 class array_reduced {};
 
-template<typename T, typename Reducer, bool parallel> 
+template<typename T, typename Reducer> 
 class array_reduced<T, Reducer, false> {
     sgl::v1::array<std::pair<T, T>> values_;
     Reducer reduce_;
