@@ -129,6 +129,8 @@
 #include "sgl.v1.class.binary_counter.h"
 #include "sgl.v1.function.binary_counter_reduce.h"
 #include "sgl.v1.function.upper_bound.h"
+#include "sgl.v1.function.strlen.h"
+#include "sgl.v1.function.strcat.h"
 
 #include "sgl.v1.function.equal_range.h"
 
@@ -146,6 +148,7 @@
 
 #include "sgl.v1.function.all.h"
 #include "sgl.v1.function.any.h"
+#include "sgl.v1.function.all_any.h"
 #include "sgl.v1.function.construct_ref.h"
 
 #include "sgl.v1.function.contains_all.h"
