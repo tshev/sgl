@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <iterator>
+#include "sgl.v1.concept.resource.h"
 #include "sgl.v1.concept.semiregular.h"
 #include "sgl.v1.concept.regular.h"
 #include "sgl.v1.concept.functional_procedure.h"
