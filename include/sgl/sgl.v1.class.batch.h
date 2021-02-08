@@ -13,6 +13,8 @@ class batch {
 
 public:
 
+    batch() = default;
+    batch(batch&&) = default;
     batch(const char* path, Integer size) : data_(sgl::v1::fmmap<char>(path, size)),
                                             state_((uint8_t*)data_.begin()),
                                             lifo_(data_.begin() + 1ul, size - 1ul) {}
@@ -56,6 +58,14 @@ public:
     }
 
     auto end() {
+        return lifo_.end();
+    }
+
+    auto begin() const {
+        return lifo_.begin();
+    }
+
+    auto end() const {
         return lifo_.end();
     }
 };
