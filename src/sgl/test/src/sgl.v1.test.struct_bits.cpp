@@ -4,6 +4,7 @@ namespace sgl {
 namespace v1 {
 namespace test {
 namespace struct_bits {
+
     void test() {
         constexpr sgl::v1::bits<8> b1({1, 1, 1, 0, 0, 0, 0, 1});
         static_assert(b1.value == uint8_t(135));
@@ -87,11 +88,11 @@ namespace struct_bits {
         assert(b[7] == 1);
     }
 
-
 } // namespace struct_bits
 } // namespace test
 } // namespace v1
 } // namespace sgl
+
 
 int main() {
     sgl::v1::test::struct_bits::test8();

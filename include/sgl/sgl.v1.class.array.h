@@ -195,7 +195,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
     }
 
     array(std::initializer_list<value_type> x) : base_type(x.size()) {
-        if (!x.empty() && base_type::first_ == nullptr) { throw std::bad_alloc(); }
+        if (x.size() != 0 && base_type::first_ == nullptr) { throw std::bad_alloc(); }
         sgl::v1::uninitialized_copy(x.begin(), x.end(), begin());
     }
 
