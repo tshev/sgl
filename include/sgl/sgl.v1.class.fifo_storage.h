@@ -11,11 +11,16 @@ public:
     static constexpr const size_t size = 3;
 
     state_lock() = default;
+    state_lock(const state_lock&) = delete;
+
+    state_lock(state_lock&& x) : shared_mutex_(x.shared_mutex_), state_(x.state_), count_(x.count_) {
+        x.count_ = nullptr;
+    }
 
     template<typename Ostream>
     state_lock(char* data, Ostream& cerr) : shared_mutex_((std::atomic<bool>*)data),
                                             state_((std::atomic<int8_t>*)data + 1),
-                                            count_((std::atomic<int8_t>*)data + 2) { 
+                                            count_((std::atomic<int8_t>*)data + 2) {
         if (data != nullptr) {
             auto count = count_->fetch_add(1u);
             if (count == 0u) {
@@ -61,6 +66,7 @@ struct fifo_storage {
     sgl::v1::concurrent_circular_fifo<sgl::v1::circular_fifo_view<uint64_t>> fifo_;
 
 public:
+    fifo_storage() = default;
     fifo_storage(const char* path) : data_(sgl::v1::fmmap<char>(path)),
                                      state_lock_(data_.begin(), std::cerr)
                                      {
@@ -80,7 +86,7 @@ public:
 
     template<typename T>
     bool push_back(T x) {
-        return fifo_.push_back(x); 
+        return fifo_.push_back(x);
     }
 
     template<typename T>

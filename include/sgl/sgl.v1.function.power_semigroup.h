@@ -3,6 +3,7 @@ namespace sgl {
 namespace v1 {
 template<typename T>
 inline
+constexpr
 T half(T x) {
   return x >> 1;
 }
@@ -16,6 +17,7 @@ void half_inplace(T &x) {
 
 template<typename T>
 inline
+constexpr
 bool even(const T& x) {
   return (x & 1) == 0;
 }
@@ -23,11 +25,13 @@ bool even(const T& x) {
 
 template<typename T>
 inline
+constexpr
 bool odd(const T& x) {
   return (x & 1) != 0;
 }
 
 template<typename T, typename N, typename Operation>
+constexpr
 T power_accumulate_semigroup(T r, T x, N n, Operation op) {
   if (n == 0) {
     return r;
@@ -43,6 +47,7 @@ T power_accumulate_semigroup(T r, T x, N n, Operation op) {
 }
 
 template<typename T, typename N, typename Operation>
+constexpr
 T power_semigroup(T x, N n, Operation op) {
   while (even(n)) {
     x = op(x, x);

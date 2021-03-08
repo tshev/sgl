@@ -7,18 +7,21 @@
 
 /************************************ Concepts START *********************************/
 
-#if __cplusplus <= CPP17
 #ifndef requires
+#if __cplusplus <= CPP17
 #define requires(...)
 #else
-#pragma GCC warning "requires is already defined"
+//#pragma GCC warning "requires is already defined"
 #endif
 #endif
 
+#ifndef SGLConcept
 #if __cplusplus <= CPP17
 #define SGLConcept(...)
 #else
 #define SGLConcept(...) __VA_ARGS__
+//#define SGLConcept(...)
+#endif
 #endif
 
 #ifndef SGLDifferenceType
@@ -39,9 +42,9 @@
 
 #ifndef __FUNCTION_NAME__
     #ifdef WIN32   //WINDOWS
-        #define __FUNCTION_NAME__   __FUNCTION__  
+        #define __FUNCTION_NAME__   __FUNCTION__
     #else          //*NIX
-        #define __FUNCTION_NAME__   __func__ 
+        #define __FUNCTION_NAME__   __func__
     #endif
 #endif
 
