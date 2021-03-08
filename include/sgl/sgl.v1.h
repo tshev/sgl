@@ -25,6 +25,8 @@
 #include "sgl.v1.enum_class.simd_mode.h"
 #include "sgl.v1.concept.hpp"
 #include "sgl.v1.struct.vararg0.h"
+#include "sgl.v1.struct.uint.h"
+
 // SECTION "simd"
 #include "sgl.v1.function.load_unaligned.h"
 #include "sgl.v1.function.stream_aligned.h"
@@ -149,6 +151,7 @@
 #include "sgl.v1.function.all.h"
 #include "sgl.v1.function.any.h"
 #include "sgl.v1.function.all_any.h"
+#include "sgl.v1.struct.countdown.h"
 #include "sgl.v1.function.construct_ref.h"
 
 #include "sgl.v1.function.contains_all.h"
@@ -274,6 +277,8 @@
 #include "sgl.v1.f.struct.max.h"
 #include "sgl.v1.struct.multiply.h"
 #include "sgl.v1.function.pow.h"
+
+
 #include "sgl.v1.function.parse_float.h"
 #include "sgl.v1.function.reduce2ops.h"
 #include "sgl.v1.function.replace.h"
@@ -334,6 +339,7 @@
 
 #include "sgl.v1.struct.transformation_iterator.h"
 #include "sgl.v1.struct.stopwatch.h"
+#include "sgl.v1.struct.timer.h"
 //#include "numeric.h"
 
 // unitialized memory
@@ -411,3 +417,8 @@
 #include "sgl.v1.class.rate_limiter.h"
 #include "sgl.v1.function.rand.h"
 #include "sgl.v1.function.seed.h"
+
+#include "sgl.v1.function.encode_uri_component.h"
+#include "sgl.v1.function.encoded_uri_component_length.h"
+
+#include "sgl.v1.struct.bits.h"
