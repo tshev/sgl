@@ -1,4 +1,4 @@
-#pragma one
+#pragma once
 
 namespace sgl {
 namespace v1 {
