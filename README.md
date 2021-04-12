@@ -28,7 +28,7 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
     2.1. Make sure it works with containers from a standard library according the algorithm requirements
     2.2. Check whether algorithm works for every concept within the hirerachy.
     2.3. Add a specialization for input iterators.
-    2.4. Add tests for conrner values of a Set of Depature.
+    2.4. Add tests for conrner values from a Set of Depature.
     2.5. Add tests for every built-in types
 3. Make sure everything `works without exceptions`.
 4. Add fuzzing for parsers.
@@ -43,6 +43,7 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
     9.4. Look at naming conventions in Chemistry and adjust the decisions.
 10. Define the principles for vectorized expressions. {Optional}
 11. Composition of SIMD operations {Optional}
+12. Partial C++98 compatibility, full c++14 compatibility (except for concepts).
 
 ## Requires features 
 ### Strcat
