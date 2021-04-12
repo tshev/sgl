@@ -36,7 +36,7 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
 6. Categorize algorithms and containers
 7. Describe the properties of operations.
 
-## New features 
+## Requires features 
 ### Strcat
 ```
     std::string s0 = "s0";
@@ -65,6 +65,7 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
     sgl::v1::strcat(std::begin(concatenation), concatenation);
 ```
 
+## Desired features 
 TODO:
 - `sgl.v1.class.adaptive_hash.h`
 - `sgl.v1.class.cuckoo_hash.h`
