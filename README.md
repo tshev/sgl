@@ -35,6 +35,14 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
 5. Make sure every algorithm has an implementation in terms `actions` and in terms of `transformations`
 6. Categorize algorithms and containers
 7. Describe the properties of operations.
+8. Make sure there are no binary operations between different types.
+9. Check the conventions: `gcd_stein and gcd_euclid` vs `stein_gcd and euclid_gcd`, `insertion_sort` vs `sort_insertion`.
+    9.1. Prefer well-established terminology
+    9.2. Use uniform naming conventions, where we don't have a well-established terminology.
+    9.3. Use name aliases????
+    9.4. Look at naming conventions in Chemistry and adjust the decisions.
+10. Define the principles for vectorized expressions. {Optional}
+11. Composition of SIMD operations {Optional}
 
 ## Requires features 
 ### Strcat
@@ -95,6 +103,8 @@ Semiregular   ->     Resource
 10. Keep saying "unless your implementation of a concept have an external state / allocates memory / violates signal safety / has a syncronisation".
 11. Describe whether it uses and external state or depends on external values.
 12. Describe the preprocessor dependecies.
+13. Add perofrmance curves.
+14. Describe the algorithmic complexity as precisely as possible.
 
 
 ## Search Engine Design Doc
