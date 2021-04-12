@@ -12,7 +12,8 @@ The library is in active development. Don't use it, because i will:
 Read it [here](.github/CODE_OF_CONDUCT.md)
 
 # TODO: think about
-- functors for SIMD instructions
+- hide memory latency with async operations
+- functors for composable SIMD instructions
 - SIMD and 2D iterators
 - Word hashing without collisions (also, save as many operations as possible)
   - Obtain a vocabulary of all the words
@@ -23,6 +24,7 @@ TODO:
 - `sgl.v1.class.adaptive_hash.h`
 - `sgl.v1.class.cuckoo_hash.h`
 - `sgl.v1.class.lri_cache.h`
+- `sgl.v1.class.adaptive_cache.h`
 - `sgl.v1.class.lru_cache.h`
 
 # Concepts
@@ -32,3 +34,77 @@ TotallyOrderd -> TotallyOrderdResorce
  Regular      ->   RegularResource
     ↓                   ↓
 Semiregular   ->     Resource
+
+
+## Documentation Tips and Tricks
+01. Describe Domain and Codomain.
+02. Provide non-obvious and obvious examples of wrong domains.
+03. Say whether the function is partial.
+04. Describe Set of Departure.
+05. Provide non-obvious and obvious examples for of a Set of Depature.
+06. Describe the predicates, which check the Set of Depature, and specify which checks would be ignored.
+07. Describe when the function allocates memory.
+08. Describe the thread safety (all functions should not modify non-syncronised external state unless there is a good reason for doing it (yet to be discovered), but you should specify the presence of synchronization and whether we need it, especially for containers and functors).
+09. Describe the modification of the arguments.
+10. Keep saying "unless your implementation of a concept have an external state / allocates memory / violates signal safety / has a syncronisation".
+11. Describe whether it uses and external state or depends on external values.
+12. Describe the preprocessor dependecies.
+
+
+## Search Engine Design Doc
+
+Modern Search Engines don't respect the hardware. Two the most popular search engines (Solr and ElasticSearch) are built on top of Lucene, which has a storage model entirely based on memory-mapped files. MMAP does not take advantage of NVME SSDs and does not give you control over caching and page faults, because the page fault cost is too high. It gives you unpredictable performance. But the IO implementation is not the only problem. These search engines are written in Java. Java neither gives you performance, nor control over hardware, nor zero-cost abstractions. The entire hardware infrastructure is asynchronous. In modern systems, even the main memory behaves like a disk drive. Random Access Memory no longer exists: the performance of your system entirely depends on data access patterns.
+
+The entire database world uses SQL. Some vendors use JSON as a query language, but it is a road to nowhere because everybody must learn a new language, which is very specific to a single system, and then you hit into a set of limitations of your language. The only reason for non-SQL syntax for query language is the simplicity of initial implementation, but such decisions stay forever and ever.
+
+Design Goals:
+- Don't pay for what you don't use
+- Make data as close to your algorithms as possible
+- Process data as fast as hardware can.
+- Support Horizontal and vertical scaling.
+- No side effects (Unlike ElasticSearch, the query result should not depend on shard id)
+
+Usage Area
+- Search
+- Recommender systems
+- Chat-Bots
+- Question-Answering
+- Serving your PyTorch models with as low latency as possible on CPUs and GPUs.
+
+Highlights:
+- Entirely asynchronous execution pipeline
+- Built-in torch-script support via user-defined functions (upload your neural nets and run them)
+- Built-in CatBoost support
+- SQL-like syntax
+- Run and Analyse your AB tests
+- CPU and GPU execution
+- Fully async disk and network IO
+- Parallel and Partitioned Data Access
+- Data and index Compression, ultra-fast delta encoding algorithms for posting lists
+- Scalable KNN search
+- Built-in models for language identification
+- Built-in Clickhouse and Kafka Logging
+- Hardware monitoring, Prometheus metrics
+- Ultrafast performance counters
+- HTTP Protocol
+- Access Control and Account Management via User accounts, roles, row policies, quota limits for resource usage
+- Async Background queries to Analytical RDBMS
+
+Engineering Goals
+- Full hardware utilization
+- Linearly scalable with the number of cores and replicas
+- Low latency and high throughput
+- Full tests coverage
+- Minimal number of dynamic memory allocations
+- Memory adaptive execution pipeline
+
+
+Implementation highlights:
+- C++ is the language of choice.
+- Fully asynchronous codebase.
+- Cache-friendly algorithms.
+- Full utilization of SIMD instructions.
+- Fast Compression Libraries (LZ4, ZSTD, FastPFOR)
+- Zero sharing  , sophisticated task steeling.
+- Sampling-based profiler.
+- Compile the source code with all kinds of sanitizers
