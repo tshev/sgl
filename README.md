@@ -20,6 +20,51 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
   - ensure we can encode all the words and character-level ngrams without collisions
 
 
+# ROADMAP (Release checkpoints)
+
+## Checks
+1. Rewrite argparser and containers.
+2. Add tests for every algorithms
+    2.1. Make sure it works with containers from a standard library according the algorithm requirements
+    2.2. Check whether algorithm works for every concept within the hirerachy.
+    2.3. Add a specialization for input iterators.
+    2.4. Add tests for conrner values of a Set of Depature.
+    2.5. Add tests for every built-in types
+3. Make sure everything `works without exceptions`.
+4. Add fuzzing for parsers.
+5. Make sure every algorithm has an implementation in terms `actions` and in terms of `transformations`
+6. Categorize algorithms and containers
+7. Describe the properties of operations.
+
+## New features 
+### Strcat
+```
+    std::string s0 = "s0";
+    std::string s1 = "s1";
+    sgl::v1::concatenation concatenation(
+        "good morning",
+        sgl::v1::format_precision<float>(4.12345, 2),
+        sgl::v1::format_decimal<int>(13, 2, 0),
+        ",",
+        100,
+        " ",
+        std::string("good morning"),
+        std::move(s0),
+        s1
+    );
+
+    std::string result0(concatenation.size());
+    sgl::v1::copy(concatenation.begin(), concatenation.end(), std::begin(result0));
+
+    std::string result1(concatenation.size());
+    concatenation.copy(std::begin(result1));
+    
+    auto result2 = concatenation(std::string());
+
+    std::string result2(concatenation.size());
+    sgl::v1::strcat(std::begin(concatenation), concatenation);
+```
+
 TODO:
 - `sgl.v1.class.adaptive_hash.h`
 - `sgl.v1.class.cuckoo_hash.h`
