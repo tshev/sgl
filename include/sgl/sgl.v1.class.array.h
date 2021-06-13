@@ -29,7 +29,7 @@ class array_base {
     array_base(size_type n) : first_(allocate(n)), last_(first_ + n), finish_(last_) {}
     array_base(T* first, T* last, T* finish) : first_(first), last_(last), finish_(finish) {}
 
-    array_base(size_type n, Allocator a) : allocator(a), first_(allocate(n)), last_(first_ + n), finish_(last_) {}
+    array_base(size_type n, Allocator a) : allocator(std::move(a)), first_(allocate(n)), last_(first_ + n), finish_(last_) {}
 
     pointer allocate(size_type n) {
         return allocator.allocate(n);
@@ -137,7 +137,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     template<typename It>
     requires(sgl::v1::input_iterator<It> && sgl::v1::readable<It>)
-    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, Allocator a) : base_type(std::distance(first, last), a) {
+    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, Allocator a) : base_type(std::distance(first, last), std::move(a)) {
         sgl::v1::uninitialized_copy(first, last, begin());
     }
 
@@ -147,7 +147,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     template<typename It>
     requires(sgl::v1::input_iterator<It> && sgl::v1::readable<It>)
-    array(It first, It last, Allocator a) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, a) {}
+    array(It first, It last, Allocator a) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, std::move(a)) {}
 
 
     template<typename It, typename UnaryFunction>
@@ -158,7 +158,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     template<typename It, typename UnaryFunction>
     requires(sgl::v1::input_iterator<It> && sgl::v1::readable<It> && sgl::v1::functional_procedure<UnaryFunction, SGLValueType(It)>)
-    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, UnaryFunction unary_function, Allocator a) : base_type(std::distance(first, last), a) {
+    array(typename std::enable_if<std::is_base_of<std::forward_iterator_tag, typename std::iterator_traits<It>::iterator_category>::value, It>::type first, It last, UnaryFunction unary_function, Allocator a) : base_type(std::distance(first, last), std::move(a)) {
         sgl::v1::uninitialized_copy(first, last, begin(), unary_function);
     }
 
@@ -168,7 +168,7 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
 
     template<typename It, typename UnaryFunction>
     requires(sgl::v1::input_iterator<It> && sgl::v1::readable<It> && sgl::v1::functional_procedure<UnaryFunction, SGLValueType(UnaryFunction)>)
-    array(It first, It last, UnaryFunction unary_function, Allocator allocator) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, unary_function, allocator) {}
+    array(It first, It last, UnaryFunction unary_function, Allocator allocator) : array(typename std::iterator_traits<It>::iterator_tag{}, first, last, unary_function, std::move(allocator)) {}
 
     array(size_type n) : base_type(n) {
         if (n != 0 && base_type::first_ == nullptr) { throw std::bad_alloc(); }
@@ -182,14 +182,14 @@ class array : array_base<T, Allocator>, totally_ordered<array<T, Allocator, skip
         sgl::v1::uninitialized_fill(begin(), end(), value);
     }
 
-    array(size_type n, Allocator a) : base_type(n, a) {
+    array(size_type n, Allocator a) : base_type(n, std::move(a)) {
         if (n != 0 && base_type::first_ == nullptr) { throw std::bad_alloc(); }
         if constexpr (!skip_default_constructor_and_destructor) {
             sgl::v1::uninitialized_default_construct(begin(), end());
         }
     }
 
-    array(size_type n, const value_type& value, Allocator a) : base_type(n, a) {
+    array(size_type n, const value_type& value, Allocator a) : base_type(n, std::move(a)) {
         if (n != 0 && base_type::first_ == nullptr) { throw std::bad_alloc(); }
         sgl::v1::uninitialized_fill(begin(), end(), value);
     }

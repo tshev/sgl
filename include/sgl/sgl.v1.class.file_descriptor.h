@@ -162,6 +162,7 @@ class file_descriptor {
 public:
 
   file_descriptor() = default;
+  file_descriptor(const std::string& path) : file_descriptor(path.data()) {}
   file_descriptor(const char* name) : fd(open(name, io::read_only)) {
     if (fd == -1) { throw file_descriptor_error(errno); }
   }
@@ -212,6 +213,14 @@ public:
     return count; 
   }
 
+  char* copy(char* out) {
+    while (true) {
+        size_t count = ::read(fd, out, 4096);
+        out += count;
+        if (count == 0) return out;
+    }
+  }
+
   template<typename T>
   size_t write(T data, size_t n) {
     ssize_t result = ::write(fd, data, n);
@@ -250,8 +259,8 @@ public:
   friend
   inline
   sgl::v1::file_descriptor& operator>>(sgl::v1::file_descriptor &file_descriptor, T& x) {
-    file_descriptor.read(x);
-    return file_descriptor;
+      file_descriptor.read(x);
+      return file_descriptor;
   }
 
   void truncate(size_t n) {

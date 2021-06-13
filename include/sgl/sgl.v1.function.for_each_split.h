@@ -2,9 +2,9 @@
 namespace sgl {
 namespace v1 {
 
-template<typename ForwardIterator, typename T, typename Func>
+template<typename ForwardIterator, typename Func>
 inline
-void for_each_split(ForwardIterator first, ForwardIterator last, const T& value, Func func) {
+void for_each_split(ForwardIterator first, ForwardIterator last, const SGLValueType(ForwardIterator)& value, Func func) {
     while (first != last) {
         ForwardIterator next = sgl::v1::find(first, last, value);
         func(first, next);
@@ -14,6 +14,9 @@ void for_each_split(ForwardIterator first, ForwardIterator last, const T& value,
         }
     }
 }
+
+
+
 
 template <typename ForwardIterator, typename Func, typename Hash = std::hash<SGLValueType(ForwardIterator)>, typename BinaryPredicate = std::equal_to<SGLValueType(ForwardIterator)> >
 inline

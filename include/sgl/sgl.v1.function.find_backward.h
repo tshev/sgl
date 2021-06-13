@@ -3,14 +3,14 @@
 namespace sgl {
 namespace v1 {
 
-template<typename BidirectionalIterator, typename T>
+template<typename BidirectionalIterator>
 inline
-BidirectionalIterator find_backward(BidirectionalIterator first, BidirectionalIterator last, const T& x) {
+BidirectionalIterator find_backward(BidirectionalIterator first, BidirectionalIterator last, const SGLValueType(BidirectionalIterator)& value) {
     if (first == last) { return last; }
     BidirectionalIterator last_fixed = last;
     --last;
     while (true) {
-        if (*last == x) { return last; }
+        if (*last == value) { return last; }
         if (first == last) { return last_fixed; }
         --last;
     }
@@ -18,14 +18,14 @@ BidirectionalIterator find_backward(BidirectionalIterator first, BidirectionalIt
 }
 
 
-template<typename BidirectionalIterator, typename T, typename Equality>
+template<typename BidirectionalIterator, typename R>
 inline
-BidirectionalIterator find_backward(BidirectionalIterator first, BidirectionalIterator last, const T& x, Equality eq) {
+BidirectionalIterator find_backward(BidirectionalIterator first, BidirectionalIterator last, const SGLValueType(BidirectionalIterator)& value, R cmp) {
     if (first == last) { return last; }
     BidirectionalIterator last_fixed = last;
     --last;
     while (true) {
-        if (eq(*last, x)) { return last; }
+        if (cmp(*last, value)) { return last; }
         if (first == last) { return last_fixed; }
         --last;
     }

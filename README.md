@@ -18,6 +18,7 @@ Read it [here](.github/CODE_OF_CONDUCT.md)
 - Word hashing without collisions (also, save as many operations as possible)
   - Obtain a vocabulary of all the words
   - ensure we can encode all the words and character-level ngrams without collisions
+- async B+ tree, which is optimized for a fast in-order traversal
 
 
 # ROADMAP (Release checkpoints)
@@ -162,6 +163,6 @@ Implementation highlights:
 - Cache-friendly algorithms.
 - Full utilization of SIMD instructions.
 - Fast Compression Libraries (LZ4, ZSTD, FastPFOR)
-- Zero sharing  , sophisticated task steeling.
+- Zero sharing , sophisticated task steeling.
 - Sampling-based profiler.
 - Compile the source code with all kinds of sanitizers

@@ -8,7 +8,7 @@ template<typename T>
 struct construct {
     template<typename... Args>
     T operator()(Args&&... args) const {
-        return T(std::forward(args)...);
+        return T(std::forward<Args>(args)...);
     }
 };
 

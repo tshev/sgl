@@ -3,19 +3,16 @@
 namespace sgl {
 namespace v1 {
 
-template<typename T>
-constexpr
+template<typename N>
 inline
-T ilog(T x, const T& base) {
-    T r(0);
-    constexpr T zero(0);
-    while (true) {
-        x /= base;
-        if (x == zero) { return r; }
-        ++r;
+N ilog(N value, N base) {
+    N result = 0;
+    value /= base;
+    while (!sgl::v1::zero(value)) {
+        value /= base;
+        ++result;
     }
-    return r;
+    return result;
 }
-
 } // namespace v1
 } // namespace sgl

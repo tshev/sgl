@@ -52,7 +52,7 @@ struct range {
     }
 
     auto end() const {
-        return first;
+        return last;
     }
 };
 

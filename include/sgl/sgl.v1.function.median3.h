@@ -32,44 +32,61 @@ int c[] = {2, 2, 2};
 test(c);
 */
 
-template<typename T, typename Pred>
+template<typename T>
+requires(TotallyOrdered<T>)
 inline
-const T& median3(const T& x, const T& y, const T& z, Pred pred) {
-        if (pred(y, x)) {
-                if (!pred(z,  x)) return x;
-                if (pred(z, y)) return y;
-                return z;
-        }
-        if (!pred(z, y)) return y;
-        if (pred(z, x)) return x;
+const T& median3(const T& x, const T& y, const T& z) {
+    if (y < x) {
+        if (!(z <  x)) return x;
+        if (z < y) return y;
         return z;
+    }
+    if (!(z < y)) return y;
+    if (z < x) return x;
+    return z;
 }
 
 
 template<typename T>
+requires(TotallyOrdered<T>)
 inline
 T& median3(T& x, T& y, T& z) {
-        if (y < x) {
-                if (!(z <  x)) return x;
-                if (z < y) return y;
-                return z;
-        }
-        if (!(z < y)) return y;
-        if (z < x) return x;
+    if (y < x) {
+        if (!(z <  x)) return x;
+        if (z < y) return y;
         return z;
+    }
+    if (!(z < y)) return y;
+    if (z < x) return x;
+    return z;
 }
+
+
+template<typename T, typename Pred>
+inline
+const T& median3(const T& x, const T& y, const T& z, Pred pred) {
+    if (pred(y, x)) {
+        if (!pred(z,  x)) return x;
+        if (pred(z, y)) return y;
+        return z;
+    }
+    if (!pred(z, y)) return y;
+    if (pred(z, x)) return x;
+    return z;
+}
+
 
 template<typename T, typename Pred>
 inline
 T& median3(T& x, T& y, T& z, Pred pred) {
-        if (pred(y, x)) {
-                if (!pred(z,  x)) return x;
-                if (pred(z, y)) return y;
-                return z;
-        }
-        if (!pred(z, y)) return y;
-        if (pred(z, x)) return x;
+    if (pred(y, x)) {
+        if (!pred(z,  x)) return x;
+        if (pred(z, y)) return y;
         return z;
+    }
+    if (!pred(z, y)) return y;
+    if (pred(z, x)) return x;
+    return z;
 }
 
 } // namespace v1
