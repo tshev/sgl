@@ -11,6 +11,23 @@ The library is in active development. Don't use it, because i will:
 # Code of conduct
 Read it [here](.github/CODE_OF_CONDUCT.md)
 
+## connection between regular type and resources
+1. There is no such thing as a resource, everything must have an implementation of a copy constructor. std::move is an external function, which optimizes some operations for some particular types.
+2. Move is as fundamental as copy, but there are movable but non-copyable type (boost io service and other garbage from boost, std::unique_ptr, std::thread, etc)
+TotallyOrdered -> TotallyOrderedResource
+     ↓                    ↓ 
+  Regular      ->   RegularResource
+     ↓                    ↓
+Semiregular    ->     Resource
+
+According to the extention procedure:
+1. Semiregular type is a resource
+2. Regular type is a Regualr resource
+3. TotallyOrdered type is a TotallyOrderedResource
+So, we've got a parallel hierachy, which has the cross-level dependecies with the initial hierarchy of concepts.
+
+1 VS 2
+
 # TODO: think about
 - hide memory latency with async operations
 - functors for composable SIMD instructions
