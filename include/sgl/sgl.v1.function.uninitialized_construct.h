@@ -3,17 +3,22 @@ namespace sgl {
 namespace v1 {
 
 template<typename T>
-inline
-T* uninitialized_construct(T& ptr) {
-    return sgl::v1::construct_at(std::addressof(ptr));
+void uninitialized_construct(T* first, T* last) {
+    auto it = first;
+    try {
+        while (first != last) {
+            sgl::v1::construct(first);        
+            ++first;
+        }
+    } catch(...) {
+        while (it != first) {
+            sgl::v1::destruct(it);
+            ++first;
+        }
+    }
+
 }
 
-
-template<typename T, typename A, typename... Args>
-inline
-T* uninitialized_construct(T& ptr, A&& x0, Args&& ...xi) {
-    return sgl::v1::construct_at(std::addressof(ptr), std::forward<A>(x0), std::forward<Args>(xi)...);
-}
 
 } // namespace v1
 } // namespace sgl

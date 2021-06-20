@@ -20,7 +20,7 @@ uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 mi
                 ++first;
                 ++current;
             }
-            sgl::v1::uninitialized_copy_construct(*current, x);
+            sgl::v1::construct(&(*current), x);
             ++current;
             while (first != last) {
                 sgl::v1::uninitialized_copy_construct(*current, *first);
@@ -34,6 +34,41 @@ uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 mi
         }
     }
 }
+
+
+template <typename ForwardIterator0, typename ForwardIterator1>
+ForwardIterator1
+uninitialized_copy_range_value_range(ForwardIterator0 first, ForwardIterator0 middle, ForwardIterator0 last,
+                                     typename std::iterator_traits<ForwardIterator1>::value_type&& x,
+                                     ForwardIterator1 output) {
+    typedef typename std::iterator_traits<ForwardIterator1>::value_type value_type;
+    if constexpr (std::is_trivial<value_type>::value) {
+        return sgl::v1::copy_range_value_range(first, middle, last, x, output);
+    } else {
+        // typedef typename std::iterator_traits<ForwardIterator0>::value_type value_type;
+        ForwardIterator1 current = output;
+        try {
+            while (first != middle) {
+                sgl::v1::uninitialized_copy_construct(*current, *first);
+                ++first;
+                ++current;
+            }
+            sgl::v1::construct(&(*current), std::move(x));
+            ++current;
+            while (first != last) {
+                sgl::v1::uninitialized_copy_construct(*current, *first);
+                ++first;
+                ++current;
+            }
+            return current;
+        } catch (...) {
+            sgl::v1::destruct(output, current);
+            throw;
+        }
+    }
+}
+
+
 
 template <typename ForwardIterator0, typename ForwardIterator1>
 ForwardIterator1

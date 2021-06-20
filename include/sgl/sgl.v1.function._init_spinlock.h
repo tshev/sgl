@@ -9,7 +9,7 @@ void _init_spinlock(T* state_, U* count_, Ostream& cerr, S& shared_mutex_) {
                 cerr << "Waiting for destruction\n";
                 while (state_->load() == 1ul); // wait for destructuction before the recreation
             }
-            sgl::v1::construct_at(shared_mutex_);
+            sgl::v1::construct(shared_mutex_);
             state_->store(1ul);
         } else {
             if (state_->load() == 0) {

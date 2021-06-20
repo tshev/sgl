@@ -13,9 +13,14 @@ struct array_view {
 
   uint8_t* data_;
 
+  array_view() : data_(nullptr) {}
   array_view(uint8_t* data) : data_(data + 2 * sizeof(size_type)) {}
 
   array_view(const array_view& x) : data_(x.data_) {}
+
+  void reserve(S n) {
+    capacity() = n;
+  }
 
   size_type* capacity_ptr() {
     return reinterpret_cast<size_type*>(data_ - 2 * sizeof(size_type));
@@ -57,9 +62,19 @@ struct array_view {
     return  data()[i];
   }
 
-  void push_back(const T& x) {
+  void push_back_unguarded(const T& x) {
     data()[size()] = x;
     ++size();
+  }
+
+  void push_back(const T& x) {
+    auto s = size();
+    if (s < capacity()) {
+        data()[s] = x;
+        ++size();
+    } else {
+        throw std::bad_alloc();
+    }
   }
 
   template<typename... U>
@@ -67,7 +82,6 @@ struct array_view {
     new (data() + size())T(std::forward<U>(args)...);
     ++size();
   }
-
 
   T& back() {
     return data()[size() - 1];
