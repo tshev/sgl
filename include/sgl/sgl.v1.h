@@ -49,6 +49,7 @@
 #include "sgl.v1.class.pimpl.h"
 #include "sgl.v1.class.enumeration.h"
 #include "sgl.v1.struct.fa.h"
+#include "sgl.v1.struct.is_trivial.h"
 
 
 #include "sgl.v1.struct.default_tag.h"
@@ -366,6 +367,7 @@
 #include "sgl.v1.function.uninitialized_move_range_value_range.h"
 
 #include "sgl.v1.function.uninitialized_copy.h"
+#include "sgl.v1.function.uninitialized_copy_n.h"
 #include "sgl.v1.function.uninitialized_transform.h"
 #include "sgl.v1.function.uninitialized_copy_range_value_range.h"
 
