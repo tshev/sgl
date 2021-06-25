@@ -3,8 +3,8 @@
 namespace sgl {
 namespace v1 {
 
-template <class InputIterator, class ForwardIterator, bool>
-struct _uninitialized_move_exceptions {
+template <typename InputIterator, typename ForwardIterator, bool exceptions, bool is_trivial>
+struct _uninitialized_move {
     ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator output) const {
         typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
         ForwardIterator current = output;
@@ -69,9 +69,27 @@ struct _uninitialized_move_exceptions {
     }
 
 };
+template <typename InputIterator, typename ForwardIterator, bool exceptions>
+struct _uninitialized_move<InputIterator, ForwardIterator, exceptions, /*is_trivial=*/true> {
+    static_assert(!exceptions, "Trivial type is noexcept copyable");
 
-template <class InputIterator, class ForwardIterator>
-struct _uninitialized_move_exceptions<InputIterator, ForwardIterator, false> {
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator output) const noexcept {
+        return sgl::v1::copy(first, last, output);
+    }
+
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator output, const typename std::iterator_traits<InputIterator>::value_type& value) const noexcept {
+        return sgl::v1::uninitialized_copy(first, last, output, value); 
+    }
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator output, typename std::iterator_traits<InputIterator>::value_type&& value) const noexcept {
+        return sgl::v1::uninitialized_copy(first, last, output, std::move(value)); 
+    }
+};
+
+
+template <typename InputIterator, typename ForwardIterator>
+struct _uninitialized_move<InputIterator, ForwardIterator, /*exceptions=*/false, /*is_trivial=*/false> {
     ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator output) const {
         //typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
         while (first != last) {
@@ -107,26 +125,25 @@ struct _uninitialized_move_exceptions<InputIterator, ForwardIterator, false> {
     }
 };
 
-template <class InputIterator, class ForwardIterator>
+template <typename InputIterator, typename ForwardIterator>
 inline
 ForwardIterator uninitialized_move(InputIterator first, InputIterator last, ForwardIterator output) {
     typedef typename std::decay<typename std::iterator_traits<InputIterator>::value_type>::type T;
-    return sgl::v1::_uninitialized_move_exceptions<InputIterator, ForwardIterator, !sgl::v1::is_nothrow_movable<T>::value>()(first, last, output);
+    return sgl::v1::_uninitialized_move<InputIterator, ForwardIterator, !sgl::v1::is_nothrow_movable<T>::value, sgl::v1::is_trivial<T>::value>()(first, last, output);
 }
 
 
-
-template <class InputIterator, class ForwardIterator>
+template <typename InputIterator, typename ForwardIterator>
 ForwardIterator uninitialized_move(InputIterator first, InputIterator last, ForwardIterator output, const typename std::iterator_traits<InputIterator>::value_type& value) {
     typedef typename std::iterator_traits<InputIterator>::value_type T;
-    return sgl::v1::_uninitialized_move_exceptions<InputIterator, ForwardIterator, !sgl::v1::is_nothrow_movable<T>::value>()(first, last, output, value);
+    return sgl::v1::_uninitialized_move<InputIterator, ForwardIterator, !sgl::v1::is_nothrow_movable<T>::value, sgl::v1::is_trivial<T>::value>()(first, last, output, value);
 }
 
 
-template <class InputIterator, class ForwardIterator>
+template <typename InputIterator, typename ForwardIterator>
 ForwardIterator uninitialized_move(InputIterator first, InputIterator last, ForwardIterator output, typename std::iterator_traits<InputIterator>::value_type&& value) {
     typedef typename std::iterator_traits<InputIterator>::value_type T;
-    return sgl::v1::_uninitialized_move_exceptions<InputIterator, ForwardIterator, !sgl::v1::is_nothrow_movable<T>::value>()(first, last, output, std::move(value));
+    return sgl::v1::_uninitialized_move<InputIterator, ForwardIterator, !sgl::v1::is_nothrow_movable<T>::value, sgl::v1::is_trivial<T>::value>()(first, last, output, std::move(value));
 }
 
 } // namespace v1

@@ -1,4 +1,5 @@
 #pragma once
+// TODO: FIXME
 namespace sgl {
 namespace v1 {
 
@@ -31,6 +32,21 @@ public:
             ++max_index_;
         }
         return pos.first->second;
+    }
+
+    void emplace_back(const T& key, const N& value) {
+        max_index_ = sgl::v1::max(max_index_, value);
+        mapping_.emplace(std::make_pair(key, value));
+    }
+
+   const value_type& operator[](const T& key) {
+        auto pos = mapping_.find(key);
+        if (pos == std::end(mapping_)) {
+            auto pos = mapping_.insert({key, max_index_});
+            ++max_index_;
+            return pos.first->second;
+        }
+        return pos->second;
     }
 
     std::pair<value_type, bool> get(const T& key) const {
