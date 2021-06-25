@@ -27,9 +27,36 @@ class array_base {
     array_base() = default;
 
     array_base(size_type n) : first_(allocate(n)), last_(first_ + n), finish_(last_) {}
-    array_base(T* first, T* last, T* finish) : first_(first), last_(last), finish_(finish) {}
+    array_base(T* first, T* last, T* finish, Allocator allocator) : first_(first), last_(last), finish_(finish), allocator(std::move(allocator)) {}
 
     array_base(size_type n, Allocator a) : allocator(std::move(a)), first_(allocate(n)), last_(first_ + n), finish_(last_) {}
+
+    array_base(array_base&& value) : array_base(value.first_, value.last_, value.finish_, std::move(value.allocator)) {
+        first_ = nullptr;
+        last_ = nullptr;
+        finish_ = nullptr;
+    }
+
+    ~array_base() {
+        deallocate();
+    }
+
+    friend
+    inline
+    void swap_allocators(array_base& x, array_base& y) {
+        std::swap(x.allocator, y.allocator);
+    }
+
+    void assign(array_base&& value) {
+        allocator = std::move(value.allocator);
+        first_ = value.first_;
+        last_ = value.last_;
+        finish_ = value.finish_;
+
+        value.first_ = nullptr;
+        value.last_ = nullptr;
+        value.finish_ = nullptr;
+    }
 
     pointer allocate(size_type n) {
         return allocator.allocate(n);
@@ -55,9 +82,6 @@ class array_base {
         finish_ = nullptr;
     }
 
-    ~array_base() {
-        deallocate();
-    }
 };
 
 template <typename T>
@@ -83,6 +107,30 @@ class array_base<T, std::allocator<T>> {
 
     array_base(T* first, T* last, T* finish) : first_(first), last_(last), finish_(finish) {}
 
+    array_base(array_base&& value) : array_base(value.first_, value.last_, value.finish_) {
+        first_ = nullptr;
+        last_ = nullptr;
+        finish_ = nullptr;
+    }
+
+    ~array_base() {
+        deallocate();
+    }
+
+    void assign(array_base&& value) noexcept {
+        first_ = value.first_;
+        last_ = value.last_;
+        finish_ = value.finish_;
+
+        value.first_ = nullptr;
+        value.last_ = nullptr;
+        value.finish_ = nullptr;
+    }
+
+    friend
+    inline
+    void swap_allocators(array_base& x, array_base& y) {}
+
     pointer allocate(size_type n) {
         return std::allocator<T>().allocate(n);
     }
@@ -101,10 +149,6 @@ class array_base<T, std::allocator<T>> {
         first_ = nullptr;
         last_ = nullptr;
         finish_ = nullptr;
-    }
-
-    ~array_base() {
-        deallocate();
     }
 };
 
@@ -199,6 +243,21 @@ public:
         sgl::v1::optional_default_construct<T, ctor>()(base_type::first_, base_type::last_);
     }
 
+    array(const array& value) : base_type(std::begin(value), std::end(value)) {}
+
+    array& operator=(const array& value) {
+        array tmp(value);
+        swap(*this, tmp);
+        return *this;
+    }
+
+    array(array&& value) : base_type(std::move(value)) {}
+
+    array& operator=(array&& value) {
+        base_type::assign(std::move(value));
+        return *this;
+    }
+
     array(size_type n, A allocator) : base_type(n, std::move(allocator)) {
         sgl::v1::optional_default_construct<T, ctor>()(base_type::first_, base_type::last_);
     }
@@ -238,6 +297,15 @@ public:
 
     ~array() {
         optional_destroy<T, prefer_copy::value>()(base_type::first_, base_type::last_);
+    }
+
+    friend
+    inline
+    void swap(array& x, array& y) noexcept {
+        std::swap(x.first_, y.first_);
+        std::swap(x.last_, y.last_);
+        std::swap(x.finish_, y.finish_);
+        swap_allocators(x, y);
     }
 
     const_iterator begin() const {
@@ -330,7 +398,6 @@ public:
     }
 
     void push_back(value_type&& value) {
-        std::cout << prefer_copy::value << std::endl;
         if (base_type::last_ != base_type::finish_) {
             this->push_back_unguarded(std::move(value));
         } else {
