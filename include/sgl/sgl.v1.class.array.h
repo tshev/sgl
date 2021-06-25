@@ -189,7 +189,7 @@ public:
 
 private:
     struct prefer_copy {
-        static constexpr const bool value = !std::is_move_constructible<T>::value || (std::is_copy_constructible<T>::value && !std::is_nothrow_move_constructible<T>::value);
+        static constexpr const bool value = std::is_trivial<T>::value || !std::is_move_constructible<T>::value || (std::is_copy_constructible<T>::value && !std::is_nothrow_move_constructible<T>::value);
     };
 
 public:
@@ -330,6 +330,7 @@ public:
     }
 
     void push_back(value_type&& value) {
+        std::cout << prefer_copy::value << std::endl;
         if (base_type::last_ != base_type::finish_) {
             this->push_back_unguarded(std::move(value));
         } else {

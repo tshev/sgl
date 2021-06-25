@@ -112,5 +112,23 @@ ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, Forw
     return sgl::v1::_uninitialized_copy<InputIterator, ForwardIterator, sgl::v1::is_nothrow_copyable<T>::value, !std::is_trivial<T>::value>()(first, last, out);
 }
 
+
+template<typename InputIterator, typename ForwardIterator>
+inline
+ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator out, const typename std::iterator_traits<InputIterator>::value_type& value) {
+    // ranges don't intersect
+    typedef typename std::iterator_traits<InputIterator>::value_type T;
+    return sgl::v1::_uninitialized_copy<InputIterator, ForwardIterator, sgl::v1::is_nothrow_copyable<T>::value, !std::is_trivial<T>::value>()(first, last, out, value);
+}
+
+
+template<typename InputIterator, typename ForwardIterator>
+inline
+ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator out, typename std::iterator_traits<InputIterator>::value_type&& value) {
+    // ranges don't intersect
+    typedef typename std::iterator_traits<InputIterator>::value_type T;
+    return sgl::v1::_uninitialized_copy<InputIterator, ForwardIterator, sgl::v1::is_nothrow_copyable<T>::value, !std::is_trivial<T>::value>()(first, last, out, std::move(value));
+}
+
 } // namespace v1
 } // namespace sgl
