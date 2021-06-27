@@ -14,8 +14,8 @@ inline
 It1 move_backward(It0 first, It0 last, It1 out) {
     while (first != last) {
         --out;
-        *out = std::move(*first);
-        ++first;
+        --last;
+        *out = std::move(*last);
     }
     return out;
 }

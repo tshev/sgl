@@ -49,6 +49,46 @@ struct _uninitialized_copy {
             throw;
         }
     }
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, const typename std::iterator_traits<InputIterator>::value_type& value, InputIterator first1, InputIterator last1) const {
+        ForwardIterator current = out;
+        try {
+            while (first != last) {
+                sgl::v1::construct(std::addressof(*current), *first);
+                ++current; ++first;
+            }
+            sgl::v1::construct(std::addressof(*current), value);
+            ++current;
+            while (first1 != last1) {
+                sgl::v1::construct(std::addressof(*current), *first1);
+                ++current; ++first1;
+            }
+            return current;
+        } catch (...) {
+            sgl::v1::destruct(out, current);
+            throw;
+        }
+    }
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, typename std::iterator_traits<InputIterator>::value_type&& value, InputIterator first1, InputIterator last1) const {
+        ForwardIterator current = out;
+        try {
+            while (first != last) {
+                sgl::v1::construct(std::addressof(*current), *first);
+                ++current; ++first;
+            }
+            sgl::v1::construct(std::addressof(*current), std::move(value));
+            ++current;
+            while (first1 != last1) {
+                sgl::v1::construct(std::addressof(*current), *first1);
+                ++current; ++first1;
+            }
+            return current;
+        } catch (...) {
+            sgl::v1::destruct(out, current);
+            throw;
+        }
+    }
 };
 
 
@@ -72,6 +112,20 @@ struct _uninitialized_copy<InputIterator, ForwardIterator, /*copy_throws=*/false
         return out;
     }
 
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, const typename std::iterator_traits<InputIterator>::value_type& value, InputIterator first1, InputIterator last1) const noexcept {
+        while (first != last) {
+            sgl::v1::construct(std::addressof(*out), *first);
+            ++out; ++first;
+        }
+        sgl::v1::construct(std::addressof(*out), value);
+        ++out;
+        while (first1 != last1) {
+            sgl::v1::construct(std::addressof(*out), *first1);
+            ++out; ++first1;
+        }
+        return out;
+    }
+
     ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, typename std::iterator_traits<InputIterator>::value_type&& value) const noexcept {
         while (first != last) {
             sgl::v1::construct(std::addressof(*out), *first);
@@ -79,6 +133,20 @@ struct _uninitialized_copy<InputIterator, ForwardIterator, /*copy_throws=*/false
         }
         sgl::v1::construct(std::addressof(*out), std::move(value));
         ++out;
+        return out;
+    }
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, typename std::iterator_traits<InputIterator>::value_type&& value, InputIterator first1, InputIterator last1) const noexcept {
+        while (first != last) {
+            sgl::v1::construct(std::addressof(*out), std::move(*first));
+            ++out; ++first;
+        }
+        sgl::v1::construct(std::addressof(*out), value);
+        ++out;
+        while (first1 != last1) {
+            sgl::v1::construct(std::addressof(*out), *first1);
+            ++out; ++first1;
+        }
         return out;
     }
 };
@@ -101,6 +169,21 @@ struct _uninitialized_copy<InputIterator, ForwardIterator, copy_throws, /*is_tri
         *out = std::move(value);
         return ++out;
     }
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, const typename std::iterator_traits<InputIterator>::value_type& value, InputIterator first1, InputIterator last1) const {
+        out = sgl::v1::copy(first, last, out);
+        *out = value;
+        ++out;
+        return sgl::v1::copy(first1, last1, out);
+    }
+
+    ForwardIterator operator()(InputIterator first, InputIterator last, ForwardIterator out, typename std::iterator_traits<InputIterator>::value_type&& value, InputIterator first1, InputIterator last1) const {
+        out = sgl::v1::copy(first, last, out);
+        *out = std::move(value);
+        ++out;
+        return sgl::v1::copy(first1, last1, out);
+    }
+
 };
 
 

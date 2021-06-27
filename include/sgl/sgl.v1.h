@@ -165,6 +165,7 @@
 #include "sgl.v1.function.destruct.h"
 #include "sgl.v1.function.copy.h"
 
+
 #include "sgl.v1.function.copy_elements.h"
 #include "sgl.v1.function.copy_n.h"
 #include "sgl.v1.function.copy_if.h"
@@ -183,6 +184,8 @@
 #include "sgl.v1.function.move_backward.h"
 #include "sgl.v1.function.transform_while.h"
 
+#include "sgl.v1.function.move.h"
+#include "sgl.v1.function.move_n.h"
 
 #include "sgl.v1.function.find_adjacent.h"
 #include "sgl.v1.function.find_adjacent_next.h"

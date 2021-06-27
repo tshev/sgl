@@ -8,9 +8,9 @@ template<typename It0, typename It1>
 inline
 It1 copy_backward(It0 first, It0 last, It1 out) {
     while (first != last) {
+        --last;
         --out;
-        *out = *first;
-        ++first;
+        *out = *last;
     }
     return out;
 }
