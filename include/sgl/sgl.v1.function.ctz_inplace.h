@@ -7,7 +7,10 @@ template<typename T>
 struct _ctz_inplace {
     int operator()(T& m) const {
         int result = 0;
-        while (even(m)) { m >>= 1; ++result; }
+        while (even(m)) {
+            m >>= 1;
+            ++result;
+        }
         return result;
     }
 };
@@ -30,7 +33,6 @@ struct _ctz_inplace<int> {
     }
 };
 
-
 template<>
 struct _ctz_inplace<unsigned long> {
     int operator()(unsigned long& value) const noexcept {
@@ -48,7 +50,6 @@ struct _ctz_inplace<long> {
         return result;
     }
 };
-
 
 template<>
 struct _ctz_inplace<unsigned long long> {
@@ -74,5 +75,5 @@ int ctz_inplace(T& value) {
     return sgl::v1::_ctz_inplace<T>{}(value);
 }
 
-}
-}
+} // namespace v1
+} // namespace sgl

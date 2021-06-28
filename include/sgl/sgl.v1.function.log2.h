@@ -1,6 +1,16 @@
 #pragma once
 namespace sgl {
 namespace v1 {
+/*
+template<typename T>
+struct log2 {
+    T operator()(T value) {
+        T result = 0;
+        while (value != 1)
+            ++result
+    }
+};
+*/
 
 template <typename T>
 inline
