@@ -259,7 +259,11 @@
 #include "sgl.v1.function.set_union_count.h"
 //#include "sgl.v1.function.union_count.h"
 
+#include "sgl.v1.function.ctz.h"
+#include "sgl.v1.function.ctz_inplace.h"
+#include "sgl.v1.function.even.h"
 #include "sgl.v1.function.zero.h"
+#include "sgl.v1.function.gcd.h"
 #include "sgl.v1.function.ilog.h"
 #include "sgl.v1.function.ilog_ceil.h"
 #include "sgl.v1.function.ilog10.h"

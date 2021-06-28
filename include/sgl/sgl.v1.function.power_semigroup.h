@@ -18,14 +18,6 @@ void half_inplace(T &x) {
 template<typename T>
 inline
 constexpr
-bool even(const T& x) {
-  return (x & 1) == 0;
-}
-
-
-template<typename T>
-inline
-constexpr
 bool odd(const T& x) {
   return (x & 1) != 0;
 }

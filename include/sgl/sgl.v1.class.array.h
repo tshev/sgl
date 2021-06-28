@@ -27,6 +27,7 @@ class array_base {
     array_base() = default;
 
     array_base(size_type n) : first_(allocate(n)), last_(first_ + n), finish_(last_) {}
+
     array_base(T* first, T* last, T* finish, Allocator allocator) : first_(first), last_(last), finish_(finish), allocator(std::move(allocator)) {}
 
     array_base(size_type n, Allocator a) : allocator(std::move(a)), first_(allocate(n)), last_(first_ + n), finish_(last_) {}
@@ -81,7 +82,6 @@ class array_base {
         last_ = nullptr;
         finish_ = nullptr;
     }
-
 };
 
 template <typename T>
@@ -184,6 +184,20 @@ struct optional_destroy<T, false> {
 
 
 template<typename T, bool>
+struct _copy_or_move_backward {
+    T* operator()(T* first, T* last, T* out) const {
+        return sgl::v1::copy_backward(first, last, out);
+    }
+};
+
+template<typename T>
+struct _copy_or_move_backward<T, false> {
+    T* operator()(T* first, T* last, T* out) const {
+        return sgl::v1::move_backward(first, last, out);
+    }
+};
+
+template<typename T, bool>
 struct _uninitialized_copy_or_move {
     T* operator()(T* first, T* last, T* out) const {
         return sgl::v1::uninitialized_copy(first, last, out);
@@ -283,7 +297,12 @@ public:
                 sgl::v1::destruct(last_new, base_type::last_);
                 base_type::last_ = last_new;
             } else {
-                base_type::last_ = sgl::v1::uninitialized_copy(value.begin() + n_internal, value.end(), sgl::v1::copy(value.begin(), value.begin() + n_internal, base_type::first_));
+                iterator middle = value.begin() + n_internal;
+                base_type::last_ = sgl::v1::uninitialized_copy(
+                    middle,
+                    value.end(),
+                    sgl::v1::copy(value.begin(), middle, base_type::first_)
+                );
             }
         } else {
             pointer first_new = base_type::allocate(n);
@@ -398,6 +417,14 @@ public:
         return *(base_type::first_);
     }
 
+    const T& operator[](ptrdiff_t i) const {
+        return base_type::first_[i];
+    }
+
+    T& operator[](ptrdiff_t i) {
+        return base_type::first_[i];
+    }
+
     const T& operator[](size_type i) const {
         return base_type::first_[i];
     }
@@ -405,7 +432,6 @@ public:
     T& operator[](size_type i) {
         return base_type::first_[i];
     }
-
 
     size_type size() const {
         return base_type::last_ - base_type::first_;
@@ -765,8 +791,8 @@ public:
         return _uninitialized_copy_or_move<T, prefer_copy::value>()(base_type::first_, base_type::last_, out, std::move(value));
     }
 
-    T* copy_or_move_backward(T* first, T* last, T* out) {
-        return sgl::v1::copy_backward(first, last, out);
+    T* copy_or_move_backward(T* first, T* last, T* out) const {
+        return sgl::v1::_copy_or_move_backward<T, prefer_copy::value>{}(first, last, out);
     }
 };
 
