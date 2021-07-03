@@ -1,4 +1,4 @@
-#pragma onace
+#pragma once
 
 namespace sgl {
 namespace v1 {
