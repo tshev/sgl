@@ -2,24 +2,70 @@
 namespace sgl {
 namespace v1 {
 
+template<typename T>
+struct _ilog2 {
+    T operator()(const T& value) {
+        //return sgl::v1::ilog(value, 2);
+        return std::log2(value);
+    }
+};
+
+template<>
+struct _ilog2<unsigned int> {
+    typedef unsigned int T;
+    T operator()(T x) {
+        return T(int(sizeof(T)) * 8 - 1 - __builtin_clz(x));
+    }
+};
+
+template<>
+struct _ilog2<int> {
+    typedef int T;
+    T operator()(T x) {
+        return T(int(sizeof(T)) * 8 - 1 - __builtin_clz(x));
+    }
+};
+
+
+
+template<>
+struct _ilog2<unsigned long> {
+    typedef unsigned long T;
+    T operator()(T x) {
+        return T(int(sizeof(T)) * 8 - 1 - __builtin_clzl(x));
+    }
+};
+
+template<>
+struct _ilog2<long> {
+    typedef long T;
+    T operator()(T x) {
+        return T(int(sizeof(T)) * 8 - 1 - __builtin_clzl(x));
+    }
+};
+
+template<>
+struct _ilog2<unsigned long long> {
+    typedef unsigned long long T;
+    T operator()(T x) {
+        return T(int(sizeof(T)) * 8 - 1 - __builtin_clzll(x));
+    }
+};
+
+
+template<>
+struct _ilog2<long long> {
+    typedef long long T;
+    T operator()(T x) {
+        return T(int(sizeof(T)) * 8 - 1 - __builtin_clzll(x));
+    }
+};
+
+
 template <typename N>
 inline
-N ilog2(N x) {
-    // assert(0 < x);
-    if constexpr (std::is_same<T, unsigned char>::value || std::is_same<T, char>::value) {
-        return sgl::v1::ilog2<int>(x);
-    } else if constexpr (std::is_same<T, unsigned short>::value || std::is_same<T, short>::value) {
-        return sgl::v1::ilog2<int>(x);
-    } else if constexpr (std::is_same<T, unsigned int>::value || std::is_same<T, int>::value) {
-        return T(sizeof(T)) * T(8) - T(1) - __builtin_clz(x);
-    } else if constexpr (std::is_same<T, unsigned long>::value || std::is_same<T, long>::value) {
-        return T(sizeof(T)) * T(8) - T(1) - __builtin_clzl(x);
-    } else if constexpr (std::is_same<T, unsigned long long>::value || std::is_same<T, long long>::value) {
-        return T(sizeof(T)) * T(8) - T(1) - __builtin_clzll(x);
-    } else {
-        return std::log2(x);
-    }
-    return 0;
+N ilog2(N value) {
+    return sgl::v1::_ilog2<N>()(value);
 }
 
 } // namespace v1

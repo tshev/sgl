@@ -64,6 +64,8 @@
 #include "sgl.v1.struct.alignment.h"
 
 // pure algorithms
+#include "sgl.v1.function.zero.h"
+#include "sgl.v1.function.ceil_pow2.h"
 #include "sgl.v1.function.longest_monotonic_subrange.h"
 #include "sgl.v1.function.compare_count_if.h"
 #include "sgl.v1.function.find_nth.h"
@@ -262,8 +264,9 @@
 #include "sgl.v1.function.ctz.h"
 #include "sgl.v1.function.ctz_inplace.h"
 #include "sgl.v1.function.even.h"
-#include "sgl.v1.function.zero.h"
 #include "sgl.v1.function.gcd.h"
+#include "sgl.v1.function.ilog2.h"
+#include "sgl.v1.function.ilog2_ceil.h"
 #include "sgl.v1.function.ilog.h"
 #include "sgl.v1.function.ilog_ceil.h"
 #include "sgl.v1.function.ilog10.h"

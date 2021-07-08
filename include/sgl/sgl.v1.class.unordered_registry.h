@@ -37,15 +37,21 @@ public:
     void emplace_back(const T& key, const N& value) {
         max_index_ = sgl::v1::max(max_index_, value);
         mapping_.emplace(std::make_pair(key, value));
+        ++max_index_;
     }
 
-   const value_type& operator[](const T& key) {
+    value_type& operator[](const T& key) {
         auto pos = mapping_.find(key);
         if (pos == std::end(mapping_)) {
             auto pos = mapping_.insert({key, max_index_});
             ++max_index_;
             return pos.first->second;
         }
+        return pos->second;
+    }
+
+    const value_type& operator[](const T& key) const {
+        auto pos = mapping_.find(key);
         return pos->second;
     }
 
@@ -57,11 +63,23 @@ public:
         return {pos->second, true};
     }
 
+    auto find(const T& key) const {
+        return mapping_.find(key);
+    }
+
     auto begin() const {
         return mapping_.begin();
     }
 
+    auto begin() {
+        return mapping_.begin();
+    }
+
     auto end() const {
+        return mapping_.end();
+    }
+
+    auto end() {
         return mapping_.end();
     }
 
