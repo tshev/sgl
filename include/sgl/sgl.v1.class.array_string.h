@@ -196,8 +196,8 @@ public:
         }
 
         iterator& operator++() noexcept {
-            auto d = sgl::v1::_sgl__v1__class__array_string__decode((uint8_t*)data);
-            data = (char*)(d.second + d.first);
+            auto d = sgl::v1::_sgl__v1__class__array_string__decode(reinterpret_cast<uint8_t*>(data));
+            data = reinterpret_cast<char*>(d.second + d.first);
             return *this;
         }
 
@@ -208,18 +208,20 @@ public:
         }
 
         const std::pair<char*, size_type> operator*() noexcept {
-            auto p = sgl::v1::_sgl__v1__class__array_string__decode((uint8_t*)data);
-            return std::make_pair((char*)p.second, p.first);
+            auto p = sgl::v1::_sgl__v1__class__array_string__decode(reinterpret_cast<uint8_t*>(data));
+            return std::make_pair(reinterpret_cast<char*>(p.second), p.first);
         }
 
         const std::pair<const char*, size_type> operator*() const noexcept {
-            auto p = sgl::v1::_sgl__v1__class__array_string__decode((const uint8_t*)data);
-            return std::make_pair((const char*)p.second, p.first);
+            auto p = sgl::v1::_sgl__v1__class__array_string__decode(reinterpret_cast<const uint8_t*>(data));
+            return std::make_pair(reinterpret_cast<const char*>(p.second), p.first);
         }
     };
 
     array_string() = default;
+
     array_string(const array_string&) = default;
+
     array_string& operator=(const array_string&) = default;
 
     void reserve(size_type n, decltype(data)::size_type l) {
@@ -238,7 +240,6 @@ public:
         }
         position16.reserve(std::numeric_limits<uint16_t>::max());
         n -= std::numeric_limits<uint16_t>::max();
-
 
         if (n <= std::numeric_limits<uint32_t>::max()) {
             position32.reserve(n);
@@ -310,9 +311,9 @@ public:
             } else {
                 position64.push_back(size_old); 
             }
-            auto out1 = (uint8_t*)&data[size_old];
+            auto out1 = reinterpret_cast<uint8_t*>(&data[size_old]);
             auto out = sgl::v1::_sgl__v1__class__array_string__encode(n, out1);
-            sgl::v1::copy(first, first + n, (char*)out);
+            sgl::v1::copy(first, first + n, reinterpret_cast<char*>(out));
             data.resize((const char*)out - &data[0] + n);
         } catch (...) {
             data.resize(size_old);
