@@ -45,6 +45,7 @@ std::pair<uint64_t, uint8_t*> _sgl__v1__class__array_string__decode(uint8_t* dat
     value |= (uint64_t(*data) & 0x7full) << 63;
     return std::make_pair(value, ++data);
 }
+
 std::pair<uint64_t, const uint8_t*> _sgl__v1__class__array_string__decode(const uint8_t* data) {
     uint64_t value = int64_t(*data) & 0x7full;
     if ((*data >> 7) == 0) return std::make_pair(value, ++data);
@@ -163,6 +164,61 @@ class array_string<uint64_t> {
 
 public:
 
+    struct const_iterator : sgl::v1::totally_ordered<const_iterator> {
+        const char* data;
+
+        const_iterator() = default;
+
+        const_iterator(const char* data) noexcept : data(data) {}
+
+        const_iterator(const const_iterator& x) noexcept : data(x.data) {}
+
+        const_iterator& operator=(const const_iterator& x) noexcept {
+            data = x.data;
+            return *this;
+        }
+
+        friend
+        inline
+        bool operator==(const_iterator x, const_iterator y) {
+            return x.data == y.data;
+        }
+
+        friend
+        inline
+        bool operator!=(const_iterator x, const_iterator y) {
+            return !(x == y);
+        }
+
+        friend
+        inline
+        bool operator<(const_iterator x, const_iterator y) noexcept {
+            return x.data < y.data;
+        }
+
+        const_iterator& operator++() noexcept {
+            auto d = sgl::v1::_sgl__v1__class__array_string__decode(reinterpret_cast<const uint8_t*>(data));
+            data = reinterpret_cast<const char*>(d.second + d.first);
+            return *this;
+        }
+
+        const_iterator operator++(int) noexcept {
+            const_iterator tmp(*this);
+            ++(*this);
+            return tmp;
+        }
+
+        const std::pair<const char*, size_type> operator*() noexcept {
+            auto p = sgl::v1::_sgl__v1__class__array_string__decode(reinterpret_cast<const uint8_t*>(data));
+            return std::make_pair(reinterpret_cast<const char*>(p.second), p.first);
+        }
+
+        const std::pair<const char*, size_type> operator*() const noexcept {
+            auto p = sgl::v1::_sgl__v1__class__array_string__decode(reinterpret_cast<const uint8_t*>(data));
+            return std::make_pair(reinterpret_cast<const char*>(p.second), p.first);
+        }
+    };
+
     struct iterator : sgl::v1::totally_ordered<iterator> {
         char* data;
 
@@ -223,6 +279,22 @@ public:
     array_string(const array_string&) = default;
 
     array_string& operator=(const array_string&) = default;
+
+    iterator begin() {
+        return iterator{&data[0]};
+    }
+
+    const_iterator begin() const {
+        return const_iterator{&data[0]};
+    }
+
+    iterator end() {
+        return iterator{&data[0] + data.size()};
+    }
+
+    const_iterator end() const {
+        return const_iterator{&data[0] + data.size()};
+    }
 
     void reserve(size_type n, decltype(data)::size_type l) {
         if (n <= std::numeric_limits<uint8_t>::max()) {
