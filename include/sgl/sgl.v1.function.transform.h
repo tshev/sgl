@@ -27,7 +27,7 @@ std::pair<ForwardIterator1, OutputIterator> transform(ForwardIterator0 first0, F
 
 template<typename ForwardIterator0, typename ForwardIterator1, typename ForwardIterator2, typename OutputIterator, typename Function>
 inline
-std::pair<ForwardIterator1, OutputIterator> transform(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator2 first2, OutputIterator out, Function func) {
+sgl::v1::triple<ForwardIterator1, ForwardIterator2, OutputIterator> transform(ForwardIterator0 first0, ForwardIterator0 last0, ForwardIterator1 first1, ForwardIterator2 first2, OutputIterator out, Function func) {
     while (first0 != last0) {
         *out = func(*first0, *first1, *first2);
         ++out;

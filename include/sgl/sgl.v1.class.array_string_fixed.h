@@ -20,6 +20,7 @@ public:
         iterator() = default;
         iterator(char* data) noexcept : data(data) {}
         iterator(const char* data) noexcept : data(data) {}
+        iterator(const iterator&) = default;
 
         friend
         inline

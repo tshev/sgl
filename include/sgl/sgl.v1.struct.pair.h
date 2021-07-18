@@ -4,13 +4,13 @@ namespace sgl {
 namespace v1 {
 template<typename T0, typename T1>
 struct pair: totally_ordered<pair<T0, T1> > {
-    T0 first;
-    T1 second;
+    T0 m0;
+    T1 m1;
 
     friend
     inline
     bool operator==(const pair& x, const pair& y) {
-        return x.first == y.first && x.second == y.second;
+        return x.m0 == y.m0 && x.m1 == y.m1;
     }
 
     friend
@@ -22,7 +22,7 @@ struct pair: totally_ordered<pair<T0, T1> > {
     friend
     inline
     bool operator<(const pair& x, const pair& y) {
-      return x.first < y.first || (!(y.first < x.first) && x.second < y.second);
+      return x.m0 < y.m0 || (!(y.m0 < x.m0) && x.m1 < y.m1);
     }
 }; // struct pair
 
@@ -35,13 +35,13 @@ pair<T0, T1> make_pair(T0&& x, T1&& y) {
 template<typename T>
 inline
 T accumulate_dereference(const pair<T, T> &x) {
-  return *x.first + *x.second;
+  return *x.m0 + *x.m1;
 }
 
 template<typename T>
 inline
 T accumulate(const pair<T, T> &x) {
-  return x.first + x.second;
+  return x.m0 + x.m1;
 }
 } // namespace v1
 } // namespace sgl

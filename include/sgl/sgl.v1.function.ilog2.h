@@ -13,7 +13,7 @@ struct _ilog2 {
 template<>
 struct _ilog2<unsigned int> {
     typedef unsigned int T;
-    T operator()(T x) {
+    T operator()(T x) const noexcept {
         return T(int(sizeof(T)) * 8 - 1 - __builtin_clz(x));
     }
 };
@@ -21,7 +21,7 @@ struct _ilog2<unsigned int> {
 template<>
 struct _ilog2<int> {
     typedef int T;
-    T operator()(T x) {
+    T operator()(T x) const noexcept {
         return T(int(sizeof(T)) * 8 - 1 - __builtin_clz(x));
     }
 };
@@ -31,7 +31,7 @@ struct _ilog2<int> {
 template<>
 struct _ilog2<unsigned long> {
     typedef unsigned long T;
-    T operator()(T x) {
+    T operator()(T x) const noexcept {
         return T(int(sizeof(T)) * 8 - 1 - __builtin_clzl(x));
     }
 };
@@ -39,7 +39,7 @@ struct _ilog2<unsigned long> {
 template<>
 struct _ilog2<long> {
     typedef long T;
-    T operator()(T x) {
+    T operator()(T x) const noexcept {
         return T(int(sizeof(T)) * 8 - 1 - __builtin_clzl(x));
     }
 };
@@ -47,7 +47,7 @@ struct _ilog2<long> {
 template<>
 struct _ilog2<unsigned long long> {
     typedef unsigned long long T;
-    T operator()(T x) {
+    T operator()(T x) const noexcept {
         return T(int(sizeof(T)) * 8 - 1 - __builtin_clzll(x));
     }
 };
@@ -56,7 +56,7 @@ struct _ilog2<unsigned long long> {
 template<>
 struct _ilog2<long long> {
     typedef long long T;
-    T operator()(T x) {
+    T operator()(T x) const noexcept {
         return T(int(sizeof(T)) * 8 - 1 - __builtin_clzll(x));
     }
 };
