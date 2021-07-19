@@ -180,13 +180,13 @@ public:
 
         friend
         inline
-        bool operator==(const_iterator x, const_iterator y) {
+        bool operator==(const_iterator x, const_iterator y) noexcept {
             return x.data == y.data;
         }
 
         friend
         inline
-        bool operator!=(const_iterator x, const_iterator y) {
+        bool operator!=(const_iterator x, const_iterator y) noexcept {
             return !(x == y);
         }
 
@@ -235,13 +235,13 @@ public:
 
         friend
         inline
-        bool operator==(iterator x, iterator y) {
+        bool operator==(iterator x, iterator y) noexcept {
             return x.data == y.data;
         }
 
         friend
         inline
-        bool operator!=(iterator x, iterator y) {
+        bool operator!=(iterator x, iterator y) noexcept {
             return !(x == y);
         }
 
