@@ -395,6 +395,7 @@
 #include "sgl.v1.class.array_reduced.h"
 #include "sgl.v1.class.array_k.h"
 #include "sgl.v1.class.array_static.h"
+#include "sgl.v1.class.array_bytes.h"
 #include "sgl.v1.class.array_string.h"
 #include "sgl.v1.class.unordered_registry.h"
 #include "sgl.v1.class.linked_list.h"

@@ -4,13 +4,26 @@ namespace sgl {
 namespace v1 {
 
 template<typename T>
-constexpr
-size_t strlen(const T& x) {
-    if constexpr (std::is_same<char*, T>::value || std::is_array<T>::value || std::is_same<const char*, T>::value ) {
-        return std::strlen(x);
-    } else {
+struct _strlen {
+    size_t operator()(const T& x) const {
         return x.size();
     }
+};
+
+
+template<>
+struct _strlen<const char*> {
+    size_t operator()(const char* x) const {
+        size_t n = 0;
+        while (*x) { ++n; ++x; }
+        return n;
+    }
+};
+
+template<typename T>
+constexpr
+size_t strlen(T const& x) {
+    return sgl::v1::_strlen<T>()(x);
 }
 
 

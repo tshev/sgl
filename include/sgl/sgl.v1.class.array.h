@@ -417,14 +417,6 @@ public:
         return *(base_type::first_);
     }
 
-    const T& operator[](ptrdiff_t i) const {
-        return base_type::first_[i];
-    }
-
-    T& operator[](ptrdiff_t i) {
-        return base_type::first_[i];
-    }
-
     const T& operator[](size_type i) const {
         return base_type::first_[i];
     }
@@ -543,6 +535,19 @@ public:
         }
     }
 
+    void resize(size_t n) {
+        if (n <= size()) {
+            auto first = base_type::first_ + n;
+            sgl::v1::optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(first, base_type::last_);
+            base_type::last_ = first;
+        } else {
+            this->reserve_unguarded(n);
+            auto last = base_type::first_ + n;
+            sgl::v1::optional_default_construct<T, ctor>()(base_type::last_, last);
+            base_type::last_ = last;
+        }
+    }
+
     template<typename... Args>
     void emplace_back(Args&&... args) {
         if (base_type::last_ == base_type::finish_) {
@@ -586,7 +591,7 @@ public:
             sgl::v1::uninitialized_fill(middle, last, value);
             pointer last_new = sgl::v1::uninitialized_copy(position, base_type::last_, last);
 
-            optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
+            sgl::v1::optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
             base_type::deallocate();
 
             base_type::first_ = first_new;
@@ -618,7 +623,7 @@ public:
             pointer position_last = sgl::v1::uninitialized_copy_n(first, n, position_first).second;
             pointer last_new = sgl::v1::uninitialized_copy(position, base_type::last_, position_last);
 
-            optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
+            sgl::v1::optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
             base_type::deallocate();
 
             base_type::first_ = first_new;
@@ -726,7 +731,7 @@ public:
             pointer position_last = uninitialized_copy(first, last, position_first);
             pointer last_new = sgl::v1::uninitialized_copy(position, base_type::last_, position_last);
 
-            optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
+            sgl::v1::optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
             base_type::deallocate();
 
             base_type::first_ = first_new;
@@ -768,7 +773,7 @@ public:
             }
         )
         */
-        optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
+        sgl::v1::optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(base_type::first_, base_type::last_);
         base_type::deallocate();
         base_type::first_ = first_new;
         base_type::last_ = last_new;
