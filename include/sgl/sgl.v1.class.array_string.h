@@ -321,12 +321,8 @@ public:
         position32.reserve(std::numeric_limits<uint32_t>::max());
         n -= std::numeric_limits<uint32_t>::max();
 
-        if (n <= std::numeric_limits<uint64_t>::max()) {
-            position64.reserve(n);
-            data.reserve(l);
-            return;
-        }
-        position64.reserve(std::numeric_limits<uint64_t>::max());
+        position64.reserve(n);
+        data.reserve(l);
     } 
 
     void reserve(size_type n) {
