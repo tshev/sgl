@@ -13,7 +13,7 @@ struct _strlen {
 
 template<>
 struct _strlen<const char*> {
-    size_t operator()(const char* x) const {
+    constexpr size_t operator()(const char* x) const {
         size_t n = 0;
         while (*x) { ++n; ++x; }
         return n;
@@ -33,5 +33,5 @@ size_t strlen(const T& x, const U&... tail) {
     return sgl::v1::strlen(x) + sgl::v1::strlen(tail...);
 }
 
-}
-}
+}  // namespace v1
+}  // namespace sgl

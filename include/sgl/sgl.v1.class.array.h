@@ -541,7 +541,7 @@ public:
             sgl::v1::optional_destroy<T, !sgl::v1::is_trivial<T>::value>()(first, base_type::last_);
             base_type::last_ = first;
         } else {
-            this->reserve_unguarded(n);
+            this->reserve(n);
             auto last = base_type::first_ + n;
             sgl::v1::optional_default_construct<T, ctor>()(base_type::last_, last);
             base_type::last_ = last;

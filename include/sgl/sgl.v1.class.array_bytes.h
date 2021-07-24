@@ -323,15 +323,14 @@ class array_bytes {
     sgl::v1::array<char> data;
     _sgl__v1__class__array_bytes_position<N> position;
 
+
 public:
 
     struct const_iterator : sgl::v1::totally_ordered<const_iterator> {
         const char* data;
-
+    public:
         const_iterator() = default;
-
         const_iterator(const char* data) noexcept : data(data) {}
-
         const_iterator(const const_iterator& x) noexcept : data(x.data) {}
 
         const_iterator& operator=(const const_iterator& x) noexcept {
@@ -380,13 +379,13 @@ public:
         }
     };
 
-    struct iterator : sgl::v1::totally_ordered<iterator> {
+    class iterator : sgl::v1::totally_ordered<iterator> {
         char* data;
 
+    public:
+
         iterator() = default;
-
         iterator(char* data) noexcept : data(data) {}
-
         iterator(const iterator& x) noexcept : data(x.data) {}
 
         iterator& operator=(const iterator& x) noexcept {
@@ -517,7 +516,38 @@ public:
 
     array_bytes(const array_bytes&) = default;
 
+    template<typename It>
+    array_bytes(It first, It last) {
+        size_type count = 0;
+        size_type l = sgl::v1::accumulate(first, last, size_type(0), [&](auto r, const auto& x) {
+            ++count;
+            size_type n = sgl::v1::strlen(x);
+            size_type ilog2_ceil = sgl::v1::ilog2_ceil(n);
+            size_type result = n + ilog2_ceil;
+            if (ilog2_ceil < 8) { return r + n + 1; }
+            if (ilog2_ceil < 15) { return r + n + 2; }
+            if (ilog2_ceil < 22) { return r + n + 3; }
+            if (ilog2_ceil < 29) { return r + n + 4; }
+            if (ilog2_ceil < 36) { return r + n + 5; }
+            if (ilog2_ceil < 43) { return r + n + 6; }
+            if (ilog2_ceil < 50) { return r + n + 7; }
+            if (ilog2_ceil < 57) { return r + n + 8; }
+            if (ilog2_ceil < 64) { return r + n + 9; }
+            return r + n + 10;
+        });
+        sgl::v1::for_each(first, last, [this](const auto& x) mutable {
+            this->emplace_back(x);
+        });
+    }
+
+    template<typename It>
+    array_bytes(It first, size_type n) : array_bytes(first, std::next(first, n)) {}
+
     array_bytes& operator=(const array_bytes&) = default;
+
+    size_type content_capacity() const {
+        return data.capacity();
+    }
 
     iterator begin() {
         return iterator{&data[0]};
@@ -567,12 +597,13 @@ public:
         size_type batch_size = n + size_type(10);
         size_type size_old = data.size();
         size_type size_new = size_old + batch_size;
-
+        std::cout << size_new << " " << data.capacity() << std::endl;
         try {
-            data.resize(size_new);
-            if (size_new < data.size()) {
-                data.reserve(sgl::v1::max<size_type>(size_old * 2ull, size_new));
+            if (size_new > data.capacity()) {
+                data.reserve(sgl::v1::max<size_type>(data.capacity() * 2ull, size_new));
+                data.resize(size_new);
             } else {
+                data.resize(size_new);
                 position.push_back(size_old);
             }
             auto out = sgl::v1::_sgl__v1__class__array_bytes__encode(n, reinterpret_cast<uint8_t*>(&data[size_old]));
