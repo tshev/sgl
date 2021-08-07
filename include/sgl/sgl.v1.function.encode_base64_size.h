@@ -5,12 +5,7 @@ namespace v1 {
 template<typename N>
 inline
 N encode_base64_size(N n) {
-    if (!sgl::v1::zero(n % N(3))) {
-        n += N(3) - (n % N(3));
-    }
-    n /= N(3);
-    n *= N(4);
-    return n;
+    return ((n + 2) / 3) * 4;
 }
 
 
@@ -27,9 +22,6 @@ inline
 size_t encode_base64_size(It first, size_t n) {
     return sgl::v1::encode_base64_size(n);
 }
-
-
-
 
 }
 }
