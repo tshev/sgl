@@ -66,7 +66,7 @@ std::pair<It, Out> encode_base64(std::random_access_iterator_tag, It first, size
 
 
 template<typename It, typename Out>
-std::pair<It, Out> encode_base64(std::forward_iterator_tag, It first, size_t n, Out out) {
+std::pair<It, Out> encode_base64(std::input_iterator_tag, It first, size_t n, Out out) {
     size_t rem = n % 3;
     n -= rem;
     constexpr const char* b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
