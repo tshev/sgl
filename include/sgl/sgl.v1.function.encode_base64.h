@@ -8,7 +8,7 @@ Out _encode_base64(std::random_access_iterator_tag, It first, It last, Out out, 
     last = first + (n - rem);
     constexpr const char* b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     while (first != last) {
-        uint64_t v = *first;
+        uint32_t v = *first;
         ++first;
         v = (v << 8) | *first;
         ++first; 
@@ -26,7 +26,7 @@ Out _encode_base64(std::random_access_iterator_tag, It first, It last, Out out, 
     }
 
     if (rem == 1) {
-        uint64_t v = uint64_t(*first) << 16;
+        uint32_t v = uint32_t(*first) << 16;
         *out = b64[(v >> 18) & 0x3F];
         ++out;
         *out = b64[(v >> 12) & 0x3F];
@@ -36,7 +36,7 @@ Out _encode_base64(std::random_access_iterator_tag, It first, It last, Out out, 
         *out = '=';
         ++out;
     } else if (rem == 2) {
-        uint64_t v = *first;
+        uint32_t v = *first;
         ++first;
         v = (v << 8 | *first) << 8;
         *out = b64[(v >> 18) & 0x3F];
