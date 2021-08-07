@@ -333,7 +333,8 @@
 #include "sgl.v1.function.soundex.h"
 
 //#include "sgl.v1.class.function.partition_semistable_position.h"
-
+#include "sgl.v1.function.encode_base64_size.h"
+#include "sgl.v1.function.encode_base64.h"
 #include "macro_expressions.h"
 #include "sgl.v1.struct.distance_type.h"
 #include "sgl.v1.struct.nanoseconds.h"
