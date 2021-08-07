@@ -64,6 +64,7 @@ Out decode_base64(std::input_iterator_tag, It first, It last, Out out) {
 
 template<typename It, typename Out>
 std::pair<It, Out> decode_base64(std::input_iterator_tag, It first, size_t n, Out out) {
+    /*
     constexpr const char table[] = {
         62, 0, 0, 0, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 0, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
     };
@@ -82,6 +83,76 @@ std::pair<It, Out> decode_base64(std::input_iterator_tag, It first, size_t n, Ou
         --n;
         ++first;
     }
+    return {first, out};
+    */
+    constexpr const char b64[] = {
+        62, 63, 62, 62, 63,
+        52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0,  0,  0,  0,  0,  0,
+        0,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0,  0,  0,  0,  63,
+        0,  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+    };
+    size_t rem = n % 4;
+    size_t n0 = n - rem;
+    while (n0 != 0) {
+        uint32_t v = b64[*first - 43] << 18;
+        ++first;
+        v |= b64[*first - 43] << 12 ;
+        ++first;
+        *out = v >> 16;
+        ++out;
+
+        auto v3 = *first;
+        if (v3 == '=') break;
+
+        v |= b64[v3 - 43] << 6;
+        ++first;
+        *out = (v >> 8) & 0xFF;
+        ++out;
+
+        auto v4 = *first;
+        if (v4 == '=') break;
+
+        v |= b64[v4 - 43];
+        *out = v & 0xFF;
+        ++out;
+        ++first;
+        n0 -= 4;
+    }
+
+    while (rem != 0) {
+        uint32_t v = b64[*first - 43] << 18;
+        ++first;
+        --rem;
+        if (rem == 0) break;
+        v |= b64[*first - 43] << 12 ;
+        ++first;
+        --rem;
+        *out = v >> 16;
+        ++out;
+
+        if (rem == 0) break;
+        auto v3 = *first;
+        if (v3 == '=') break;
+
+        v |= b64[v3 - 43] << 6;
+        ++first;
+        --rem;
+        *out = (v >> 8) & 0xFF;
+        ++out;
+
+        if (rem == 0) break;
+        auto v4 = *first;
+        if (v4 == '=') break;
+
+        v |= b64[v4 - 43];
+        *out = v & 0xFF;
+        ++out;
+        ++first;
+        --rem;
+    }
+
     return {first, out};
 }
 
@@ -151,6 +222,12 @@ std::pair<It, Out> decode_base64(std::random_access_iterator_tag, It first, size
         last,
         sgl::v1::_decode_base64(std::random_access_iterator_tag(), first, last, out, n)
     };
+}
+
+template<typename It, typename Out>
+std::pair<It, Out> decode_base64(It first, size_t n, Out out) {
+    typedef typename std::iterator_traits<It>::iterator_category iterator_category;
+    return sgl::v1::decode_base64(iterator_category(), first, n, out);
 }
 
 
