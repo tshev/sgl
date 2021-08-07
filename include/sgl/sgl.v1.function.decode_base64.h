@@ -1,10 +1,11 @@
 #pragma once
 namespace sgl {
 namespace v1 {
-// TODO: think about concatenated base64 encodings (I think we must ignore this case)
+// TODO: think about concatenated base64 encodings (I think we must ignore this case) No-no: `MQ==Mg==`
 
 template<typename It, typename Out>
 Out decode_base64(std::input_iterator_tag, It first, It last, Out out) {
+    /*
     constexpr const char table[] = {62, 0, 0, 0, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 0, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
     uint32_t val = 0;
     int32_t valb = -8;
@@ -18,6 +19,43 @@ Out decode_base64(std::input_iterator_tag, It first, It last, Out out) {
             ++out;
             valb -= 8;
         }
+        ++first;
+    }
+    return out;
+    */
+    constexpr const char b64[] = {
+        62, 63, 62, 62, 63,
+        52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0,  0,  0,  0,  0,  0,
+        0,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0,  0,  0,  0,  63,
+        0,  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+    };
+    while (first != last) {
+        uint32_t n = b64[*first - 43] << 18;
+        ++first;
+        //if (first == last) break; // unnecessary
+        n |= b64[*first - 43] << 12 ;
+        ++first;
+        *out = n >> 16;
+        ++out;
+
+        if (first == last) break;
+        auto v3 = *first;
+        if (v3 == '=') break;
+
+        n |= b64[v3 - 43] << 6;
+        ++first;
+        *out = (n >> 8) & 0xFF;
+        ++out;
+
+        if (first == last) break;
+        auto v4 = *first;
+        if (v4 == '=') break;
+
+        n |= b64[v4 - 43];
+        *out = n & 0xFF;
+        ++out;
         ++first;
     }
     return out;
