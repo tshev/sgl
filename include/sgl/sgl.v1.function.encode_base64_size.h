@@ -1,4 +1,5 @@
 #pragma once
+
 namespace sgl {
 namespace v1 {
 
@@ -23,5 +24,5 @@ size_t encode_base64_size(It first, size_t n) {
     return sgl::v1::encode_base64_size(n);
 }
 
-}
-}
+} // namespace v1
+} // namespace sgl

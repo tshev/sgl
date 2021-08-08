@@ -159,6 +159,7 @@ std::pair<It, Out> decode_base64(std::input_iterator_tag, It first, size_t n, Ou
 
 template<typename It, typename Out>
 Out _decode_base64(std::random_access_iterator_tag, It first, It last, Out out, size_t n) {
+    if (n < 2) return out;
     constexpr const char b64[] = {
         62, 63, 62, 62, 63,
         52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0,  0,  0,  0,  0,  0,
@@ -170,10 +171,10 @@ Out _decode_base64(std::random_access_iterator_tag, It first, It last, Out out, 
     It first1 = first;
     size_t rem = n % 4;
 
-    int pad1 = rem || *(last - 1) == '=';
-    const size_t k = (n - pad1) / 4 << 2;
-    int pad2 = pad1 && (rem > 2 || *(last - 2) != '=');
-    auto last1 = first1 + k;
+    const size_t pad1 = rem || *(last - 1) == '=';
+    const size_t k = (n - pad1) / 4 * 4;
+    const size_t pad2 = pad1 && (rem > 2 || *(last - 2) != '=');
+    It last1 = first1 + k;
 
     while (first1 != last1) {
         uint32_t n = b64[*first1 - 43] << 18;
@@ -210,10 +211,12 @@ Out _decode_base64(std::random_access_iterator_tag, It first, It last, Out out, 
     return out;
 }
 
+
 template<typename It, typename Out>
 Out decode_base64(std::random_access_iterator_tag, It first, It last, Out out) {
     return sgl::v1::_decode_base64(std::random_access_iterator_tag(), first, last, out, size_t(last - first));
 }
+
 
 template<typename It, typename Out>
 std::pair<It, Out> decode_base64(std::random_access_iterator_tag, It first, size_t n, Out out) {
@@ -223,6 +226,7 @@ std::pair<It, Out> decode_base64(std::random_access_iterator_tag, It first, size
         sgl::v1::_decode_base64(std::random_access_iterator_tag(), first, last, out, n)
     };
 }
+
 
 template<typename It, typename Out>
 std::pair<It, Out> decode_base64(It first, size_t n, Out out) {
@@ -239,5 +243,5 @@ Out decode_base64(It first, It last, Out out) {
 
 }
 
-}
-}
+} // namespace v1
+} // namespace sgl
