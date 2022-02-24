@@ -1,4 +1,6 @@
-# It is not ready for the prime-time
+# It is not ready for the prime-time, but it is a love of my life
+I am a Ukrainian programmer, and it is my contribution to the good of humanity. I don't long would live, but I hope the library would live much longer.
+
 
 # SGL
 
