@@ -1,3 +1,5 @@
+# It is not ready for the prime-time
+
 # SGL
 
 0. Let no-one ignorant of geometry enter here.
