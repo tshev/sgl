@@ -1,3 +1,13 @@
+# Terms of use
+1. By using this repo, you recognise russian crimes of genocide as a [genocide](https://en.wikipedia.org/wiki/Genocide#%22Intent_to_destroy%22).
+2. By using this library, you acknowledge that the russian genocidal invasion of Ukraine is not a putin's war but a war of the russian society who wants to kill everybody who doesn't want to join their empire.
+3. Illegal to use by russian citizens.
+4. Illegal to use by anybody who ever had a russian passport.
+5. Illegal to use by the supporters of genocide.
+6. I don't know the legal consequences of the words I wrote, but if it burns the ass of a genocide apologist or a russian citizen who thinks he/she is not guilty, but does nothing to stop the russian army, then this text did the job.
+
+
+
 # It is a love of my life, but it is not ready for the prime-time
 I am a Ukrainian programmer, and it is my contribution to the good of humanity. I don't long would live, but I hope the library would live much longer.
 
